@@ -48,9 +48,11 @@ class Ui(QMainWindow):
     def __init__(self):
         super(Ui, self).__init__()
 
-        self.amp = BlackstarIDAmp()
-
         uic.loadUi('outsider.ui', self)
+
+        self.amp = BlackstarIDAmp()
+        amp.drain()
+
         self.show()
         self._start_amp_watcher_thread()
 
