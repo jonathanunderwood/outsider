@@ -524,11 +524,13 @@ class BlackstarIDAmp(object):
             except usb.core.USBError: # Ignore timeouts
                 pass
 
-    def purge(self):
+    def drain(self):
+        '''Read data until none is and the return. Packets are discarded.
+        '''
         while True:
             try:
                 ret = self.device.read(0x81, 64)
-                #logger.debug('Polled packet\n' + self._format_data(ret))
+                logger.debug('Drained packet\n' + self._format_data(ret))
             except usb.core.USBError: # No more data available
                 return
 
