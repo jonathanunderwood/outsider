@@ -150,16 +150,24 @@ class Ui(QMainWindow):
             except KeyError:
                 logger.error('Unrecognized control {0}'.format(control))
 
+    ##################################################################
+    # The following methods are the slots for changes made on the gui
+    ##################################################################
     def vol_slider_changed(self, value):
-        logger.debug('Volume: {0}'.format(value))
+        logger.debug('Volume slider: {0}'.format(value))
         self.amp.set_control('volume', value)
 
     def tvp_selection_changed(self, idx):
-        logger.debug('TVP: {0}'.format(idx))
+        logger.debug('TVP selection: {0}'.format(idx))
+        if idx == 0:
+            self.amp.set_control('tvp_switch', 0)
+        else:
+            self.amp.set_control('tvp_switch', 1)
+            self.amp.set_control('tvp_valve', idx - 1)
 
     def voice_selection_changed(self, idx):
-        logger.debug('Voice: {0}'.format(idx))
-
+        logger.debug('Voice selection: {0}'.format(idx))
+        self.amp.set_control('voice', idx)
 
 class AmpControlWatcher(QObject):
     have_data = pyqtSignal(dict, name='have_data')
@@ -188,7 +196,7 @@ class AmpControlWatcher(QObject):
             QApplication.processEvents()
             try:
                 settings = self.amp.read_data()
-                #logger.debug('Amp adjustment detected:: control: {0} value: {1}'.format(control, value))
+                logger.debug('Amp adjustment detected:: control: {0} value: {1}'.format(control, value))
                 self.have_data.emit(settings)
             except NoDataAvailable:
                 logger.debug('No changes of amp controls reported')
