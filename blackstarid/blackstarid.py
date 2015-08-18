@@ -135,7 +135,6 @@ class BlackstarIDAmp(object):
     config = None
 
     controls = {
-        'tvp_switch': 0x0e,
         'voice': 0x01,
         'gain': 0x02,
         'volume': 0x03,
@@ -144,6 +143,7 @@ class BlackstarIDAmp(object):
         'treble': 0x06,
         'isf': 0x07,
         'tvp_valve': 0x08,
+        'tvp_switch': 0x0e,
         'mod_switch': 0x0f,
         'delay_switch': 0x10,
         'reverb_switch': 0x11,
@@ -166,7 +166,6 @@ class BlackstarIDAmp(object):
     control_ids =  dict([(val, key) for key, val in controls.iteritems()])
 
     control_limits = {
-        'tvp_switch': [0, 1],
         'voice': [0, 5],
         'gain': [0, 127],
         'volume': [0, 127],
@@ -175,20 +174,21 @@ class BlackstarIDAmp(object):
         'treble': [0, 127],
         'isf': [0, 127],
         'tvp_valve': [0, 5],
+        'tvp_switch': [0, 1],
         'mod_switch': [0, 1],
+        'delay_switch': [0, 1],
+        'reverb_switch': [0, 1],
         'mod_type': [0, 3],
         'mod_segval': [0, 31],
         'mod_level': [0, 127],
         'mod_speed': [0, 127],
-        'reverb_switch': [0, 1],
-        'reverb_type': [0, 3],
-        'reverb_size': [0, 31], # Segment value
-        'reverb_level': [0, 127],
-        'delay_switch': [0, 1],
+        'delay_type': [0, 3],
         'delay_feedback': [0, 31], # Segment value
         'delay_level': [0, 127],
         'delay_time': [100, 2000],
-        'delay_type': [0, 3],
+        'reverb_type': [0, 3],
+        'reverb_size': [0, 31], # Segment value
+        'reverb_level': [0, 127],
         'fx_focus': [1, 3],
     }
                           

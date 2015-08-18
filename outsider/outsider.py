@@ -41,22 +41,76 @@ class Ui(QMainWindow):
 
     # These signals will be emitted when we detect a control is
     # changed from the amplifier rather than from the GUI, and will
-    # allow us to update the GUI accordingly.
-    voice_changed_on_amp = pyqtSignal(int, name='voice_changed_on_amp')
-    volume_changed_on_amp = pyqtSignal(int, name='volume_changed_on_amp')
+    # allow us to update the GUI accordingly. These signals are bound
+    # in the .ui file, so don't need a connect call to bind them.
+    voice_changed_on_amp = pyqtSignal(int)
+    gain_changed_on_amp = pyqtSignal(int)
+    volume_changed_on_amp = pyqtSignal(int)
+    bass_changed_on_amp = pyqtSignal(int)
+    middle_changed_on_amp = pyqtSignal(int)
+    treble_changed_on_amp = pyqtSignal(int)
+    isf_changed_on_amp = pyqtSignal(int)
+    tvp_valve_changed_on_amp = pyqtSignal(int)
+    mod_switch_changed_on_amp = pyqtSignal(int)
+    delay_switch_changed_on_amp = pyqtSignal(int)
+    reverb_switch_changed_on_amp = pyqtSignal(int)
+    mod_type_changed_on_amp = pyqtSignal(int)
+    mod_segval_changed_on_amp = pyqtSignal(int)
+    mod_level_changed_on_amp = pyqtSignal(int)
+    mod_speed_changed_on_amp = pyqtSignal(int)
+    delay_type_changed_on_amp = pyqtSignal(int)
+    delay_feedback_changed_on_amp = pyqtSignal(int)
+    delay_level_changed_on_amp = pyqtSignal(int)
+    delay_time_changed_on_amp = pyqtSignal(int)
+    reverb_type_changed_on_amp = pyqtSignal(int)
+    reverb_size_changed_on_amp = pyqtSignal(int)
+    reverb_level_changed_on_amp = pyqtSignal(int)
+    fx_focus_changed_on_amp = pyqtSignal(int)
 
     def __init__(self):
         super(Ui, self).__init__()
 
         uic.loadUi('outsider.ui', self)
 
+        # Dictionary of signals to emit in response to changes to
+        # controls made directly on the amplifier. This dict has to be
+        # created here *after* the UI is created and the signals
+        # connected - creating this dict as a class attribute would
+        # mean all the values in the dict correspond to unbound
+        # signals.
+        self.control_signals = {
+            'voice': self.voice_changed_on_amp,
+            'gain': self.gain_changed_on_amp,
+            'volume': self.volume_changed_on_amp,
+            'bass': self.bass_changed_on_amp,
+            'middle': self.middle_changed_on_amp,
+            'treble': self.treble_changed_on_amp,
+            'isf': self.isf_changed_on_amp,
+            'tvp_valve': self.tvp_valve_changed_on_amp,
+            'mod_switch': self.mod_switch_changed_on_amp,
+            'delay_switch': self.delay_switch_changed_on_amp,
+            'reverb_switch': self.reverb_switch_changed_on_amp,
+            'mod_type': self.mod_type_changed_on_amp,
+            'mod_segval': self.mod_segval_changed_on_amp,
+            'mod_level': self.mod_level_changed_on_amp,
+            'mod_speed': self.mod_speed_changed_on_amp,
+            'delay_type': self.delay_type_changed_on_amp,
+            'delay_feedback': self.delay_feedback_changed_on_amp,
+            'delay_level': self.delay_level_changed_on_amp,
+            'delay_time': self.delay_time_changed_on_amp,
+            'reverb_type': self.reverb_type_changed_on_amp,
+            'reverb_size': self.reverb_size_changed_on_amp,
+            'reverb_level': self.reverb_level_changed_on_amp,
+            'fx_focus': self.fx_focus_changed_on_amp,
+        }
+
         self.amp = BlackstarIDAmp()
         self.amp.drain()
-        
+
         self.show()
         self._start_amp_watcher_thread()
-        
         self.amp.startup()
+
 
 
     def _start_amp_watcher_thread(self):
@@ -90,13 +144,19 @@ class Ui(QMainWindow):
         # This slot is called when a control has been changed on the amp
         for control, value in controls.iteritems():
             logger.debug('Data received:: control: {0} value: {1}'.format(control, value))
-
-            if control == 'volume':
-                self.volume_changed_on_amp.emit(value)
-            elif control == 'all':
-                self.voice_changed_on_amp.emit(value['volume'])
-            else:
+            try:
+                signal = self.control_signals[control]
+                print signal
+                print self.volume_changed_on_amp
+                signal.emit(value)
+            except KeyError:
                 logger.error('Unrecognized control {0}'.format(control))
+                # if control == 'volume':
+            #     self.volume_changed_on_amp.emit(value)
+            # elif control == 'all':
+            #     self.voice_changed_on_amp.emit(value['volume'])
+            # else:
+            #     logger.error('Unrecognized control {0}'.format(control))
 
     def vol_slider_changed(self, value):
         logger.debug('Volume: {0}'.format(value))
