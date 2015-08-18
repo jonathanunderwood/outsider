@@ -138,25 +138,17 @@ class Ui(QMainWindow):
         super(Ui, self).close()
         logger.debug('Exiting')
 
-    ##pyqtSlot(str, int)
     @pyqtSlot(dict)
     def _new_data_from_amp(self, controls):
-        # This slot is called when a control has been changed on the amp
+        # This slot is called when a control has been changed on the
+        # amp. In response we emit all signals corresponding to the
+        # keys in the controls dict
         for control, value in controls.iteritems():
             logger.debug('Data received:: control: {0} value: {1}'.format(control, value))
             try:
-                signal = self.control_signals[control]
-                print signal
-                print self.volume_changed_on_amp
-                signal.emit(value)
+                self.control_signals[control].emit(value)
             except KeyError:
                 logger.error('Unrecognized control {0}'.format(control))
-                # if control == 'volume':
-            #     self.volume_changed_on_amp.emit(value)
-            # elif control == 'all':
-            #     self.voice_changed_on_amp.emit(value['volume'])
-            # else:
-            #     logger.error('Unrecognized control {0}'.format(control))
 
     def vol_slider_changed(self, value):
         logger.debug('Volume: {0}'.format(value))
