@@ -51,10 +51,13 @@ class Ui(QMainWindow):
         uic.loadUi('outsider.ui', self)
 
         self.amp = BlackstarIDAmp()
-        amp.drain()
-
+        self.amp.drain()
+        
         self.show()
         self._start_amp_watcher_thread()
+        
+        self.amp.startup()
+
 
     def _start_amp_watcher_thread(self):
         # Set up thread to watch for manual changes of the amp
@@ -81,15 +84,19 @@ class Ui(QMainWindow):
         super(Ui, self).close()
         logger.debug('Exiting')
 
-    @pyqtSlot(str, int)
-    def _new_data_from_amp(self, control, value):
+    ##pyqtSlot(str, int)
+    @pyqtSlot(dict)
+    def _new_data_from_amp(self, controls):
         # This slot is called when a control has been changed on the amp
-        logger.debug('Data received:: control: {0} value: {1}'.format(control, value))
+        for control, value in controls.iteritems():
+            logger.debug('Data received:: control: {0} value: {1}'.format(control, value))
 
-        if control == 'volume':
-            self.volume_changed_on_amp.emit(value)
-        else:
-            logger.error('Unrecognized control {0}'.format(control))
+            if control == 'volume':
+                self.volume_changed_on_amp.emit(value)
+            elif control == 'all':
+                self.voice_changed_on_amp.emit(value['volume'])
+            else:
+                logger.error('Unrecognized control {0}'.format(control))
 
     def vol_slider_changed(self, value):
         logger.debug('Volume: {0}'.format(value))
@@ -102,13 +109,13 @@ class Ui(QMainWindow):
         logger.debug('Voice: {0}'.format(idx))
 
 
-    def emit_voice_changed_on_amp(self, idx):
+    def emit_voice_changed_on_amp(self, value):
         #self.voice_changed_on_amp.connect(self.handle)
-        self.voice_changed_on_amp.emit(idx)
+        self.voice_changed_on_amp.emit(value)
 
 
 class AmpControlWatcher(QObject):
-    have_data = pyqtSignal(str, int, name='have_data')
+    have_data = pyqtSignal(dict, name='have_data')
     shutdown = False
     
     @pyqtSlot()
@@ -133,9 +140,9 @@ class AmpControlWatcher(QObject):
             # shutdown signal is never processed
             QApplication.processEvents()
             try:
-                control, value = self.amp.read_data()
-                logger.debug('Amp adjustment detected:: control: {0} value: {1}'.format(control, value))
-                self.have_data.emit(control, value)
+                settings = self.amp.read_data()
+                #logger.debug('Amp adjustment detected:: control: {0} value: {1}'.format(control, value))
+                self.have_data.emit(settings)
             except NoDataAvailable:
                 logger.debug('No changes of amp controls reported')
                 continue

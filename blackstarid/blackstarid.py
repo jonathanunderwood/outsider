@@ -145,19 +145,19 @@ class BlackstarIDAmp(object):
         'isf': 0x07,
         'tvp_valve': 0x08,
         'mod_switch': 0x0f,
+        'delay_switch': 0x10,
+        'reverb_switch': 0x11,
         'mod_type': 0x12,
         'mod_segval': 0x13,
         'mod_level': 0x15,
         'mod_speed': 0x16,
-        'reverb_switch': 0x11,
-        'reverb_type': 0x1d,
-        'reverb_size': 0x1e, # Segment value
-        'reverb_level': 0x20,
-        'delay_switch': 0x10,
+        'delay_type': 0x17,
         'delay_feedback': 0x18, # Segment value
         'delay_level': 0x1a,
         'delay_time': 0x1b,
-        'delay_type': 0x17,
+        'reverb_type': 0x1d,
+        'reverb_size': 0x1e, # Segment value
+        'reverb_level': 0x20,
         'fx_focus': 0x24,
     }
 
@@ -336,7 +336,42 @@ class BlackstarIDAmp(object):
             bytes[0:5] = [0x03, ctrl_byte, 0x00, 0x01, value]
 
         return self._send_bytes(bytes, 0x01)
-        
+
+    def query_all_controls(self):
+        '''Sends a packets to query the state of all controls, but doesn't
+        deal with any response.'''
+        bytes = [0x00] * 64
+
+#        bytes[0:4] = [0x02, 0x06, 0x00, 0x03]
+        bytes[0:8] = [0x81, 0x00, 0x00, 0x04, 0x03,0x06, 0x02, 0x7a]
+
+        #return self._send_bytes(bytes, 0x01)
+        self._send_bytes(bytes, 0x01)
+        packet = self.device.read(0x81, 64)
+        if packet[0] is 0x03:
+            logger.debug('Response packet to query\n' + self._format_data(packet))
+        # for control in self.controls.keys():
+        #     self.query_control(control)
+
+    def query_control(self, control):
+        '''Sends a packet to query the state of a control, but doesn't
+        deal with any response.'''
+
+        logger.debug('querying {0}'.format(control))
+
+        try:
+            ctrl_byte = self.controls[control]
+        except KeyError:
+            msg = 'Control key {0} not a valid identifier'.format(control)
+            logger.error(msg)
+            raise ValueError(msg)
+
+        bytes = [0x00] * 64
+
+        bytes[0:2] = [0x03, ctrl_byte]
+
+        return self._send_bytes(bytes, 0x01)
+
     def set_tvp(self, state):
         ''' Turn TVP on or off depending on the state argument.
 
@@ -363,118 +398,33 @@ class BlackstarIDAmp(object):
         self._send_bytes(bytes, 0x01)
         #self.device.read(0x01, 64)
 
-    def set_voice(self, voice):
-        ''' Select amp voicing
-
-        Arguments
-        =========
-        voice: 0 for clean warm
-               1 for clean bright
-               2 for crunch
-               3 for super crunch
-               4 for OD1
-               5 for OD2
-        '''
-        
-        if self.connected is False:
-            raise NotConnectedError
-
-        if voice not in [0, 1, 2, 3, 4, 5]:
-            raise ValueError('Unrecognized value for voice argument: {0}'.format(voice))
-        
-        bytes = [0x00] * 64
-        
-        bytes[0:5] = [0x03, 0x01, 0x00, 0x01, voice]
-
-        self._send_bytes(bytes, 0x01)
-        #self.device.read(0x01, 64)
-        
-    def set_gain(self, value):
-        ''' Set amp gain
-
-        Arguments
-        =========
-        value: 0-127
-
-        '''
-        
-        if self.connected is False:
-            raise NotConnectedError
-
-        if val < 0 or val > 127:
-            raise ValueError('Gain value not in range 0-127: {0}'.format(value))
-        
-        bytes = [0x00] * 64
-        
-        bytes[0:5] = [0x03, 0x02, 0x00, 0x01, value]
-
-        self._send_bytes(bytes, 0x01)
-    
-    
 
     def startup(self):
+        '''This method sends a packet to the amplifier which results in a
+        reply of 3 packets. For Insider this is the first packet
+        sent. The 2nd of the reply packets specifies the current
+        settings of the amp.
+
+        This function doesn't deal with the response packet - use the
+        read_data method for that, once for each packet.
+
+        It is adviseable to call the drain method prior to this
+        function to ensure no pending packets are present.
+
+        '''
+        
         if self.connected is False:
             raise NotConnectedError
 
-        logger.debug('Entering startup')
+        logger.debug('Sending startup packet')
 
-        # First transmission results in 3 reply packets
         bytes = [0x00] * 64
         bytes[0] = 0x81
         bytes[3:8] = [0x04, 0x03, 0x06, 0x02, 0x7a]
 
         self._send_bytes(bytes, 0x01)
 
-        ret = self.device.read(0x81, 64)
-        logger.debug('Response packet 1\n' + self._format_data(ret))
-
-        # This next response packet seems to specify the voicing
-        # The first 16 bytes will be
-        # 03 01 00 01 XX 6F 75 6E 64 20 31 00 00 00 00 00
-        # where the fifth byte specifies the voicing from 00 (clean warm), 01 (clean bright) etc
-        ret = self.device.read(0x81, 64)
-        logger.debug('Response packet 2\n' + self._format_data(ret))
-
-        ret = self.device.read(0x81, 64)
-        logger.debug('Response packet 3\n' + self._format_data(ret))
-
-        # Second transmission - one response packets
-        bytes = [0x00] * 64
-        bytes[0:4] = [0x02, 0x04, 0x01, 0x00]
-
-        self._send_bytes(bytes, 0x01)
-        
-        ret = self.device.read(0x81, 64)
-        logger.debug('Response packet 4\n' + self._format_data(ret))
-        print [str(unichr(i)) for i in ret[4:25]] # Name is up to 21 characters
-        
-        # Third transmission
-        bytes = [0x00] * 64
-        bytes[0:4] = [0x02, 0x05, 0x01, 0x00]
-
-        self._send_bytes(bytes, 0x01)
-        
-        ret = self.device.read(0x81, 64)
-        logger.debug('Response packet 5\n' + self._format_data(ret))
-
-        # Forth transmission - 0x02, 0x04, 0xXX seem to request the names of the saved presets
-        bytes = [0x00] * 64
-        bytes[0:4] = [0x02, 0x04, 0x02, 0x00]
-
-        self._send_bytes(bytes, 0x01)
-        
-        ret = self.device.read(0x81, 64)
-        logger.debug('Response packet 6\n' + self._format_data(ret))
-        print [str(unichr(i)) for i in filter(lambda n: n>0, ret[4:25])]
-
-        # Fifth transmission 7600
-        bytes = [0x00] * 64
-        bytes[0:4] = [0x02, 0x05, 0x02, 0x00]
-
-        self._send_bytes(bytes, 0x01)
-        
-        ret = self.device.read(0x81, 64)
-        logger.debug('Response packet 7\n' + self._format_data(ret))
+        logger.debug('Startup packet sent')
 
     def get_preset_names(self):
         for i in xrange(1, 128):
@@ -493,6 +443,7 @@ class BlackstarIDAmp(object):
             #print [str(unichr(i)) for i in filter(lambda n: n>0, ret[4:25])]
 
     def read_data(self):
+
         '''Attempts to read a data packet from the amplifier. If no data is
         available a usb.core.USBError exception will be raised.
         '''
@@ -501,21 +452,75 @@ class BlackstarIDAmp(object):
         except usb.core.USBError:
             raise NoDataAvailable
 
-        # TODO check 1st byte is 03, and 3rd is 00
+        if packet[0] is 0x03 and (packet[3] is 0x01 or packet[3] is 0x02):
+            # Then the packet is the value of a single control in
+            # response to user changing a control on the amp itself.
+            # the 4th byte specifies the subsequent number of bytes
+            # specifying the value. For all controls except
+            # delay_time this is 0x01, and for delay_time it is0x02
 
-        # Identify which control was changed
-        id = packet[1]
-        control = self.control_ids[id]
+            # Identify which control was changed
+            id = packet[1]
+            control = self.control_ids[id]
 
-        # And find the value of that control
-        if control is 'delay_time':
-            value = packet[4] + 256 * packet[5]
+            # And find the value of that control
+            if packet[3] is 0x02: # equivalent to control is 'delay_time':
+                value = packet[4] + 256 * packet[5]
+            else:
+                value = packet[4]
+
+            logger.debug('Data from amp:: control: {0} value: {1}'.format(control, value))
+
+            return {control: value}
+
+        elif packet[0] is 0x03 and packet[1] is 0x01 and packet[3] is 0x2a:
+            # Then packet is a packet describing all current control
+            # settings - note that the 4th byte being 42 (0x2a)
+            # distinguishes this from a packet specifying the voice
+            # setting for which the 4th byte would be 0x01. This is
+            # the 2nd of 3 response packets to the startup packet.
+            # Conveniently the byte address for each control setting
+            # corresponds to the ID number of the control plus
+            # 3. Weird, but handy.
+            logger.debug('All controls info packet in read_data\n')
+            settings = {}
+            for control, id in self.controls.iteritems():
+                settings[control] = packet[id + 3]
+                if control == 'delay_time':
+                    settings[control] += packet[id + 4] * 256
+
+                logger.debug('All controls data:: control: {0} value: {1}'.format(control, settings[control]))
+
+            return settings
+
+        elif packet[0] is 0x07:
+            # This is the first of the three response packets to the
+            # startup packet. At this point, I don't know what this
+            # packet describes. Firmware version? For TVP60h it is:
+            # 07 00 00 03 04 00 01 01 40 00 00 00 00 3D 00 00
+            # 10 00 01 00 00 00 00 00 00 00 00 02 00 01 01 03
+            # 00 15 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+            # 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+            logger.debug('Unhandled startup packet 1\n'+ self._format_data(packet))
+
+            return {}
+
+        elif packet[0] is 0x08:
+            # This is the third of the three response packets to the
+            # startup packet. This packet seems to indicate what
+            # preset is selected (or manual).
+            # 08 01 00 1B F0 00 01 01 40 00 00 00 00 3D 00 00
+            # 10 00 01 00 00 00 00 00 00 00 00 02 00 01 01 03
+            # 00 15 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+            # 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+            logger.debug('Unhandled startup packet 3\n'+ self._format_data(packet))
+
+            return {}
+
         else:
-            value = packet[4]
+            logger.debug('Unhandled data packet in read_data\n'+ self._format_data(packet))
+            return {}
 
-        logger.debug('Data from amp:: control: {0} value: {1}'.format(control, value))
-        return control, value
-        
     def poll(self):
         while True:
             try:
@@ -530,7 +535,7 @@ class BlackstarIDAmp(object):
         while True:
             try:
                 ret = self.device.read(0x81, 64)
-                logger.debug('Drained packet\n' + self._format_data(ret))
+                #logger.debug('Drained packet\n' + self._format_data(ret))
             except usb.core.USBError: # No more data available
                 return
 
@@ -557,7 +562,7 @@ if __name__ == '__main__':
         amp = BlackstarIDAmp()
     except:
         sys.exit(1)
-    amp.poll()
+    # amp.poll()
     # amp.set_tvp(1)
     # time.sleep(2)
     # amp.set_tvp(0)
@@ -567,7 +572,23 @@ if __name__ == '__main__':
     #amp.startup()
 
     #amp.get_preset_names()
-    amp.purge()
+    amp.drain()
+
+    while True:
+        amp.drain()
+        amp.startup()
+        amp.read_data()
+        amp.read_data()
+        amp.read_data()        
+        time.sleep(0.5)
+        # try:
+        #     amp.read_data()
+        # except:
+        #     print 'no data'
+        #     continue
+
+    amp.query_control('volume')
+    amp.read_data()
     #amp.get_preset_settings(1)
     
     amp.set_control('delay_time', 100)
@@ -620,3 +641,54 @@ if __name__ == '__main__':
 # string = ''.join(chr(n) for n in bytes)
 
 # dev.write(0x01, string)
+
+
+
+    # def set_voice(self, voice):
+    #     ''' Select amp voicing
+
+    #     Arguments
+    #     =========
+    #     voice: 0 for clean warm
+    #            1 for clean bright
+    #            2 for crunch
+    #            3 for super crunch
+    #            4 for OD1
+    #            5 for OD2
+    #     '''
+        
+    #     if self.connected is False:
+    #         raise NotConnectedError
+
+    #     if voice not in [0, 1, 2, 3, 4, 5]:
+    #         raise ValueError('Unrecognized value for voice argument: {0}'.format(voice))
+        
+    #     bytes = [0x00] * 64
+        
+    #     bytes[0:5] = [0x03, 0x01, 0x00, 0x01, voice]
+
+    #     self._send_bytes(bytes, 0x01)
+    #     #self.device.read(0x01, 64)
+        
+    # def set_gain(self, value):
+    #     ''' Set amp gain
+
+    #     Arguments
+    #     =========
+    #     value: 0-127
+
+    #     '''
+        
+    #     if self.connected is False:
+    #         raise NotConnectedError
+
+    #     if val < 0 or val > 127:
+    #         raise ValueError('Gain value not in range 0-127: {0}'.format(value))
+        
+    #     bytes = [0x00] * 64
+        
+    #     bytes[0:5] = [0x03, 0x02, 0x00, 0x01, value]
+
+    #     self._send_bytes(bytes, 0x01)
+    
+    
