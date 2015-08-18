@@ -161,11 +161,6 @@ class Ui(QMainWindow):
         logger.debug('Voice: {0}'.format(idx))
 
 
-    def emit_voice_changed_on_amp(self, value):
-        #self.voice_changed_on_amp.connect(self.handle)
-        self.voice_changed_on_amp.emit(value)
-
-
 class AmpControlWatcher(QObject):
     have_data = pyqtSignal(dict, name='have_data')
     shutdown = False
