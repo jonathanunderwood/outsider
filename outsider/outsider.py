@@ -50,10 +50,11 @@ class Ui(QMainWindow):
     middle_changed_on_amp = pyqtSignal(int)
     treble_changed_on_amp = pyqtSignal(int)
     isf_changed_on_amp = pyqtSignal(int)
+    tvp_switch_changed_on_amp = pyqtSignal(bool)
     tvp_valve_changed_on_amp = pyqtSignal(int)
-    mod_switch_changed_on_amp = pyqtSignal(int)
-    delay_switch_changed_on_amp = pyqtSignal(int)
-    reverb_switch_changed_on_amp = pyqtSignal(int)
+    mod_switch_changed_on_amp = pyqtSignal(bool)
+    delay_switch_changed_on_amp = pyqtSignal(bool)
+    reverb_switch_changed_on_amp = pyqtSignal(bool)
     mod_type_changed_on_amp = pyqtSignal(int)
     mod_segval_changed_on_amp = pyqtSignal(int)
     mod_level_changed_on_amp = pyqtSignal(int)
@@ -86,6 +87,7 @@ class Ui(QMainWindow):
             'middle': self.middle_changed_on_amp,
             'treble': self.treble_changed_on_amp,
             'isf': self.isf_changed_on_amp,
+            'tvp_switch': self.tvp_switch_changed_on_amp,
             'tvp_valve': self.tvp_valve_changed_on_amp,
             'mod_switch': self.mod_switch_changed_on_amp,
             'delay_switch': self.delay_switch_changed_on_amp,
@@ -139,11 +141,11 @@ class Ui(QMainWindow):
         logger.debug('Exiting')
 
     @pyqtSlot(dict)
-    def _new_data_from_amp(self, controls):
+    def _new_data_from_amp(self, settings):
         # This slot is called when a control has been changed on the
         # amp. In response we emit all signals corresponding to the
         # keys in the controls dict
-        for control, value in controls.iteritems():
+        for control, value in settings.iteritems():
             logger.debug('Data received:: control: {0} value: {1}'.format(control, value))
             try:
                 self.control_signals[control].emit(value)
@@ -153,21 +155,59 @@ class Ui(QMainWindow):
     ##################################################################
     # The following methods are the slots for changes made on the gui
     ##################################################################
-    def vol_slider_changed(self, value):
+    @pyqtSlot(int)
+    def on_volumeSlider_valueChanged(self, value):
         logger.debug('Volume slider: {0}'.format(value))
         self.amp.set_control('volume', value)
 
-    def tvp_selection_changed(self, idx):
-        logger.debug('TVP selection: {0}'.format(idx))
-        if idx == 0:
-            self.amp.set_control('tvp_switch', 0)
-        else:
-            self.amp.set_control('tvp_switch', 1)
-            self.amp.set_control('tvp_valve', idx - 1)
+    @pyqtSlot(int)
+    def on_gainSlider_valueChanged(self, value):
+        logger.debug('Gain slider: {0}'.format(value))
+        self.amp.set_control('gain', value)
 
-    def voice_selection_changed(self, idx):
+    @pyqtSlot(int)
+    def on_bassSlider_valueChanged(self, value):
+        logger.debug('Bass slider: {0}'.format(value))
+        self.amp.set_control('bass', value)
+
+    @pyqtSlot(int)
+    def on_middleSlider_valueChanged(self, value):
+        logger.debug('Middle slider: {0}'.format(value))
+        self.amp.set_control('middle', value)
+    @pyqtSlot(int)
+
+    def on_trebleSlider_valueChanged(self, value):
+        logger.debug('Treble slider: {0}'.format(value))
+        self.amp.set_control('treble', value)
+
+    @pyqtSlot(int)
+    def on_isfSlider_valueChanged(self, value):
+        logger.debug('ISF slider: {0}'.format(value))
+        self.amp.set_control('isf', value)
+
+    @pyqtSlot(int)
+    def on_TVPComboBox_currentIndexChanged(self, idx):
+        logger.debug('TVP selection: {0}'.format(idx))
+        self.amp.set_control('tvp_valve', idx)
+
+    @pyqtSlot(bool)
+    def on_TVPRadioButton_toggled(self, state):
+        logger.debug('TVP switch: {0}'.format(state))
+        if state == True:
+            self.amp.set_control('tvp_switch', 1)
+        else:
+            self.amp.set_control('tvp_switch', 0)
+
+    @pyqtSlot(int)
+    def on_voiceComboBox_currentIndexChanged(self, idx):
         logger.debug('Voice selection: {0}'.format(idx))
         self.amp.set_control('voice', idx)
+
+    @pyqtSlot(bool)
+    def on_modRadioButton_toggled(self, state):
+        logger.debug('Mod switch: {0}'.format(state))
+        self.amp.set_control('mod_switch', state)
+        self.amp.set_control('fx_focus', 1)
 
 class AmpControlWatcher(QObject):
     have_data = pyqtSignal(dict, name='have_data')
@@ -196,7 +236,8 @@ class AmpControlWatcher(QObject):
             QApplication.processEvents()
             try:
                 settings = self.amp.read_data()
-                logger.debug('Amp adjustment detected:: control: {0} value: {1}'.format(control, value))
+                for control, value in settings.iteritems():
+                    logger.debug('Amp adjustment detected:: control: {0} value: {1}'.format(control, value))
                 self.have_data.emit(settings)
             except NoDataAvailable:
                 logger.debug('No changes of amp controls reported')
