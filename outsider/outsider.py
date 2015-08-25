@@ -106,6 +106,10 @@ class Ui(QMainWindow):
             'fx_focus': self.fx_focus_changed_on_amp,
         }
 
+        # This ensures the modulation segval slider label is in sync
+        # with the selected mod type
+        self.mod_type_changed_on_amp.connect(self.mod_type_changed)
+
         self.amp = BlackstarIDAmp()
         self.amp.drain()
 
@@ -209,6 +213,47 @@ class Ui(QMainWindow):
         self.amp.set_control('mod_switch', state)
         self.amp.set_control('fx_focus', 1)
 
+    @pyqtSlot(int)
+    def on_modComboBox_currentIndexChanged(self, value):
+        logger.debug('Mod Combo Box: {0}'.format(value))
+        self.amp.set_control('mod_type', value)
+        self.amp.set_control('fx_focus', 1)
+
+    @pyqtSlot(int)
+    def on_modSegValSlider_valueChanged(self, value):
+        logger.debug('Mod SegVal slider: {0}'.format(value))
+        self.amp.set_control('mod_segval', value)
+        self.amp.set_control('fx_focus', 1)
+
+    @pyqtSlot(int)
+    def on_modLevelSlider_valueChanged(self, value):
+        logger.debug('Mod Level slider: {0}'.format(value))
+        self.amp.set_control('mod_level', value)
+        self.amp.set_control('fx_focus', 1)
+
+    @pyqtSlot(int)
+    def on_modSpeedSlider_valueChanged(self, value):
+        logger.debug('Mod Speed slider: {0}'.format(value))
+        self.amp.set_control('mod_speed', value)
+        self.amp.set_control('fx_focus', 1)
+
+    ######
+    # When the modulation type is changed, we want to change the
+    # labels associated with some of the controls, so these slots ar
+    # used in that process.
+    mod_segval_label_update = pyqtSignal(str)
+
+    @pyqtSlot(int)
+    def mod_type_changed(self, value):
+        if value == 0:
+            self.mod_segval_label_update.emit('Mix')
+        elif value == 1:
+            self.mod_segval_label_update.emit('Feedback')
+        elif value == 2:
+            self.mod_segval_label_update.emit('Mix')
+        elif value == 3:
+            self.mod_segval_label_update.emit('FreqMod')
+            
 class AmpControlWatcher(QObject):
     have_data = pyqtSignal(dict, name='have_data')
     shutdown = False

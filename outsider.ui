@@ -548,7 +548,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_26">
          <item>
-          <widget class="QLCDNumber" name="isfLcdNumber_2">
+          <widget class="QLCDNumber" name="modSegValLcdNumber">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -562,9 +562,9 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_27">
          <item>
-          <widget class="QSlider" name="isfSlider_2">
+          <widget class="QSlider" name="modSegValSlider">
            <property name="maximum">
-            <number>127</number>
+            <number>31</number>
            </property>
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -589,9 +589,15 @@
           </spacer>
          </item>
          <item alignment="Qt::AlignHCenter">
-          <widget class="QLabel" name="label_8">
+          <widget class="QLabel" name="modSegVallabel">
            <property name="text">
-            <string>ISF</string>
+            <string>SegVal</string>
+           </property>
+           <property name="wordWrap">
+            <bool>false</bool>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse</set>
            </property>
           </widget>
          </item>
@@ -625,7 +631,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_29">
          <item>
-          <widget class="QLCDNumber" name="isfLcdNumber_3">
+          <widget class="QLCDNumber" name="modLevelLcdNumber">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -639,7 +645,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_30">
          <item>
-          <widget class="QSlider" name="isfSlider_3">
+          <widget class="QSlider" name="modLevelSlider">
            <property name="maximum">
             <number>127</number>
            </property>
@@ -666,9 +672,9 @@
           </spacer>
          </item>
          <item alignment="Qt::AlignHCenter">
-          <widget class="QLabel" name="label_10">
+          <widget class="QLabel" name="modLevelLabel">
            <property name="text">
-            <string>ISF</string>
+            <string>Depth</string>
            </property>
           </widget>
          </item>
@@ -702,7 +708,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_32">
          <item>
-          <widget class="QLCDNumber" name="isfLcdNumber_4">
+          <widget class="QLCDNumber" name="modSpeedLcdNumber">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -716,7 +722,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_33">
          <item>
-          <widget class="QSlider" name="isfSlider_4">
+          <widget class="QSlider" name="modSpeedSlider">
            <property name="maximum">
             <number>127</number>
            </property>
@@ -743,9 +749,9 @@
           </spacer>
          </item>
          <item alignment="Qt::AlignHCenter">
-          <widget class="QLabel" name="label_11">
+          <widget class="QLabel" name="modSpeedLabel">
            <property name="text">
-            <string>ISF</string>
+            <string>Speed</string>
            </property>
           </widget>
          </item>
@@ -896,15 +902,6 @@
      </item>
     </layout>
    </widget>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget</zorder>
-   <zorder>layoutWidget_2</zorder>
-   <zorder>layoutWidget_3</zorder>
-   <zorder>layoutWidget_4</zorder>
-   <zorder>layoutWidget_5</zorder>
-   <zorder>tabWidget</zorder>
-   <zorder>TVPRadioButton</zorder>
-   <zorder>verticalLayoutWidget_3</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -1262,6 +1259,294 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>modSegValSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>modSegValLcdNumber</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>198</x>
+     <y>368</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>198</x>
+     <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>mod_segval_changed_on_amp(int)</signal>
+   <receiver>modSegValSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>198</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>mod_type_changed_on_amp(int)</signal>
+   <receiver>modComboBox</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>297</x>
+     <y>262</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>modComboBox</sender>
+   <signal>currentIndexChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>mod_type_changed(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>297</x>
+     <y>262</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>mod_segval_label_update(QString)</signal>
+   <receiver>modSegVallabel</receiver>
+   <slot>setText(QString)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>420</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>modRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>modSegValSlider</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>212</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>198</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>modRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>modSegValLcdNumber</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>212</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>198</x>
+     <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>modRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>modSegVallabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>212</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>197</x>
+     <y>420</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>mod_level_changed_on_amp(int)</signal>
+   <receiver>modLevelSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>278</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>mod_speed_changed_on_amp(int)</signal>
+   <receiver>modSpeedSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>modLevelSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>modLevelLcdNumber</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>278</x>
+     <y>368</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>278</x>
+     <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>modSpeedSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>modSpeedLcdNumber</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>358</x>
+     <y>368</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>modRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>modLevelLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>212</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>277</x>
+     <y>420</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>modRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>modLevelLcdNumber</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>212</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>278</x>
+     <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>modRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>modLevelSlider</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>212</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>278</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>modRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>modSpeedLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>212</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>357</x>
+     <y>420</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>modRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>modSpeedLcdNumber</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>212</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>modRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>modSpeedSlider</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>212</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>358</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>voice_changed_on_amp(int)</signal>
@@ -1274,8 +1559,11 @@
   <signal>tvp_valve_changed_on_amp(int)</signal>
   <signal>tvp_switch_changed_on_amp(bool)</signal>
   <signal>mod_switch_changed_on_amp(bool)</signal>
-  <slot>vol_slider_changed(int)</slot>
-  <slot>voice_selection_changed(int)</slot>
-  <slot>tvp_selection_changed(int)</slot>
+  <signal>mod_segval_changed_on_amp(int)</signal>
+  <signal>mod_type_changed_on_amp(int)</signal>
+  <signal>mod_segval_label_update(QString)</signal>
+  <signal>mod_level_changed_on_amp(int)</signal>
+  <signal>mod_speed_changed_on_amp(int)</signal>
+  <slot>mod_type_changed(int)</slot>
  </slots>
 </ui>

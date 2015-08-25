@@ -452,46 +452,47 @@ class BlackstarIDAmp(object):
         except usb.core.USBError:
             raise NoDataAvailable
 
-        if packet[0] is 0x03 and (packet[3] is 0x01 or packet[3] is 0x02):
-            # Then the packet is the value of a single control in
-            # response to user changing a control on the amp itself.
-            # the 4th byte specifies the subsequent number of bytes
-            # specifying the value. For all controls except
-            # delay_time this is 0x01, and for delay_time it is0x02
-
-            # Identify which control was changed
-            id = packet[1]
-            control = self.control_ids[id]
-
-            # And find the value of that control
-            if packet[3] is 0x02: # equivalent to control is 'delay_time':
-                value = packet[4] + 256 * packet[5]
-            else:
+        # The 4th byte (packet[3]) specifies the subsequent number of
+        # bytes specifying a value.
+        if packet[0] is 0x03:
+            if packet[3] is 0x01:
+                # Identify which control was changed
+                id = packet[1]
+                control = self.control_ids[id]
                 value = packet[4]
+                logger.debug('Data from amp:: control: {0} value: {1}'.format(control, value))
+                return {control: value}
+            elif packet[3] is 0x02:
+                # Identify which control was changed
+                id = packet[1]
+                control = self.control_ids[id]
+                if control is 'delay_time':
+                    value = packet[4] + 256 * packet[5]
+                    logger.debug('Data from amp:: control: {0} value: {1}'.format(control, value))
+                    return {control: value}
+                elif control is 'mod_type':
+                    mod_type = packet[4]
+                    mod_segval = packet[5]
+                    logger.debug('Data from amp:: mod_type: {0} mod_segval: {1}\n'.format(mod_type, mod_segval))
+                    return {'mod_type': packet[4], 'mod_segval': packet[5]}
+            elif packet[3] is 0x2a:
+                # Then packet is a packet describing all current control
+                # settings - note that the 4th byte being 42 (0x2a)
+                # distinguishes this from a packet specifying the voice
+                # setting for which the 4th byte would be 0x01. This is
+                # the 2nd of 3 response packets to the startup packet.
+                # Conveniently the byte address for each control setting
+                # corresponds to the ID number of the control plus
+                # 3. Weird, but handy.
+                logger.debug('All controls info packet in read_data\n')
+                settings = {}
+                for control, id in self.controls.iteritems():
+                    settings[control] = packet[id + 3]
+                    if control == 'delay_time':
+                        settings[control] += packet[id + 4] * 256
+                        logger.debug('All controls data:: control: {0} value: {1}'.format(control, settings[control]))
 
-            logger.debug('Data from amp:: control: {0} value: {1}'.format(control, value))
-
-            return {control: value}
-
-        elif packet[0] is 0x03 and packet[1] is 0x01 and packet[3] is 0x2a:
-            # Then packet is a packet describing all current control
-            # settings - note that the 4th byte being 42 (0x2a)
-            # distinguishes this from a packet specifying the voice
-            # setting for which the 4th byte would be 0x01. This is
-            # the 2nd of 3 response packets to the startup packet.
-            # Conveniently the byte address for each control setting
-            # corresponds to the ID number of the control plus
-            # 3. Weird, but handy.
-            logger.debug('All controls info packet in read_data\n')
-            settings = {}
-            for control, id in self.controls.iteritems():
-                settings[control] = packet[id + 3]
-                if control == 'delay_time':
-                    settings[control] += packet[id + 4] * 256
-
-                logger.debug('All controls data:: control: {0} value: {1}'.format(control, settings[control]))
-
-            return settings
+                return settings
 
         elif packet[0] is 0x07:
             # This is the first of the three response packets to the
