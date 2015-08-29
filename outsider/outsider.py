@@ -285,8 +285,8 @@ class Ui(QMainWindow):
         self.amp.set_control('fx_focus', 3)
 
     @pyqtSlot(int)
-    def on_reverbFeedbackSlider_valueChanged(self, value):
-        logger.debug('Reverb SegVal slider: {0}'.format(value))
+    def on_reverbSizeSlider_valueChanged(self, value):
+        logger.debug('Reverb Size slider: {0}'.format(value))
         self.amp.set_control('reverb_size', value)
         self.amp.set_control('fx_focus', 3)
 
