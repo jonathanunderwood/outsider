@@ -270,6 +270,36 @@ class Ui(QMainWindow):
         self.amp.set_control('delay_time', value)
         self.amp.set_control('fx_focus', 2)
 
+
+
+    @pyqtSlot(bool)
+    def on_reverbRadioButton_toggled(self, state):
+        logger.debug('Reverb switch: {0}'.format(state))
+        self.amp.set_control('reverb_switch', state)
+        self.amp.set_control('fx_focus', 3)
+
+    @pyqtSlot(int)
+    def on_reverbComboBox_currentIndexChanged(self, value):
+        logger.debug('Reverb Combo Box: {0}'.format(value))
+        self.amp.set_control('reverb_type', value)
+        self.amp.set_control('fx_focus', 3)
+
+    @pyqtSlot(int)
+    def on_reverbFeedbackSlider_valueChanged(self, value):
+        logger.debug('Reverb SegVal slider: {0}'.format(value))
+        self.amp.set_control('reverb_size', value)
+        self.amp.set_control('fx_focus', 3)
+
+    @pyqtSlot(int)
+    def on_reverbLevelSlider_valueChanged(self, value):
+        logger.debug('Reverb Level slider: {0}'.format(value))
+        self.amp.set_control('reverb_level', value)
+        self.amp.set_control('fx_focus', 3)
+
+
+
+
+
     ######
     # When the modulation type is changed, we want to change the
     # labels associated with some of the controls, so these slots ar
