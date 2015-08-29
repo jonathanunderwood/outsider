@@ -254,7 +254,7 @@ class Ui(QMainWindow):
 
     @pyqtSlot(int)
     def on_delayFeedbackSlider_valueChanged(self, value):
-        logger.debug('Delay SegVal slider: {0}'.format(value))
+        logger.debug('Delay feedback slider: {0}'.format(value))
         self.amp.set_control('delay_feedback', value)
         self.amp.set_control('fx_focus', 2)
 

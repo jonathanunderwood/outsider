@@ -486,7 +486,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -852,7 +852,7 @@
          <item>
           <widget class="QSlider" name="delayFeedbackSlider">
            <property name="maximum">
-            <number>127</number>
+            <number>31</number>
            </property>
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -1211,7 +1211,7 @@
          <item>
           <widget class="QSlider" name="reverbSizeSlider">
            <property name="maximum">
-            <number>127</number>
+            <number>31</number>
            </property>
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -2408,6 +2408,118 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>delay_switch_changed_on_amp(bool)</signal>
+   <receiver>delayRadioButton</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>202</x>
+     <y>261</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>reverb_switch_changed_on_amp(bool)</signal>
+   <receiver>reverbRadioButton</receiver>
+   <slot>setChecked(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>202</x>
+     <y>261</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>delayFeedbackSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>delayFeedbackLcdNumber</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>190</x>
+     <y>368</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>190</x>
+     <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>delayLevelSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>delayLevelLcdNumber</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>268</x>
+     <y>368</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>delayTimeSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>delayTimeLcdNumber</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>348</x>
+     <y>368</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>348</x>
+     <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>reverbLevelSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>reverbLevelLcdNumber</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>268</x>
+     <y>368</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>315</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>reverbSizeSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>reverbSizeLcdNumber</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>190</x>
+     <y>368</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>190</x>
+     <y>315</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>voice_changed_on_amp(int)</signal>
@@ -2432,6 +2544,8 @@
   <signal>reverb_type_changed_on_amp(int)</signal>
   <signal>reverb_level_changed_on_amp(int)</signal>
   <signal>reverb_size_changed_on_amp(int)</signal>
+  <signal>delay_switch_changed_on_amp(bool)</signal>
+  <signal>reverb_switch_changed_on_amp(bool)</signal>
   <slot>mod_type_changed(int)</slot>
  </slots>
 </ui>

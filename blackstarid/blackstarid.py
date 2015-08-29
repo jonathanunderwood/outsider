@@ -127,6 +127,23 @@ class BlackstarIDAmpPreset(object):
         # green LED lit on the front panel. 01 is Mod, 02 is delay, 03
         # is reverb.
         self.effect_focus = packet[39]
+
+# Implementation note regarding reading delay time info from the amp
+# when controls are changed on the amp:
+#
+# 1. Ff the tap button is used, then a single packet is returned with
+#    two bytes specifying the delay time. This packet will have the
+#    form [0x03, 0x1b, 0x00, 0x02, A, B,...] and the delay time is
+#    (256*B)+A.
+#
+# 2. If the user holds down the tap button and uses the level knob to
+#    set the delay time, then two packets come back from the amp for
+#    each adjustment. The first packet specifies the fine adjustment,
+#    and the second specifies the coarse adjustment. The first packet
+#    has the form [0x03, 0x1b, 0x00, 0x01, A, ...] and the second has
+#    the form [0x03, 0x1c, 0x00, 0x02, B,...] and the delay time is
+#    (256*B)+A.
+
         
 class BlackstarIDAmp(object):
     connected = False
@@ -155,6 +172,7 @@ class BlackstarIDAmp(object):
         'delay_feedback': 0x18, # Segment value
         'delay_level': 0x1a,
         'delay_time': 0x1b,
+        'delay_time_coarse': 0x1c,
         'reverb_type': 0x1d,
         'reverb_size': 0x1e, # Segment value
         'reverb_level': 0x20,
@@ -186,6 +204,7 @@ class BlackstarIDAmp(object):
         'delay_feedback': [0, 31], # Segment value
         'delay_level': [0, 127],
         'delay_time': [100, 2000],
+        'delay_time_coarse': [0, 7], # For documentation only, never used
         'reverb_type': [0, 3],
         'reverb_size': [0, 31], # Segment value
         'reverb_level': [0, 127],
@@ -442,7 +461,7 @@ class BlackstarIDAmp(object):
             print ''.join(namec)
             #print [str(unichr(i)) for i in filter(lambda n: n>0, ret[4:25])]
 
-    def read_data(self):
+    def read_data_packet(self):
 
         '''Attempts to read a data packet from the amplifier. If no data is
         available a usb.core.USBError exception will be raised.
@@ -454,28 +473,44 @@ class BlackstarIDAmp(object):
 
         # The 4th byte (packet[3]) specifies the subsequent number of
         # bytes specifying a value.
-        if packet[0] is 0x03:
-            if packet[3] is 0x01:
+        if packet[0] == 0x03:
+            if packet[3] == 0x01 or packet[3] == 0x02:
                 # Identify which control was changed
                 id = packet[1]
-                control = self.control_ids[id]
+                try:
+                    control = self.control_ids[id]
+                except KeyError:
+                    errstr = ('Unrecognized control ID: {0:02X}\n'.format(packet[1]) + self._format_data(packet))
+                    logger.error(errstr)
+                    raise KeyError(errstr)
+            if packet[3] == 0x01:
                 value = packet[4]
                 logger.debug('Data from amp:: control: {0} value: {1}'.format(control, value))
-                return {control: value}
-            elif packet[3] is 0x02:
-                # Identify which control was changed
-                id = packet[1]
-                control = self.control_ids[id]
-                if control is 'delay_time':
+                if control == 'delay_time':
+                    return {'delay_time_fine': value}
+                else:
+                    return {control: value}
+            elif packet[3] == 0x02:
+                if control == 'delay_time':
                     value = packet[4] + 256 * packet[5]
                     logger.debug('Data from amp:: control: {0} value: {1}'.format(control, value))
                     return {control: value}
-                elif control is 'mod_type':
+                elif control == 'delay_type':
+                    delay_type = packet[4]
+                    delay_feedback = packet[5]
+                    logger.debug('Data from amp:: delay_type: {0} delay_feedback: {1}\n'.format(delay_type, delay_feedback))
+                    return {'delay_type': packet[4], 'delay_feedback': packet[5]}
+                elif control == 'reverb_type':
+                    reverb_type = packet[4]
+                    reverb_size = packet[5]
+                    logger.debug('Data from amp:: reverb_type: {0} reverb_size: {1}\n'.format(reverb_type, reverb_size))
+                    return {'reverb_type': packet[4], 'reverb_size': packet[5]}
+                elif control == 'mod_type':
                     mod_type = packet[4]
                     mod_segval = packet[5]
                     logger.debug('Data from amp:: mod_type: {0} mod_segval: {1}\n'.format(mod_type, mod_segval))
                     return {'mod_type': packet[4], 'mod_segval': packet[5]}
-            elif packet[3] is 0x2a:
+            elif packet[3] == 0x2a:
                 # Then packet is a packet describing all current control
                 # settings - note that the 4th byte being 42 (0x2a)
                 # distinguishes this from a packet specifying the voice
@@ -487,14 +522,19 @@ class BlackstarIDAmp(object):
                 logger.debug('All controls info packet in read_data\n')
                 settings = {}
                 for control, id in self.controls.iteritems():
-                    settings[control] = packet[id + 3]
                     if control == 'delay_time':
-                        settings[control] += packet[id + 4] * 256
+                        settings[control] = (packet[id + 4] * 256) + packet[id + 3]
                         logger.debug('All controls data:: control: {0} value: {1}'.format(control, settings[control]))
+                    elif control == 'delay_time_coarse':
+                        # Skip this one, as we already deal with it
+                        # for the delay_time entry
+                        pass
+                    else:
+                        settings[control] = packet[id + 3]
 
                 return settings
 
-        elif packet[0] is 0x07:
+        elif packet[0] == 0x07:
             # This is the first of the three response packets to the
             # startup packet. At this point, I don't know what this
             # packet describes. Firmware version? For TVP60h it is:
@@ -502,11 +542,11 @@ class BlackstarIDAmp(object):
             # 10 00 01 00 00 00 00 00 00 00 00 02 00 01 01 03
             # 00 15 00 00 00 00 00 00 00 00 00 00 00 00 00 00
             # 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-            logger.debug('Unhandled startup packet 1\n'+ self._format_data(packet))
+            logger.debug('Unhandled startup packet 1\n' + self._format_data(packet))
 
             return {}
 
-        elif packet[0] is 0x08:
+        elif packet[0] == 0x08:
             # This is the third of the three response packets to the
             # startup packet. This packet seems to indicate what
             # preset is selected (or manual).
@@ -518,9 +558,36 @@ class BlackstarIDAmp(object):
 
             return {}
 
+        # We'll only reach here if we haven't handled the packet and returned earlier
+        logger.debug('Unhandled data packet in read_data\n'+ self._format_data(packet))
+        return {}
+
+    def read_data(self):
+        settings = self.read_data_packet()
+        if 'delay_time_fine' in settings:
+            # We received the least significant part of the delay_time
+            # only, so we need to store it and wait for the next
+            # packet for the most significant part of the delay_time
+            # before we can emit a signal to update the
+            # delay_time. This is stupidly stateful, but it's a quirk
+            # of the amp design. So, we need to read more packets
+            # until we find delay_time_course, being careful not to
+            # lose any other data we may receive in the meantime. In
+            # practive the two packets are probably guaranteed by the
+            # amp firmware to be sequential, but we don't know that
+            # for sure.
+            delay_time_fine = settings.pop('delay_time_fine')
+            while True:
+                s = self.read_data_packet()
+                if 'delay_time_coarse' in s:
+                    delay_time_coarse = s.pop('delay_time_coarse')
+                    settings.update(s)
+                    settings['delay_time'] = (delay_time_coarse * 256) + delay_time_fine
+                    return settings
+                else:
+                    settings.update(s)
         else:
-            logger.debug('Unhandled data packet in read_data\n'+ self._format_data(packet))
-            return {}
+            return settings
 
     def poll(self):
         while True:
@@ -573,46 +640,41 @@ if __name__ == '__main__':
     #amp.startup()
 
     #amp.get_preset_names()
-    amp.drain()
-
-    while True:
-        amp.drain()
-        amp.startup()
-        amp.read_data()
-        amp.read_data()
-        amp.read_data()        
-        time.sleep(0.5)
-        # try:
-        #     amp.read_data()
-        # except:
-        #     print 'no data'
-        #     continue
-
-    amp.query_control('volume')
-    amp.read_data()
-    #amp.get_preset_settings(1)
+    #amp.drain()
+    amp.poll()
     
-    amp.set_control('delay_time', 100)
-    amp.set_control('voice', 0)
-    time.sleep(1)
-    amp.set_control('voice', 1)
-    time.sleep(1)
-    amp.set_control('voice', 3)
-    time.sleep(1)
-    amp.set_control('voice', 4)
-    time.sleep(1)
-    amp.set_control('voice', 5)
+    # while True:
+    #     try:
+    #         amp.read_data()
+    #     except:
+    #         print 'no data'
+    #         continue
 
-    amp.set_control('delay_time', 2000)
-
-    amp.set_control('fx_focus', 1)
-    time.sleep(1)
-    amp.set_control('fx_focus', 2)
-    time.sleep(1)
-    amp.set_control('fx_focus', 3)
-    time.sleep(1)
+    # amp.query_control('volume')
+    # amp.read_data()
+    # #amp.get_preset_settings(1)
     
-    amp.disconnect()
+    # amp.set_control('delay_time', 100)
+    # amp.set_control('voice', 0)
+    # time.sleep(1)
+    # amp.set_control('voice', 1)
+    # time.sleep(1)
+    # amp.set_control('voice', 3)
+    # time.sleep(1)
+    # amp.set_control('voice', 4)
+    # time.sleep(1)
+    # amp.set_control('voice', 5)
+
+    # amp.set_control('delay_time', 2000)
+
+    # amp.set_control('fx_focus', 1)
+    # time.sleep(1)
+    # amp.set_control('fx_focus', 2)
+    # time.sleep(1)
+    # amp.set_control('fx_focus', 3)
+    # time.sleep(1)
+    
+    # amp.disconnect()
         
 # reattach = False
 # if dev.is_kernel_driver_active(0):
