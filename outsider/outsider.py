@@ -237,6 +237,39 @@ class Ui(QMainWindow):
         self.amp.set_control('mod_speed', value)
         self.amp.set_control('fx_focus', 1)
 
+
+
+
+    @pyqtSlot(bool)
+    def on_delayRadioButton_toggled(self, state):
+        logger.debug('Delay switch: {0}'.format(state))
+        self.amp.set_control('delay_switch', state)
+        self.amp.set_control('fx_focus', 2)
+
+    @pyqtSlot(int)
+    def on_delayComboBox_currentIndexChanged(self, value):
+        logger.debug('Delay Combo Box: {0}'.format(value))
+        self.amp.set_control('delay_type', value)
+        self.amp.set_control('fx_focus', 2)
+
+    @pyqtSlot(int)
+    def on_delayFeedbackSlider_valueChanged(self, value):
+        logger.debug('Delay SegVal slider: {0}'.format(value))
+        self.amp.set_control('delay_feedback', value)
+        self.amp.set_control('fx_focus', 2)
+
+    @pyqtSlot(int)
+    def on_delayLevelSlider_valueChanged(self, value):
+        logger.debug('Delay Level slider: {0}'.format(value))
+        self.amp.set_control('delay_level', value)
+        self.amp.set_control('fx_focus', 2)
+
+    @pyqtSlot(int)
+    def on_delayTimeSlider_valueChanged(self, value):
+        logger.debug('Delay Time slider: {0}'.format(value))
+        self.amp.set_control('delay_time', value)
+        self.amp.set_control('fx_focus', 2)
+
     ######
     # When the modulation type is changed, we want to change the
     # labels associated with some of the controls, so these slots ar
