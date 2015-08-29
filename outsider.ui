@@ -1075,7 +1075,7 @@
        <string>Reverb</string>
       </property>
      </widget>
-     <widget class="QComboBox" name="modComboBox_3">
+     <widget class="QComboBox" name="reverbComboBox">
       <property name="geometry">
        <rect>
         <x>110</x>
@@ -2277,6 +2277,22 @@
     <hint type="destinationlabel">
      <x>190</x>
      <y>368</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>reverbRadioButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>reverbComboBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>202</x>
+     <y>261</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>297</x>
+     <y>262</y>
     </hint>
    </hints>
   </connection>
