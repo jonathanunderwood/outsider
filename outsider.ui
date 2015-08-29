@@ -2296,6 +2296,118 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>delay_feedback_changed_on_amp(int)</signal>
+   <receiver>delayFeedbackSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>190</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>delay_level_changed_on_amp(int)</signal>
+   <receiver>delayLevelSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>delay_time_changed_on_amp(int)</signal>
+   <receiver>delayTimeSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>348</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>delay_type_changed_on_amp(int)</signal>
+   <receiver>delayComboBox</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>297</x>
+     <y>262</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>reverb_level_changed_on_amp(int)</signal>
+   <receiver>reverbLevelSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>reverb_size_changed_on_amp(int)</signal>
+   <receiver>reverbSizeSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>190</x>
+     <y>368</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>reverb_type_changed_on_amp(int)</signal>
+   <receiver>reverbComboBox</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>297</x>
+     <y>262</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>voice_changed_on_amp(int)</signal>
@@ -2313,6 +2425,13 @@
   <signal>mod_segval_label_update(QString)</signal>
   <signal>mod_level_changed_on_amp(int)</signal>
   <signal>mod_speed_changed_on_amp(int)</signal>
+  <signal>delay_level_changed_on_amp(int)</signal>
+  <signal>delay_type_changed_on_amp(int)</signal>
+  <signal>delay_time_changed_on_amp(int)</signal>
+  <signal>delay_feedback_changed_on_amp(int)</signal>
+  <signal>reverb_type_changed_on_amp(int)</signal>
+  <signal>reverb_level_changed_on_amp(int)</signal>
+  <signal>reverb_size_changed_on_amp(int)</signal>
   <slot>mod_type_changed(int)</slot>
  </slots>
 </ui>
