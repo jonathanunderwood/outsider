@@ -227,6 +227,11 @@ class Ui(QMainWindow):
         logger.debug('Voice selection: {0}'.format(idx))
         self.amp.set_control('voice', idx)
 
+    @pyqtSlot(int)
+    def on_effectsTabWidget_currentChanged(self, idx):
+        logger.debug('Effects tab selection: {0}'.format(idx))
+        self.amp.set_control('fx_focus', idx + 1)
+
     @pyqtSlot(bool)
     def on_modRadioButton_toggled(self, state):
         logger.debug('Mod switch: {0}'.format(state))
