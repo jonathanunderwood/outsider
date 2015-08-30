@@ -354,7 +354,11 @@ class BlackstarIDAmp(object):
         else:
             bytes[0:5] = [0x03, ctrl_byte, 0x00, 0x01, value]
 
-        return self._send_bytes(bytes, 0x01)
+        ret = self._send_bytes(bytes, 0x01)
+
+        logger.debug('Set control: {0} to value {1}'.format(control, value))
+
+        return ret
 
     def query_all_controls(self):
         '''Sends a packets to query the state of all controls, but doesn't

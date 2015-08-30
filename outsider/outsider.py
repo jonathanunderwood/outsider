@@ -66,6 +66,11 @@ class Ui(QMainWindow):
     reverb_type_changed_on_amp = pyqtSignal(int)
     reverb_size_changed_on_amp = pyqtSignal(int)
     reverb_level_changed_on_amp = pyqtSignal(int)
+    # Annoyingly, the amp doesn't emit packets when the effects focus
+    # is changed - however the packet containing all settings does
+    # contain a value relating to the current effect focus. We'll
+    # define a call back and connect it up anyway, in case this is
+    # fixed in a a future firmware.
     fx_focus_changed_on_amp = pyqtSignal(int)
 
     def __init__(self):
@@ -149,12 +154,27 @@ class Ui(QMainWindow):
         # This slot is called when a control has been changed on the
         # amp. In response we emit all signals corresponding to the
         # keys in the controls dict
+        # if 'fx_focus' in settings:
+        #     # We want to set this last of all, because other setting
+        #     # slots can shift the fx_focus
+        #     fx_focus = settings.pop('fx_focus')
+        #     print 'ding', fx_focus
+        # else:
+        #     fx_focus = None
+
         for control, value in settings.iteritems():
             logger.debug('Data received:: control: {0} value: {1}'.format(control, value))
+            if control == 'fx_focus':
+                value = value - 1 # Tabs start at index 0
             try:
                 self.control_signals[control].emit(value)
             except KeyError:
                 logger.error('Unrecognized control {0}'.format(control))
+
+        # if fx_focus != None:
+        #     print 'dingding', fx_focus
+        #     self.control_signals['fx_focus'].emit(fx_focus)
+
 
     ##################################################################
     # The following methods are the slots for changes made on the gui
@@ -211,31 +231,31 @@ class Ui(QMainWindow):
     def on_modRadioButton_toggled(self, state):
         logger.debug('Mod switch: {0}'.format(state))
         self.amp.set_control('mod_switch', state)
-        self.amp.set_control('fx_focus', 1)
+        # self.amp.set_control('fx_focus', 1)
 
     @pyqtSlot(int)
     def on_modComboBox_currentIndexChanged(self, value):
         logger.debug('Mod Combo Box: {0}'.format(value))
         self.amp.set_control('mod_type', value)
-        self.amp.set_control('fx_focus', 1)
+        # self.amp.set_control('fx_focus', 1)
 
     @pyqtSlot(int)
     def on_modSegValSlider_valueChanged(self, value):
         logger.debug('Mod SegVal slider: {0}'.format(value))
         self.amp.set_control('mod_segval', value)
-        self.amp.set_control('fx_focus', 1)
+        # self.amp.set_control('fx_focus', 1)
 
     @pyqtSlot(int)
     def on_modLevelSlider_valueChanged(self, value):
         logger.debug('Mod Level slider: {0}'.format(value))
         self.amp.set_control('mod_level', value)
-        self.amp.set_control('fx_focus', 1)
+        # self.amp.set_control('fx_focus', 1)
 
     @pyqtSlot(int)
     def on_modSpeedSlider_valueChanged(self, value):
         logger.debug('Mod Speed slider: {0}'.format(value))
         self.amp.set_control('mod_speed', value)
-        self.amp.set_control('fx_focus', 1)
+        # self.amp.set_control('fx_focus', 1)
 
 
 
@@ -244,57 +264,56 @@ class Ui(QMainWindow):
     def on_delayRadioButton_toggled(self, state):
         logger.debug('Delay switch: {0}'.format(state))
         self.amp.set_control('delay_switch', state)
-        self.amp.set_control('fx_focus', 2)
+        # self.amp.set_control('fx_focus', 2)
 
     @pyqtSlot(int)
     def on_delayComboBox_currentIndexChanged(self, value):
         logger.debug('Delay Combo Box: {0}'.format(value))
         self.amp.set_control('delay_type', value)
-        self.amp.set_control('fx_focus', 2)
+#        self.amp.set_control('fx_focus', 2)
 
     @pyqtSlot(int)
     def on_delayFeedbackSlider_valueChanged(self, value):
         logger.debug('Delay feedback slider: {0}'.format(value))
         self.amp.set_control('delay_feedback', value)
-        self.amp.set_control('fx_focus', 2)
+#        self.amp.set_control('fx_focus', 2)
 
     @pyqtSlot(int)
     def on_delayLevelSlider_valueChanged(self, value):
         logger.debug('Delay Level slider: {0}'.format(value))
         self.amp.set_control('delay_level', value)
-        self.amp.set_control('fx_focus', 2)
+#        self.amp.set_control('fx_focus', 2)
 
     @pyqtSlot(int)
     def on_delayTimeSlider_valueChanged(self, value):
         logger.debug('Delay Time slider: {0}'.format(value))
         self.amp.set_control('delay_time', value)
-        self.amp.set_control('fx_focus', 2)
-
+        # self.amp.set_control('fx_focus', 2)
 
 
     @pyqtSlot(bool)
     def on_reverbRadioButton_toggled(self, state):
         logger.debug('Reverb switch: {0}'.format(state))
         self.amp.set_control('reverb_switch', state)
-        self.amp.set_control('fx_focus', 3)
+        # self.amp.set_control('fx_focus', 3)
 
     @pyqtSlot(int)
     def on_reverbComboBox_currentIndexChanged(self, value):
         logger.debug('Reverb Combo Box: {0}'.format(value))
         self.amp.set_control('reverb_type', value)
-        self.amp.set_control('fx_focus', 3)
+        # self.amp.set_control('fx_focus', 3)
 
     @pyqtSlot(int)
     def on_reverbSizeSlider_valueChanged(self, value):
         logger.debug('Reverb Size slider: {0}'.format(value))
         self.amp.set_control('reverb_size', value)
-        self.amp.set_control('fx_focus', 3)
+        # self.amp.set_control('fx_focus', 3)
 
     @pyqtSlot(int)
     def on_reverbLevelSlider_valueChanged(self, value):
         logger.debug('Reverb Level slider: {0}'.format(value))
         self.amp.set_control('reverb_level', value)
-        self.amp.set_control('fx_focus', 3)
+        # self.amp.set_control('fx_focus', 3)
 
 
 

@@ -476,7 +476,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QTabWidget" name="tabWidget">
+   <widget class="QTabWidget" name="effectsTabWidget">
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -2936,6 +2936,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>MainWindow</sender>
+   <signal>fx_focus_changed_on_amp(int)</signal>
+   <receiver>effectsTabWidget</receiver>
+   <slot>setCurrentIndex(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>399</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>305</x>
+     <y>336</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <signal>voice_changed_on_amp(int)</signal>
@@ -2962,6 +2978,7 @@
   <signal>reverb_size_changed_on_amp(int)</signal>
   <signal>delay_switch_changed_on_amp(bool)</signal>
   <signal>reverb_switch_changed_on_amp(bool)</signal>
+  <signal>fx_focus_changed_on_amp(int)</signal>
   <slot>mod_type_changed(int)</slot>
  </slots>
 </ui>
