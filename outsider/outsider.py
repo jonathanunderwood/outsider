@@ -71,7 +71,10 @@ class Ui(QMainWindow):
             'fx_focus': self.fx_focus_changed_on_amp,
         }
 
-        uic.loadUi('outsider.ui', self)
+        #uic.loadUi('outsider.ui', self)
+        import os
+        print os.path.join(os.path.split(__file__)[0], 'outsider.ui')
+        uic.loadUi(os.path.join(os.path.split(__file__)[0], 'outsider.ui'), self)
 
         self.amp = BlackstarIDAmp()
         self.amp.drain()
