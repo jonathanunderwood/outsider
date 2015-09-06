@@ -128,7 +128,7 @@
             </widget>
            </item>
            <item row="2" column="0" alignment="Qt::AlignHCenter">
-            <widget class="QLabel" name="modSegVallabel">
+            <widget class="QLabel" name="modSegValLabel">
              <property name="text">
               <string>SegVal</string>
              </property>
@@ -421,31 +421,38 @@
     </item>
     <item row="0" column="0" colspan="2">
      <layout class="QGridLayout" name="gridLayout_7">
-      <item row="0" column="2">
-       <widget class="QLCDNumber" name="bassLcdNumber">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
+      <item row="2" column="6" alignment="Qt::AlignHCenter">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>ISF</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="6">
-       <widget class="QRadioButton" name="TVPRadioButton">
-        <property name="text">
-         <string>TVP</string>
+      <item row="1" column="1" alignment="Qt::AlignHCenter">
+       <widget class="QSlider" name="volumeSlider">
+        <property name="maximum">
+         <number>127</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
       <item row="2" column="3" alignment="Qt::AlignHCenter">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Bass</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="4" alignment="Qt::AlignHCenter">
        <widget class="QLabel" name="label_4">
         <property name="text">
          <string>Middle</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
+      <item row="0" column="4">
        <widget class="QLCDNumber" name="middleLcdNumber">
         <property name="maximumSize">
          <size>
@@ -455,37 +462,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1" alignment="Qt::AlignHCenter">
-       <widget class="QSlider" name="gainSlider">
-        <property name="maximum">
-         <number>127</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2" alignment="Qt::AlignHCenter">
-       <widget class="QSlider" name="bassSlider">
-        <property name="maximum">
-         <number>127</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLCDNumber" name="lcdNumber">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
+      <item row="0" column="5">
        <widget class="QLCDNumber" name="trebleLcdNumber">
         <property name="maximumSize">
          <size>
@@ -495,22 +472,79 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="4" alignment="Qt::AlignHCenter">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Treble</string>
+      <item row="1" column="4" alignment="Qt::AlignHCenter">
+       <widget class="QSlider" name="middleSlider">
+        <property name="maximum">
+         <number>127</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
-      <item row="2" column="5" alignment="Qt::AlignHCenter">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>ISF</string>
+      <item row="1" column="3" alignment="Qt::AlignHCenter">
+       <widget class="QSlider" name="bassSlider">
+        <property name="maximum">
+         <number>127</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLCDNumber" name="gainLcdNumber">
+      <item row="1" column="5" alignment="Qt::AlignHCenter">
+       <widget class="QSlider" name="trebleSlider">
+        <property name="maximum">
+         <number>127</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="7" colspan="2" alignment="Qt::AlignTop">
+       <widget class="QComboBox" name="voiceComboBox">
+        <item>
+         <property name="text">
+          <string>Clean Warm</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Clean Bright</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Crunch</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Super Crunch</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>OD1</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>OD2</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="7">
+       <widget class="QRadioButton" name="TVPRadioButton">
+        <property name="text">
+         <string>TVP</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QLCDNumber" name="isfLcdNumber">
         <property name="maximumSize">
          <size>
           <width>16777215</width>
@@ -519,7 +553,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="5" alignment="Qt::AlignHCenter">
+      <item row="1" column="6" alignment="Qt::AlignHCenter">
        <widget class="QSlider" name="isfSlider">
         <property name="maximum">
          <number>127</number>
@@ -529,21 +563,47 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" alignment="Qt::AlignHCenter">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Volume</string>
+      <item row="0" column="1">
+       <widget class="QLCDNumber" name="volumeLcdNumber">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
         </property>
        </widget>
       </item>
-      <item row="2" column="2" alignment="Qt::AlignHCenter">
-       <widget class="QLabel" name="label_3">
+      <item row="2" column="5" alignment="Qt::AlignHCenter">
+       <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Bass</string>
+         <string>Treble</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="7">
+      <item row="0" column="3">
+       <widget class="QLCDNumber" name="bassLcdNumber">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="9">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>13</width>
+          <height>184</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="8">
        <widget class="QComboBox" name="TVPComboBox">
         <property name="currentIndex">
          <number>0</number>
@@ -581,7 +641,7 @@
        </widget>
       </item>
       <item row="1" column="0" alignment="Qt::AlignHCenter">
-       <widget class="QSlider" name="volumeSlider">
+       <widget class="QSlider" name="gainSlider">
         <property name="maximum">
          <number>127</number>
         </property>
@@ -591,14 +651,21 @@
        </widget>
       </item>
       <item row="2" column="1" alignment="Qt::AlignHCenter">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Volume</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" alignment="Qt::AlignHCenter">
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>Gain</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="5">
-       <widget class="QLCDNumber" name="isfLcdNumber">
+      <item row="0" column="0">
+       <widget class="QLCDNumber" name="gainLcdNumber">
         <property name="maximumSize">
          <size>
           <width>16777215</width>
@@ -606,73 +673,6 @@
          </size>
         </property>
        </widget>
-      </item>
-      <item row="1" column="3" alignment="Qt::AlignHCenter">
-       <widget class="QSlider" name="middleSlider">
-        <property name="maximum">
-         <number>127</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4" alignment="Qt::AlignHCenter">
-       <widget class="QSlider" name="trebleSlider">
-        <property name="maximum">
-         <number>127</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="6" colspan="2" alignment="Qt::AlignTop">
-       <widget class="QComboBox" name="voiceComboBox">
-        <item>
-         <property name="text">
-          <string>Clean Warm</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Clean Bright</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Crunch</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Super Crunch</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>OD1</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>OD2</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="1" column="8">
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
       </item>
      </layout>
     </item>
@@ -700,13 +700,24 @@
     <bool>false</bool>
    </attribute>
   </widget>
+  <widget class="QToolBar" name="toolBar_2">
+   <property name="windowTitle">
+    <string>toolBar_2</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
  </widget>
  <resources/>
  <connections>
   <connection>
    <sender>volumeSlider</sender>
    <signal>valueChanged(int)</signal>
-   <receiver>lcdNumber</receiver>
+   <receiver>volumeLcdNumber</receiver>
    <slot>display(int)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -716,54 +727,6 @@
     <hint type="destinationlabel">
      <x>203</x>
      <y>129</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>voice_changed_on_amp(int)</signal>
-   <receiver>voiceComboBox</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>378</x>
-     <y>429</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>298</x>
-     <y>366</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>volume_changed_on_amp(int)</signal>
-   <receiver>volumeSlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>263</x>
-     <y>70</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>210</x>
-     <y>196</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>gain_changed_on_amp(int)</signal>
-   <receiver>gainSlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>386</x>
-     <y>272</y>
     </hint>
    </hints>
   </connection>
@@ -784,22 +747,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>MainWindow</sender>
-   <signal>bass_changed_on_amp(int)</signal>
-   <receiver>bassSlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>336</x>
-     <y>262</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>bassSlider</sender>
    <signal>valueChanged(int)</signal>
    <receiver>bassLcdNumber</receiver>
@@ -812,22 +759,6 @@
     <hint type="destinationlabel">
      <x>336</x>
      <y>209</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>middle_changed_on_amp(int)</signal>
-   <receiver>middleSlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>446</x>
-     <y>422</y>
     </hint>
    </hints>
   </connection>
@@ -848,22 +779,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>MainWindow</sender>
-   <signal>treble_changed_on_amp(int)</signal>
-   <receiver>trebleSlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>116</x>
-     <y>472</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>trebleSlider</sender>
    <signal>valueChanged(int)</signal>
    <receiver>trebleLcdNumber</receiver>
@@ -876,22 +791,6 @@
     <hint type="destinationlabel">
      <x>116</x>
      <y>419</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>isf_changed_on_amp(int)</signal>
-   <receiver>isfSlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>246</x>
-     <y>482</y>
     </hint>
    </hints>
   </connection>
@@ -912,54 +811,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>MainWindow</sender>
-   <signal>tvp_valve_changed_on_amp(int)</signal>
-   <receiver>TVPComboBox</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>550</x>
-     <y>76</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>tvp_switch_changed_on_amp(bool)</signal>
-   <receiver>TVPRadioButton</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>460</x>
-     <y>275</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>tvp_switch_changed_on_amp(bool)</signal>
-   <receiver>TVPComboBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>550</x>
-     <y>76</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>TVPRadioButton</sender>
    <signal>toggled(bool)</signal>
    <receiver>TVPComboBox</receiver>
@@ -976,22 +827,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>MainWindow</sender>
-   <signal>mod_switch_changed_on_amp(bool)</signal>
-   <receiver>modRadioButton</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>212</x>
-     <y>261</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>modRadioButton</sender>
    <signal>toggled(bool)</signal>
    <receiver>modComboBox</receiver>
@@ -1000,22 +835,6 @@
     <hint type="sourcelabel">
      <x>212</x>
      <y>261</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>297</x>
-     <y>262</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>mod_switch_changed_on_amp(bool)</signal>
-   <receiver>modComboBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
     </hint>
     <hint type="destinationlabel">
      <x>297</x>
@@ -1040,38 +859,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>MainWindow</sender>
-   <signal>mod_segval_changed_on_amp(int)</signal>
-   <receiver>modSegValSlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>198</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>mod_type_changed_on_amp(int)</signal>
-   <receiver>modComboBox</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>297</x>
-     <y>262</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>modComboBox</sender>
    <signal>currentIndexChanged(int)</signal>
    <receiver>MainWindow</receiver>
@@ -1084,22 +871,6 @@
     <hint type="destinationlabel">
      <x>399</x>
      <y>299</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>mod_segval_label_update(QString)</signal>
-   <receiver>modSegVallabel</receiver>
-   <slot>setText(QString)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>197</x>
-     <y>420</y>
     </hint>
    </hints>
   </connection>
@@ -1138,7 +909,7 @@
   <connection>
    <sender>modRadioButton</sender>
    <signal>toggled(bool)</signal>
-   <receiver>modSegVallabel</receiver>
+   <receiver>modSegValLabel</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -1148,38 +919,6 @@
     <hint type="destinationlabel">
      <x>197</x>
      <y>420</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>mod_level_changed_on_amp(int)</signal>
-   <receiver>modLevelSlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>278</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>mod_speed_changed_on_amp(int)</signal>
-   <receiver>modSpeedSlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>358</x>
-     <y>368</y>
     </hint>
    </hints>
   </connection>
@@ -1584,150 +1323,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>MainWindow</sender>
-   <signal>delay_feedback_changed_on_amp(int)</signal>
-   <receiver>delayFeedbackSlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>190</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>delay_level_changed_on_amp(int)</signal>
-   <receiver>delayLevelSlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>268</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>delay_time_changed_on_amp(int)</signal>
-   <receiver>delayTimeSlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>348</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>delay_type_changed_on_amp(int)</signal>
-   <receiver>delayComboBox</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>297</x>
-     <y>262</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>reverb_level_changed_on_amp(int)</signal>
-   <receiver>reverbLevelSlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>268</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>reverb_size_changed_on_amp(int)</signal>
-   <receiver>reverbSizeSlider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>190</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>reverb_type_changed_on_amp(int)</signal>
-   <receiver>reverbComboBox</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>297</x>
-     <y>262</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>delay_switch_changed_on_amp(bool)</signal>
-   <receiver>delayRadioButton</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>202</x>
-     <y>261</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>reverb_switch_changed_on_amp(bool)</signal>
-   <receiver>reverbRadioButton</receiver>
-   <slot>setChecked(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>202</x>
-     <y>261</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>delayFeedbackSlider</sender>
    <signal>valueChanged(int)</signal>
    <receiver>delayFeedbackLcdNumber</receiver>
@@ -1809,463 +1404,23 @@
   </connection>
   <connection>
    <sender>MainWindow</sender>
-   <signal>mod_switch_changed_on_amp(bool)</signal>
-   <receiver>modSegValLcdNumber</receiver>
-   <slot>setEnabled(bool)</slot>
+   <signal>mod_segval_label_update(QString)</signal>
+   <receiver>modSegValLabel</receiver>
+   <slot>setText(QString)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
+     <x>285</x>
+     <y>278</y>
     </hint>
     <hint type="destinationlabel">
-     <x>188</x>
-     <y>315</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>mod_switch_changed_on_amp(bool)</signal>
-   <receiver>modLevelLabel</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>267</x>
-     <y>420</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>mod_switch_changed_on_amp(bool)</signal>
-   <receiver>modLevelLcdNumber</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>268</x>
-     <y>315</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>mod_switch_changed_on_amp(bool)</signal>
-   <receiver>modLevelSlider</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>268</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>mod_switch_changed_on_amp(bool)</signal>
-   <receiver>modSegValSlider</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>188</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>mod_switch_changed_on_amp(bool)</signal>
-   <receiver>modSegVallabel</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>188</x>
-     <y>420</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>mod_switch_changed_on_amp(bool)</signal>
-   <receiver>modSpeedLabel</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>347</x>
-     <y>420</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>mod_switch_changed_on_amp(bool)</signal>
-   <receiver>reverbLevelLcdNumber</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>268</x>
-     <y>315</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>mod_switch_changed_on_amp(bool)</signal>
-   <receiver>modSpeedSlider</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>348</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>delay_switch_changed_on_amp(bool)</signal>
-   <receiver>delayComboBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>297</x>
-     <y>262</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>delay_switch_changed_on_amp(bool)</signal>
-   <receiver>delayFeedbackLabel</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>190</x>
-     <y>420</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>delay_switch_changed_on_amp(bool)</signal>
-   <receiver>delayFeedbackLcdNumber</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>190</x>
-     <y>315</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>delay_switch_changed_on_amp(bool)</signal>
-   <receiver>delayFeedbackSlider</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>190</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>delay_switch_changed_on_amp(bool)</signal>
-   <receiver>delayLevelLabel</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>268</x>
-     <y>420</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>delay_switch_changed_on_amp(bool)</signal>
-   <receiver>delayLevelLcdNumber</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>268</x>
-     <y>315</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>delay_switch_changed_on_amp(bool)</signal>
-   <receiver>delayLevelSlider</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>268</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>delay_switch_changed_on_amp(bool)</signal>
-   <receiver>delayTimeLabel</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>348</x>
-     <y>420</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>delay_switch_changed_on_amp(bool)</signal>
-   <receiver>delayTimeLcdNumber</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>348</x>
-     <y>315</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>delay_switch_changed_on_amp(bool)</signal>
-   <receiver>delayTimeSlider</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>348</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>reverb_switch_changed_on_amp(bool)</signal>
-   <receiver>reverbComboBox</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>297</x>
-     <y>262</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>reverb_switch_changed_on_amp(bool)</signal>
-   <receiver>reverbLevelLabel</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>268</x>
-     <y>420</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>reverb_switch_changed_on_amp(bool)</signal>
-   <receiver>reverbLevelLcdNumber</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>268</x>
-     <y>315</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>reverb_switch_changed_on_amp(bool)</signal>
-   <receiver>reverbLevelSlider</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>268</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>reverb_switch_changed_on_amp(bool)</signal>
-   <receiver>reverbSizeLabel</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>189</x>
-     <y>420</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>reverb_switch_changed_on_amp(bool)</signal>
-   <receiver>reverbSizeLcdNumber</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>190</x>
-     <y>315</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>reverb_switch_changed_on_amp(bool)</signal>
-   <receiver>reverbSizeSlider</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>190</x>
-     <y>368</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>MainWindow</sender>
-   <signal>fx_focus_changed_on_amp(int)</signal>
-   <receiver>effectsTabWidget</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>399</x>
-     <y>299</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>305</x>
-     <y>336</y>
+     <x>54</x>
+     <y>480</y>
     </hint>
    </hints>
   </connection>
  </connections>
  <slots>
-  <signal>voice_changed_on_amp(int)</signal>
-  <signal>volume_changed_on_amp(int)</signal>
-  <signal>gain_changed_on_amp(int)</signal>
-  <signal>bass_changed_on_amp(int)</signal>
-  <signal>middle_changed_on_amp(int)</signal>
-  <signal>treble_changed_on_amp(int)</signal>
-  <signal>isf_changed_on_amp(int)</signal>
-  <signal>tvp_valve_changed_on_amp(int)</signal>
-  <signal>tvp_switch_changed_on_amp(bool)</signal>
-  <signal>mod_switch_changed_on_amp(bool)</signal>
-  <signal>mod_segval_changed_on_amp(int)</signal>
-  <signal>mod_type_changed_on_amp(int)</signal>
   <signal>mod_segval_label_update(QString)</signal>
-  <signal>mod_level_changed_on_amp(int)</signal>
-  <signal>mod_speed_changed_on_amp(int)</signal>
-  <signal>delay_level_changed_on_amp(int)</signal>
-  <signal>delay_type_changed_on_amp(int)</signal>
-  <signal>delay_time_changed_on_amp(int)</signal>
-  <signal>delay_feedback_changed_on_amp(int)</signal>
-  <signal>reverb_type_changed_on_amp(int)</signal>
-  <signal>reverb_level_changed_on_amp(int)</signal>
-  <signal>reverb_size_changed_on_amp(int)</signal>
-  <signal>delay_switch_changed_on_amp(bool)</signal>
-  <signal>reverb_switch_changed_on_amp(bool)</signal>
-  <signal>fx_focus_changed_on_amp(int)</signal>
   <slot>mod_type_changed(int)</slot>
  </slots>
 </ui>

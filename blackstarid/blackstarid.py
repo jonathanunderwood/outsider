@@ -449,6 +449,7 @@ class BlackstarIDAmp(object):
 
         logger.debug('Startup packet sent')
 
+
     def get_preset_names(self):
         for i in xrange(1, 128):
             bytes = [0x00] * 64
@@ -524,7 +525,7 @@ class BlackstarIDAmp(object):
                 # corresponds to the ID number of the control plus
                 # 3. Weird, but handy.
                 logger.debug('All controls info packet received\n')
-                settings = {}
+                settings = {'all_settings': True}
                 for control, id in self.controls.iteritems():
                     if control == 'delay_time':
                         settings[control] = (packet[id + 4] * 256) + packet[id + 3]

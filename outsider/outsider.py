@@ -39,52 +39,12 @@ logger.addHandler(__null_handler)
 class Ui(QMainWindow):
     shutdown_threads = pyqtSignal(name='shutdown_threads')
 
-    # These signals will be emitted when we detect a control is
-    # changed from the amplifier rather than from the GUI, and will
-    # allow us to update the GUI accordingly. These signals are bound
-    # in the .ui file, so don't need a connect call to bind them.
-    voice_changed_on_amp = pyqtSignal(int)
-    gain_changed_on_amp = pyqtSignal(int)
-    volume_changed_on_amp = pyqtSignal(int)
-    bass_changed_on_amp = pyqtSignal(int)
-    middle_changed_on_amp = pyqtSignal(int)
-    treble_changed_on_amp = pyqtSignal(int)
-    isf_changed_on_amp = pyqtSignal(int)
-    tvp_switch_changed_on_amp = pyqtSignal(bool)
-    tvp_valve_changed_on_amp = pyqtSignal(int)
-    mod_switch_changed_on_amp = pyqtSignal(bool)
-    delay_switch_changed_on_amp = pyqtSignal(bool)
-    reverb_switch_changed_on_amp = pyqtSignal(bool)
-    mod_type_changed_on_amp = pyqtSignal(int)
-    mod_segval_changed_on_amp = pyqtSignal(int)
-    mod_level_changed_on_amp = pyqtSignal(int)
-    mod_speed_changed_on_amp = pyqtSignal(int)
-    delay_type_changed_on_amp = pyqtSignal(int)
-    delay_feedback_changed_on_amp = pyqtSignal(int)
-    delay_level_changed_on_amp = pyqtSignal(int)
-    delay_time_changed_on_amp = pyqtSignal(int)
-    reverb_type_changed_on_amp = pyqtSignal(int)
-    reverb_size_changed_on_amp = pyqtSignal(int)
-    reverb_level_changed_on_amp = pyqtSignal(int)
-    # Annoyingly, the amp doesn't emit packets when the effects focus
-    # is changed - however the packet containing all settings does
-    # contain a value relating to the current effect focus. We'll
-    # define a call back and connect it up anyway, in case this is
-    # fixed in a a future firmware.
-    fx_focus_changed_on_amp = pyqtSignal(int)
-
     def __init__(self):
         super(Ui, self).__init__()
 
-        uic.loadUi('outsider.ui', self)
-
-        # Dictionary of signals to emit in response to changes to
-        # controls made directly on the amplifier. This dict has to be
-        # created here *after* the UI is created and the signals
-        # connected - creating this dict as a class attribute would
-        # mean all the values in the dict correspond to unbound
-        # signals.
-        self.control_signals = {
+        # Dictionary of methods to call in response to changes to
+        # controls made directly on the amplifier.
+        self.response_funcs = {
             'voice': self.voice_changed_on_amp,
             'gain': self.gain_changed_on_amp,
             'volume': self.volume_changed_on_amp,
@@ -111,9 +71,7 @@ class Ui(QMainWindow):
             'fx_focus': self.fx_focus_changed_on_amp,
         }
 
-        # This ensures the modulation segval slider label is in sync
-        # with the selected mod type
-        self.mod_type_changed_on_amp.connect(self.mod_type_changed)
+        uic.loadUi('outsider.ui', self)
 
         self.amp = BlackstarIDAmp()
         self.amp.drain()
@@ -121,8 +79,6 @@ class Ui(QMainWindow):
         self.show()
         self._start_amp_watcher_thread()
         self.amp.startup()
-
-
 
     def _start_amp_watcher_thread(self):
         # Set up thread to watch for manual changes of the amp
@@ -154,26 +110,193 @@ class Ui(QMainWindow):
         # This slot is called when a control has been changed on the
         # amp. In response we emit all signals corresponding to the
         # keys in the controls dict
-        if 'fx_focus' in settings:
-            # We want to set this last of all, because other setting
-            # slots can shift the fx_focus
-            fx_focus = settings.pop('fx_focus')
-            print 'ding', fx_focus
-        else:
-            fx_focus = None
+        # if 'fx_focus' in settings:
+        #     # We want to set this last of all, because other setting
+        #     # slots can shift the fx_focus
+        #     fx_focus = settings.pop('fx_focus')
+        # else:
+        #     fx_focus = None
 
         for control, value in settings.iteritems():
             logger.debug('Data received:: control: {0} value: {1}'.format(control, value))
-            if control == 'fx_focus':
-                value = value - 1 # Tabs start at index 0
             try:
-                self.control_signals[control].emit(value)
+                self.response_funcs[control](value)
             except KeyError:
                 logger.error('Unrecognized control {0}'.format(control))
 
-        if fx_focus != None:
-            print 'dingding', fx_focus
-            self.control_signals['fx_focus'].emit(fx_focus-1)
+        # if fx_focus != None:
+        #     self.control_signals['fx_focus'].emit(fx_focus-1)
+
+
+
+    ######################################################################
+    # The following methods are called when data is received from the amp
+    ######################################################################
+    def voice_changed_on_amp(self, value):
+        self.voiceComboBox.blockSignals(True)
+        self.voiceComboBox.setCurrentIndex(value)
+        self.voiceComboBox.blockSignals(False)
+
+    def gain_changed_on_amp(self, value):
+        self.gainSlider.blockSignals(True)
+        self.gainSlider.setValue(value)
+        self.gainLcdNumber.display(value)
+        self.gainSlider.blockSignals(False)
+
+    def volume_changed_on_amp(self, value):
+        self.volumeSlider.blockSignals(True)
+        self.volumeSlider.setValue(value)
+        self.volumeLcdNumber.display(value)
+        self.volumeSlider.blockSignals(False)
+
+    def bass_changed_on_amp(self, value):
+        self.bassSlider.blockSignals(True)
+        self.bassSlider.setValue(value)
+        self.bassLcdNumber.display(value)
+        self.bassSlider.blockSignals(False)
+
+    def middle_changed_on_amp(self, value):
+        self.middleSlider.blockSignals(True)
+        self.middleSlider.setValue(value)
+        self.middleLcdNumber.display(value)
+        self.middleSlider.blockSignals(False)
+
+    def treble_changed_on_amp(self, value):
+        self.trebleSlider.blockSignals(True)
+        self.trebleSlider.setValue(value)
+        self.trebleLcdNumber.display(value)
+        self.trebleSlider.blockSignals(False)
+
+    def isf_changed_on_amp(self, value):
+        self.isfSlider.blockSignals(True)
+        self.isfSlider.setValue(value)
+        self.isfLcdNumber.display(value)
+        self.isfSlider.blockSignals(False)
+
+    def tvp_switch_changed_on_amp(self, value):
+        value = bool(value)
+        self.TVPRadioButton.blockSignals(True)
+        self.TVPRadioButton.setChecked(value)
+        self.TVPComboBox.setEnabled(value)
+        self.TVPRadioButton.blockSignals(False)
+
+    def tvp_valve_changed_on_amp(self, value):
+        self.TVPComboBox.blockSignals(True)
+        self.TVPComboBox.setCurrentIndex(value)
+        self.TVPComboBox.blockSignals(False)
+        
+    def mod_switch_changed_on_amp(self, value):
+        value = bool(value)
+        self.modRadioButton.blockSignals(True)
+        self.modRadioButton.setChecked(value)
+        self.modComboBox.setEnabled(value)
+        self.modSegValSlider.setEnabled(value)
+        self.modSegValLabel.setEnabled(value)
+        self.modSegValLcdNumber.setEnabled(value)
+        self.modSpeedSlider.setEnabled(value)
+        self.modSpeedLabel.setEnabled(value)
+        self.modSpeedLcdNumber.setEnabled(value)
+        self.modLevelSlider.setEnabled(value)
+        self.modLevelLabel.setEnabled(value)
+        self.modLevelLcdNumber.setEnabled(value)
+        self.modRadioButton.blockSignals(False)
+        # if value == True:
+        #     self.fx_focus_changed_on_amp(1)
+
+    def delay_switch_changed_on_amp(self, value):
+        value = bool(value)
+        self.delayRadioButton.blockSignals(True)
+        self.delayRadioButton.setChecked(value)
+        self.delayComboBox.setEnabled(value)
+        self.delayFeedbackSlider.setEnabled(value)
+        self.delayFeedbackLabel.setEnabled(value)
+        self.delayFeedbackLcdNumber.setEnabled(value)
+        self.delayTimeSlider.setEnabled(value)
+        self.delayTimeLabel.setEnabled(value)
+        self.delayTimeLcdNumber.setEnabled(value)
+        self.delayLevelSlider.setEnabled(value)
+        self.delayLevelLabel.setEnabled(value)
+        self.delayLevelLcdNumber.setEnabled(value)
+        self.delayRadioButton.blockSignals(False)
+        # if value == True:
+        #     self.fx_focus_changed_on_amp(2)
+
+    def reverb_switch_changed_on_amp(self, value):
+        value = bool(value)
+        self.reverbRadioButton.blockSignals(True)
+        self.reverbRadioButton.setChecked(value)
+        self.reverbComboBox.setEnabled(value)
+        self.reverbSizeSlider.setEnabled(value)
+        self.reverbSizeLabel.setEnabled(value)
+        self.reverbSizeLcdNumber.setEnabled(value)
+        self.reverbLevelSlider.setEnabled(value)
+        self.reverbLevelLabel.setEnabled(value)
+        self.reverbLevelLcdNumber.setEnabled(value)
+        self.reverbRadioButton.blockSignals(False)
+        # if value == True:
+        #     self.fx_focus_changed_on_amp(3)
+
+    def mod_type_changed_on_amp(self, value):
+        self.modComboBox.blockSignals(True)
+        self.modComboBox.setCurrentIndex(value)
+        self.modComboBox.blockSignals(False)
+        self.mod_type_changed(value)
+
+    def mod_segval_changed_on_amp(self, value):
+        self.modSegValSlider.blockSignals(True)
+        self.modSegValSlider.setValue(value)
+        self.modSegValSlider.blockSignals(False)
+
+    def mod_level_changed_on_amp(self, value):
+        self.modLevelSlider.blockSignals(True)
+        self.modLevelSlider.setValue(value)
+        self.modLevelSlider.blockSignals(False)
+
+    def mod_speed_changed_on_amp(self, value):
+        self.modSpeedSlider.blockSignals(True)
+        self.modSpeedSlider.setValue(value)
+        self.modSpeedSlider.blockSignals(False)
+
+    def delay_type_changed_on_amp(self, value):
+        self.delayComboBox.blockSignals(True)
+        self.delayComboBox.setCurrentIndex(value)
+        self.delayComboBox.blockSignals(False)
+
+    def delay_feedback_changed_on_amp(self, value):
+        self.delayFeedbackSlider.blockSignals(True)
+        self.delayFeedbackSlider.setValue(value)
+        self.delayFeedbackSlider.blockSignals(False)
+
+    def delay_level_changed_on_amp(self, value):
+        self.delayLevelSlider.blockSignals(True)
+        self.delayLevelSlider.setValue(value)
+        self.delayLevelSlider.blockSignals(False)
+
+    def delay_time_changed_on_amp(self, value):
+        self.delayTimeSlider.blockSignals(True)
+        self.delayTimeSlider.setValue(value)
+        self.delayTimeSlider.blockSignals(False)
+        
+    def reverb_type_changed_on_amp(self, value):
+        self.reverbComboBox.blockSignals(True)
+        self.reverbComboBox.setCurrentIndex(value)
+        self.reverbComboBox.blockSignals(False)
+
+    def reverb_size_changed_on_amp(self, value):
+        self.reverbSizeSlider.blockSignals(True)
+        self.reverbSizeSlider.setValue(value)
+        self.reverbSizeSlider.blockSignals(False)
+
+    def reverb_level_changed_on_amp(self, value):
+        self.reverbLevelSlider.blockSignals(True)
+        self.reverbLevelSlider.setValue(value)
+        self.reverbLevelSlider.blockSignals(False)
+
+    def fx_focus_changed_on_amp(self, value):
+        print '>>>>>>>>>>>><<<<<<<<<<<', value
+        self.effectsTabWidget.blockSignals(True)
+        self.effectsTabWidget.setCurrentIndex(value - 1)
+        self.effectsTabWidget.blockSignals(False)
 
 
     ##################################################################
@@ -198,8 +321,8 @@ class Ui(QMainWindow):
     def on_middleSlider_valueChanged(self, value):
         logger.debug('Middle slider: {0}'.format(value))
         self.amp.set_control('middle', value)
-    @pyqtSlot(int)
 
+    @pyqtSlot(int)
     def on_trebleSlider_valueChanged(self, value):
         logger.debug('Treble slider: {0}'.format(value))
         self.amp.set_control('treble', value)
@@ -247,28 +370,21 @@ class Ui(QMainWindow):
     def on_modComboBox_currentIndexChanged(self, value):
         logger.debug('Mod Combo Box: {0}'.format(value))
         self.amp.set_control('mod_type', value)
-        #self.amp.set_control('fx_focus', 1)
 
     @pyqtSlot(int)
     def on_modSegValSlider_valueChanged(self, value):
         logger.debug('Mod SegVal slider: {0}'.format(value))
         self.amp.set_control('mod_segval', value)
-        #self.amp.set_control('fx_focus', 1)
 
     @pyqtSlot(int)
     def on_modLevelSlider_valueChanged(self, value):
         logger.debug('Mod Level slider: {0}'.format(value))
         self.amp.set_control('mod_level', value)
-        # self.amp.set_control('fx_focus', 1)
 
     @pyqtSlot(int)
     def on_modSpeedSlider_valueChanged(self, value):
         logger.debug('Mod Speed slider: {0}'.format(value))
         self.amp.set_control('mod_speed', value)
-        # self.amp.set_control('fx_focus', 1)
-
-
-
 
     @pyqtSlot(bool)
     def on_delayRadioButton_toggled(self, state):
@@ -281,26 +397,21 @@ class Ui(QMainWindow):
     def on_delayComboBox_currentIndexChanged(self, value):
         logger.debug('Delay Combo Box: {0}'.format(value))
         self.amp.set_control('delay_type', value)
-#        self.amp.set_control('fx_focus', 2)
 
     @pyqtSlot(int)
     def on_delayFeedbackSlider_valueChanged(self, value):
         logger.debug('Delay feedback slider: {0}'.format(value))
         self.amp.set_control('delay_feedback', value)
-#        self.amp.set_control('fx_focus', 2)
 
     @pyqtSlot(int)
     def on_delayLevelSlider_valueChanged(self, value):
         logger.debug('Delay Level slider: {0}'.format(value))
         self.amp.set_control('delay_level', value)
-#        self.amp.set_control('fx_focus', 2)
 
     @pyqtSlot(int)
     def on_delayTimeSlider_valueChanged(self, value):
         logger.debug('Delay Time slider: {0}'.format(value))
         self.amp.set_control('delay_time', value)
-        # self.amp.set_control('fx_focus', 2)
-
 
     @pyqtSlot(bool)
     def on_reverbRadioButton_toggled(self, state):
@@ -313,7 +424,6 @@ class Ui(QMainWindow):
     def on_reverbComboBox_currentIndexChanged(self, value):
         logger.debug('Reverb Combo Box: {0}'.format(value))
         self.amp.set_control('reverb_type', value)
-        # self.amp.set_control('fx_focus', 3)
 
     @pyqtSlot(int)
     def on_reverbSizeSlider_valueChanged(self, value):
@@ -325,16 +435,13 @@ class Ui(QMainWindow):
     def on_reverbLevelSlider_valueChanged(self, value):
         logger.debug('Reverb Level slider: {0}'.format(value))
         self.amp.set_control('reverb_level', value)
-        # self.amp.set_control('fx_focus', 3)
 
-
-
-
-
-    ######
-    # When the modulation type is changed, we want to change the
-    # labels associated with some of the controls, so these slots ar
-    # used in that process.
+    # When the modulation type is changed, we want to change the label
+    # associated with the segment value control. So, we need to define
+    # a slot to trigger when the modulation type is changed, and a
+    # signal to raise to communicate back to the UI what the label
+    # should be changed to. The signal has argument type str, which is
+    # automatically converted to type QString.
     mod_segval_label_update = pyqtSignal(str)
 
     @pyqtSlot(int)
@@ -348,6 +455,8 @@ class Ui(QMainWindow):
         elif value == 3:
             self.mod_segval_label_update.emit('FreqMod')
             
+
+
 class AmpControlWatcher(QObject):
     have_data = pyqtSignal(dict, name='have_data')
     shutdown = False
@@ -380,6 +489,7 @@ class AmpControlWatcher(QObject):
                 self.have_data.emit(settings)
             except NoDataAvailable:
                 logger.debug('No changes of amp controls reported')
+                # self.amp.startup()
                 continue
 
         logger.debug('AmpWatcher watching loop exited')
