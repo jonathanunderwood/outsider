@@ -293,11 +293,11 @@ class Ui(QMainWindow):
         self.reverbLevelSlider.blockSignals(False)
 
     def fx_focus_changed_on_amp(self, value):
-        print '>>>>>>>>>>>><<<<<<<<<<<', value
-        self.effectsTabWidget.blockSignals(True)
-        self.effectsTabWidget.setCurrentIndex(value - 1)
-        self.effectsTabWidget.blockSignals(False)
-
+        # print '>>>>>>>>>>>><<<<<<<<<<<', value
+        # self.effectsTabWidget.blockSignals(True)
+        # self.effectsTabWidget.setCurrentIndex(value - 1)
+        # self.effectsTabWidget.blockSignals(False)
+        pass
 
     ##################################################################
     # The following methods are the slots for changes made on the gui
@@ -350,21 +350,21 @@ class Ui(QMainWindow):
         logger.debug('Voice selection: {0}'.format(idx))
         self.amp.set_control('voice', idx)
 
-    @pyqtSlot(int)
-    def on_effectsTabWidget_currentChanged(self, idx):
-        logger.debug('Effects tab selection: {0}'.format(idx))
-        if (idx == 0 and self.modRadioButton.isChecked()) or \
-           (idx == 1 and self.delayRadioButton.isChecked()) or \
-           (idx == 2 and self.reverbRadioButton.isChecked()):
-            self.amp.set_control('fx_focus', idx + 1)
+    # @pyqtSlot(int)
+    # def on_effectsTabWidget_currentChanged(self, idx):
+    #     logger.debug('Effects tab selection: {0}'.format(idx))
+    #     if (idx == 0 and self.modRadioButton.isChecked()) or \
+    #        (idx == 1 and self.delayRadioButton.isChecked()) or \
+    #        (idx == 2 and self.reverbRadioButton.isChecked()):
+    #         self.amp.set_control('fx_focus', idx + 1)
 
             
     @pyqtSlot(bool)
     def on_modRadioButton_toggled(self, state):
         logger.debug('Mod switch: {0}'.format(state))
         self.amp.set_control('mod_switch', state)
-        if self.effectsTabWidget.currentIndex() == 0:
-            self.amp.set_control('fx_focus', 1)
+        # if self.effectsTabWidget.currentIndex() == 0:
+        #     self.amp.set_control('fx_focus', 1)
 
     @pyqtSlot(int)
     def on_modComboBox_currentIndexChanged(self, value):
@@ -390,8 +390,8 @@ class Ui(QMainWindow):
     def on_delayRadioButton_toggled(self, state):
         logger.debug('Delay switch: {0}'.format(state))
         self.amp.set_control('delay_switch', state)
-        if self.effectsTabWidget.currentIndex() == 1:
-            self.amp.set_control('fx_focus', 2)
+        # if self.effectsTabWidget.currentIndex() == 1:
+        #     self.amp.set_control('fx_focus', 2)
 
     @pyqtSlot(int)
     def on_delayComboBox_currentIndexChanged(self, value):
@@ -417,8 +417,8 @@ class Ui(QMainWindow):
     def on_reverbRadioButton_toggled(self, state):
         logger.debug('Reverb switch: {0}'.format(state))
         self.amp.set_control('reverb_switch', state)
-        if self.effectsTabWidget.currentIndex() == 2:
-            self.amp.set_control('fx_focus', 3)
+        # if self.effectsTabWidget.currentIndex() == 2:
+        #     self.amp.set_control('fx_focus', 3)
 
     @pyqtSlot(int)
     def on_reverbComboBox_currentIndexChanged(self, value):
