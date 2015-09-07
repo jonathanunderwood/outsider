@@ -329,7 +329,6 @@ class BlackstarIDAmp(object):
 
         return string[0:-1] # remove last \n
 
-
     def set_control(self, control, value):
         try:
             ctrl_byte = self.controls[control]
@@ -360,68 +359,6 @@ class BlackstarIDAmp(object):
 
         return ret
 
-    def query_all_controls(self):
-        '''Sends a packets to query the state of all controls, but doesn't
-        deal with any response.'''
-        bytes = [0x00] * 64
-
-#        bytes[0:4] = [0x02, 0x06, 0x00, 0x03]
-        bytes[0:8] = [0x81, 0x00, 0x00, 0x04, 0x03,0x06, 0x02, 0x7a]
-
-        #return self._send_bytes(bytes, 0x01)
-        self._send_bytes(bytes, 0x01)
-        packet = self.device.read(0x81, 64)
-        if packet[0] is 0x03:
-            logger.debug('Response packet to query\n' + self._format_data(packet))
-        # for control in self.controls.keys():
-        #     self.query_control(control)
-
-    def query_control(self, control):
-        '''Sends a packet to query the state of a control, but doesn't
-        deal with any response.'''
-
-        logger.debug('querying {0}'.format(control))
-
-        try:
-            ctrl_byte = self.controls[control]
-        except KeyError:
-            msg = 'Control key {0} not a valid identifier'.format(control)
-            logger.error(msg)
-            raise ValueError(msg)
-
-        bytes = [0x00] * 64
-
-        bytes[0:2] = [0x03, ctrl_byte]
-
-        return self._send_bytes(bytes, 0x01)
-
-    def set_tvp(self, state):
-        ''' Turn TVP on or off depending on the state argument.
-
-        Arguments
-        =========
-        state: 'on', 'On', 'ON', True, or 1 to turn on TVP
-               'off', 'Off', 'OFF', False, or 0 to turn off TVP
-        '''
-        
-        if self.connected is False:
-            raise NotConnectedError
-
-        bytes = [0x00] * 64
-        
-        bytes[0:4] = [0x03, 0x0e, 0x00, 0x01]
-        
-        if state in ['on', 'On', 'ON', True, '1']:
-            bytes[4] = 0x01 # on
-        elif state in ['off', 'Off', 'OFF', False, '0']:
-            bytes[4] = 0x00 # off (noop)
-        else:
-            raise ValueError('Unrecognized value for state argument: {0}'.format(state))
-        
-        self._send_bytes(bytes, 0x01)
-        #self.device.read(0x01, 64)
-
-
     def startup(self):
         '''This method sends a packet to the amplifier which results in a
         reply of 3 packets. For Insider this is the first packet
@@ -448,7 +385,6 @@ class BlackstarIDAmp(object):
         self._send_bytes(bytes, 0x01)
 
         logger.debug('Startup packet sent')
-
 
     def get_preset_names(self):
         for i in xrange(1, 128):
