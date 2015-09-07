@@ -556,15 +556,16 @@ class BlackstarIDAmp(object):
                 return
 
     def get_preset_settings(self, preset):
-            bytes = [0x00] * 64
+        # This is an unfinished test function, will be removed.
+        bytes = [0x00] * 64
         
-            bytes[0:4] = [0x02, 0x05, preset, 0x00]
+        bytes[0:4] = [0x02, 0x05, preset, 0x00]
         
-            self._send_bytes(bytes, 0x01)
-        
-            ret = self.device.read(0x81, 64)
-            logger.debug('Preset settings for preset {0}\n'.format(preset)
-                         + self._format_data(ret))
+        self._send_bytes(bytes, 0x01)
+
+        ret = self.device.read(0x81, 64)
+        logger.debug('Preset settings for preset {0}\n'.format(preset)
+                     + self._format_data(ret))
 
 if __name__ == '__main__':
     import logging
