@@ -387,6 +387,13 @@ class BlackstarIDAmp(object):
         logger.debug('Startup packet sent')
 
     def get_preset_names(self):
+        '''Returns a list of strings, each of which is a preset name.  Note
+        that this method interprets response packets itself, and does
+        not rely on read_data_packet. This may change in the future,
+        and this function may simply send the request packet. The
+        design is in process.
+
+        '''
         names = []
         for i in xrange(1, 128):
             bytes = [0x00] * 64
