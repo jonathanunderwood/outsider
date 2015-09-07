@@ -387,6 +387,7 @@ class BlackstarIDAmp(object):
         logger.debug('Startup packet sent')
 
     def get_preset_names(self):
+        names = []
         for i in xrange(1, 128):
             bytes = [0x00] * 64
         
@@ -395,12 +396,12 @@ class BlackstarIDAmp(object):
             self._send_bytes(bytes, 0x01)
         
             ret = self.device.read(0x81, 64)
-            #logger.debug('Response packet 6\n' + self._format_data(ret))
-            #namel = ret[4:25] #21 characters max
+
             namel = filter(lambda n: n>0, ret[4:25])
             namec = [str(unichr(i)) for i in namel]
-            print ''.join(namec)
-            #print [str(unichr(i)) for i in filter(lambda n: n>0, ret[4:25])]
+            names += [''.join(namec)]
+
+        return names
 
     def read_data_packet(self):
 
