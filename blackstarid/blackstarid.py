@@ -404,9 +404,19 @@ class BlackstarIDAmp(object):
         return names
 
     def read_data_packet(self):
-
         '''Attempts to read a data packet from the amplifier. If no data is
         available a usb.core.USBError exception will be raised.
+
+        This returns a dictionary of values for the various amp
+        settings, and will return info from a single packet. The
+        possible dictionary keys are the same as for the class
+        attribute 'controls' dictionary and should be
+        self-explanatory.
+
+        At present this function also deals with the 3 response
+        packets from the initialization packet that is sent to the
+        amplifier, but this may change in the future.
+
         '''
         try:
             packet = self.device.read(0x81, 64)
