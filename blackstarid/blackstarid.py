@@ -544,7 +544,9 @@ class BlackstarIDAmp(object):
                 pass
 
     def drain(self):
-        '''Read data until none is and the return. Packets are discarded.
+        '''Read data until no more is available and then return. Packets are
+        discarded.
+
         '''
         while True:
             try:
