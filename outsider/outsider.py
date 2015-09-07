@@ -79,10 +79,10 @@ class Ui(QMainWindow):
         self.amp.drain()
 
         self.show()
-        self._start_amp_watcher_thread()
+        self.start_amp_watcher_thread()
         self.amp.startup()
 
-    def _start_amp_watcher_thread(self):
+    def start_amp_watcher_thread(self):
         # Set up thread to watch for manual changes of the amp
         # controls at the amp (rather than gui) so we can update the
         # gui controls as needed. The way this is done is inspired
