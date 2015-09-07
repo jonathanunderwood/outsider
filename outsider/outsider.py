@@ -91,7 +91,7 @@ class Ui(QMainWindow):
         # https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
         self.thread = QThread()
         self.watcher = AmpControlWatcher(self.amp)
-        self.watcher.have_data.connect(self._new_data_from_amp)
+        self.watcher.have_data.connect(self.new_data_from_amp)
         self.shutdown_threads.connect(self.watcher.stop_watching)
         self.watcher.moveToThread(self.thread)
         self.thread.started.connect(self.watcher.work)
@@ -108,7 +108,7 @@ class Ui(QMainWindow):
         logger.debug('Exiting')
 
     @pyqtSlot(dict)
-    def _new_data_from_amp(self, settings):
+    def new_data_from_amp(self, settings):
         for control, value in settings.iteritems():
             logger.debug('Data received:: control: {0} value: {1}'.format(control, value))
             try:
