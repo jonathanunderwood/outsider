@@ -531,7 +531,11 @@ class BlackstarIDAmp(object):
         else:
             return settings
 
-    def poll(self):
+    def poll_and_log(self):
+        '''Test function which continuously queries the amp for data and
+        logs the returned packets at the debug level.
+
+        '''
         while True:
             try:
                 ret = self.device.read(0x81, 64)
