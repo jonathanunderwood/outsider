@@ -252,7 +252,11 @@ class BlackstarIDAmp(object):
 
         self.connected = True
         self.device = dev
-        
+
+    def __del__(self):
+        if self.connected:
+            self.disconnect()
+
     def disconnect(self):
         if self.connected is False:
             raise NotConnectedError
