@@ -22,6 +22,7 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QApplication
 from blackstarid import BlackstarIDAmp, NoDataAvailable
 import logging
+import os
 
 # Set up logging and create a null handler in case the application doesn't
 # provide a log handler
@@ -71,8 +72,6 @@ class Ui(QMainWindow):
             'fx_focus': self.fx_focus_changed_on_amp,
         }
 
-        #uic.loadUi('outsider.ui', self)
-        import os
         print os.path.join(os.path.split(__file__)[0], 'outsider.ui')
         uic.loadUi(os.path.join(os.path.split(__file__)[0], 'outsider.ui'), self)
 
@@ -110,26 +109,12 @@ class Ui(QMainWindow):
 
     @pyqtSlot(dict)
     def _new_data_from_amp(self, settings):
-        # This slot is called when a control has been changed on the
-        # amp. In response we emit all signals corresponding to the
-        # keys in the controls dict
-        # if 'fx_focus' in settings:
-        #     # We want to set this last of all, because other setting
-        #     # slots can shift the fx_focus
-        #     fx_focus = settings.pop('fx_focus')
-        # else:
-        #     fx_focus = None
-
         for control, value in settings.iteritems():
             logger.debug('Data received:: control: {0} value: {1}'.format(control, value))
             try:
                 self.response_funcs[control](value)
             except KeyError:
                 logger.error('Unrecognized control {0}'.format(control))
-
-        # if fx_focus != None:
-        #     self.control_signals['fx_focus'].emit(fx_focus-1)
-
 
 
     ######################################################################
@@ -203,8 +188,6 @@ class Ui(QMainWindow):
         self.modLevelLabel.setEnabled(value)
         self.modLevelLcdNumber.setEnabled(value)
         self.modRadioButton.blockSignals(False)
-        # if value == True:
-        #     self.fx_focus_changed_on_amp(1)
 
     def delay_switch_changed_on_amp(self, value):
         value = bool(value)
@@ -221,8 +204,12 @@ class Ui(QMainWindow):
         self.delayLevelLabel.setEnabled(value)
         self.delayLevelLcdNumber.setEnabled(value)
         self.delayRadioButton.blockSignals(False)
-        # if value == True:
-        #     self.fx_focus_changed_on_amp(2)
+        if value == True:
+            self.amp.set_control('fx_focus', 2)
+        elif self.reverbRadioButton.isChecked():
+            self.amp.set_control('fx_focus', 1)
+        elif self.modRadioButton.isChecked():
+            self.amp.set_control('fx_focus', 2)
 
     def reverb_switch_changed_on_amp(self, value):
         value = bool(value)
@@ -236,8 +223,12 @@ class Ui(QMainWindow):
         self.reverbLevelLabel.setEnabled(value)
         self.reverbLevelLcdNumber.setEnabled(value)
         self.reverbRadioButton.blockSignals(False)
-        # if value == True:
-        #     self.fx_focus_changed_on_amp(3)
+        if value == True:
+            self.fx_focus_changed_on_amp(3)
+        elif self.modRadioButton.isChecked():
+            self.fx_focus_changed_on_amp(1)
+        elif self.delayRadioButton.isChecked():
+            self.fx_focus_changed_on_amp(2)
 
     def mod_type_changed_on_amp(self, value):
         self.modComboBox.blockSignals(True)
@@ -353,91 +344,104 @@ class Ui(QMainWindow):
         logger.debug('Voice selection: {0}'.format(idx))
         self.amp.set_control('voice', idx)
 
-    # @pyqtSlot(int)
-    # def on_effectsTabWidget_currentChanged(self, idx):
-    #     logger.debug('Effects tab selection: {0}'.format(idx))
-    #     if (idx == 0 and self.modRadioButton.isChecked()) or \
-    #        (idx == 1 and self.delayRadioButton.isChecked()) or \
-    #        (idx == 2 and self.reverbRadioButton.isChecked()):
-    #         self.amp.set_control('fx_focus', idx + 1)
-
-            
     @pyqtSlot(bool)
     def on_modRadioButton_toggled(self, state):
         logger.debug('Mod switch: {0}'.format(state))
         self.amp.set_control('mod_switch', state)
-        # if self.effectsTabWidget.currentIndex() == 0:
-        #     self.amp.set_control('fx_focus', 1)
+        if state == 1:
+            self.amp.set_control('fx_focus', 1)
+        elif self.delayRadioButton.isChecked():
+            self.amp.set_control('fx_focus', 2)
+        elif self.reverbRadioButton.isChecked():
+            self.amp.set_control('fx_focus', 3)
 
     @pyqtSlot(int)
     def on_modComboBox_currentIndexChanged(self, value):
         logger.debug('Mod Combo Box: {0}'.format(value))
         self.amp.set_control('mod_type', value)
+        self.amp.set_control('fx_focus', 1)
 
     @pyqtSlot(int)
     def on_modSegValSlider_valueChanged(self, value):
         logger.debug('Mod SegVal slider: {0}'.format(value))
         self.amp.set_control('mod_segval', value)
+        self.amp.set_control('fx_focus', 1)
 
     @pyqtSlot(int)
     def on_modLevelSlider_valueChanged(self, value):
         logger.debug('Mod Level slider: {0}'.format(value))
         self.amp.set_control('mod_level', value)
+        self.amp.set_control('fx_focus', 1)
 
     @pyqtSlot(int)
     def on_modSpeedSlider_valueChanged(self, value):
         logger.debug('Mod Speed slider: {0}'.format(value))
         self.amp.set_control('mod_speed', value)
+        self.amp.set_control('fx_focus', 1)
 
     @pyqtSlot(bool)
     def on_delayRadioButton_toggled(self, state):
         logger.debug('Delay switch: {0}'.format(state))
         self.amp.set_control('delay_switch', state)
-        # if self.effectsTabWidget.currentIndex() == 1:
-        #     self.amp.set_control('fx_focus', 2)
+        if state == 1:
+            self.amp.set_control('fx_focus', 2)
+        elif self.reverbRadioButton.isChecked():
+            self.amp.set_control('fx_focus', 3)
+        elif self.modRadioButton.isChecked():
+            self.amp.set_control('fx_focus', 1)
 
     @pyqtSlot(int)
     def on_delayComboBox_currentIndexChanged(self, value):
         logger.debug('Delay Combo Box: {0}'.format(value))
         self.amp.set_control('delay_type', value)
+        self.amp.set_control('fx_focus', 2)
 
     @pyqtSlot(int)
     def on_delayFeedbackSlider_valueChanged(self, value):
         logger.debug('Delay feedback slider: {0}'.format(value))
         self.amp.set_control('delay_feedback', value)
+        self.amp.set_control('fx_focus', 2)
 
     @pyqtSlot(int)
     def on_delayLevelSlider_valueChanged(self, value):
         logger.debug('Delay Level slider: {0}'.format(value))
         self.amp.set_control('delay_level', value)
+        self.amp.set_control('fx_focus', 2)
 
     @pyqtSlot(int)
     def on_delayTimeSlider_valueChanged(self, value):
         logger.debug('Delay Time slider: {0}'.format(value))
         self.amp.set_control('delay_time', value)
+        self.amp.set_control('fx_focus', 2)
 
     @pyqtSlot(bool)
     def on_reverbRadioButton_toggled(self, state):
         logger.debug('Reverb switch: {0}'.format(state))
         self.amp.set_control('reverb_switch', state)
-        # if self.effectsTabWidget.currentIndex() == 2:
-        #     self.amp.set_control('fx_focus', 3)
+        if state == 1:
+            self.amp.set_control('fx_focus', 3)
+        elif self.modRadioButton.isChecked():
+            self.amp.set_control('fx_focus', 1)
+        elif self.delayRadioButton.isChecked():
+            self.amp.set_control('fx_focus', 2)
 
     @pyqtSlot(int)
     def on_reverbComboBox_currentIndexChanged(self, value):
         logger.debug('Reverb Combo Box: {0}'.format(value))
         self.amp.set_control('reverb_type', value)
+        self.amp.set_control('fx_focus', 3)
 
     @pyqtSlot(int)
     def on_reverbSizeSlider_valueChanged(self, value):
         logger.debug('Reverb Size slider: {0}'.format(value))
         self.amp.set_control('reverb_size', value)
-        # self.amp.set_control('fx_focus', 3)
+        self.amp.set_control('fx_focus', 3)
 
     @pyqtSlot(int)
     def on_reverbLevelSlider_valueChanged(self, value):
         logger.debug('Reverb Level slider: {0}'.format(value))
         self.amp.set_control('reverb_level', value)
+        self.amp.set_control('fx_focus', 3)
 
     # When the modulation type is changed, we want to change the label
     # associated with the segment value control. So, we need to define
