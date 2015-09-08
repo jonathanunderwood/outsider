@@ -590,7 +590,6 @@ class BlackstarIDAmp(object):
 
 if __name__ == '__main__':
     import logging
-    import time
     import sys
     
     logging.basicConfig(level=logging.DEBUG)
@@ -600,128 +599,8 @@ if __name__ == '__main__':
         amp = BlackstarIDAmp()
     except:
         sys.exit(1)
-    # amp.poll()
-    # amp.set_tvp(1)
-    # time.sleep(2)
-    # amp.set_tvp(0)
-    # time.sleep(2)
-    # amp.set_tvp(1)
 
-    #amp.startup()
-
-    #amp.get_preset_names()
-    #amp.drain()
-    amp.poll()
-    
-    # while True:
-    #     try:
-    #         amp.read_data()
-    #     except:
-    #         print 'no data'
-    #         continue
-
-    # amp.query_control('volume')
-    # amp.read_data()
-    # #amp.get_preset_settings(1)
-    
-    # amp.set_control('delay_time', 100)
-    # amp.set_control('voice', 0)
-    # time.sleep(1)
-    # amp.set_control('voice', 1)
-    # time.sleep(1)
-    # amp.set_control('voice', 3)
-    # time.sleep(1)
-    # amp.set_control('voice', 4)
-    # time.sleep(1)
-    # amp.set_control('voice', 5)
-
-    # amp.set_control('delay_time', 2000)
-
-    # amp.set_control('fx_focus', 1)
-    # time.sleep(1)
-    # amp.set_control('fx_focus', 2)
-    # time.sleep(1)
-    # amp.set_control('fx_focus', 3)
-    # time.sleep(1)
-    
-    # amp.disconnect()
-        
-# reattach = False
-# if dev.is_kernel_driver_active(0):
-#         reattach = True
-#         dev.detach_kernel_driver(0)
-
-# The kernel USBHID driver grabs the device by default under linux, so
-# we need to release the interfaces from kernel control
-
-# 03:0e:00:01:01:50:f0:ba:3b:8a:6a:05:d1:df:62:6a:3e:11:16:bc:b1:3e:d1:dc:fa:01:ba:41:75:b7:44:42:60:f0:5e:45:30:93:f9:d3:c1:83:70:08:c1:2f:30:4e:95:64:65:78:fd:51:62:96:7b:ba:96:be:96:ae:45:84
-
-# Turns the TVP on
-# bytes = [
-#     0x03, 0x0e, 0x00, 0x01, 0x01, 0x50, 0xf0, 0xba, 0x3b, 0x8a, 0x6a, 0x05, 0xd1, 0xdf, 0x62, 0x6a,
-#     0x3e, 0x11, 0x16, 0xbc, 0xb1, 0x3e, 0xd1, 0xdc, 0xfa, 0x01, 0xba, 0x41, 0x75, 0xb7, 0x44, 0x42,
-#     0x60, 0xf0, 0x5e, 0x45, 0x30, 0x93, 0xf9, 0xd3, 0xc1, 0x83, 0x70, 0x08, 0xc1, 0x2f, 0x30, 0x4e,
-#     0x95, 0x64, 0x65, 0x78, 0xfd, 0x51, 0x62, 0x96, 0x7b, 0xba, 0x96, 0xbe, 0x96, 0xae, 0x45, 0x84,
-# ]
-
-# bytes = [
-#     0x03, 0x0e, 0x00, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-#     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-#     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-#     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-# ]
-
-# string = ''.join(chr(n) for n in bytes)
-
-# dev.write(0x01, string)
-
-
-
-    # def set_voice(self, voice):
-    #     ''' Select amp voicing
-
-    #     Arguments
-    #     =========
-    #     voice: 0 for clean warm
-    #            1 for clean bright
-    #            2 for crunch
-    #            3 for super crunch
-    #            4 for OD1
-    #            5 for OD2
-    #     '''
-        
-    #     if self.connected is False:
-    #         raise NotConnectedError
-
-    #     if voice not in [0, 1, 2, 3, 4, 5]:
-    #         raise ValueError('Unrecognized value for voice argument: {0}'.format(voice))
-        
-    #     bytes = [0x00] * 64
-        
-    #     bytes[0:5] = [0x03, 0x01, 0x00, 0x01, voice]
-
-    #     self._send_bytes(bytes, 0x01)
-    #     #self.device.read(0x01, 64)
-        
-    # def set_gain(self, value):
-    #     ''' Set amp gain
-
-    #     Arguments
-    #     =========
-    #     value: 0-127
-
-    #     '''
-        
-    #     if self.connected is False:
-    #         raise NotConnectedError
-
-    #     if val < 0 or val > 127:
-    #         raise ValueError('Gain value not in range 0-127: {0}'.format(value))
-        
-    #     bytes = [0x00] * 64
-        
-    #     bytes[0:5] = [0x03, 0x02, 0x00, 0x01, value]
-
-    #     self._send_bytes(bytes, 0x01)
-    
-    
+    try:
+        amp.poll_and_log()
+    except KeyboardInterrupt:
+        sys.exit(0)
