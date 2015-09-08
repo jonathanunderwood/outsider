@@ -285,7 +285,6 @@ class BlackstarIDAmp(object):
                     except usb.core.USBError as e:
                         raise usb.core.USBError(
                             "Could not attach kernel driver to interface({0}): {1}".format(intf.bInterfaceNumber, str(e)))
-        return
 
         self.connected = False
         self.device = None
