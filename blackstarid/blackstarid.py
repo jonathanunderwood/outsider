@@ -290,24 +290,24 @@ class BlackstarIDAmp(object):
         self.device = None
         self.reattach_kernel = []
         
-    def _send_bytes(self, bytes, endpoint=0x01):
+    def _send_data(self, data, endpoint=0x01):
         '''Take a list of bytes and send it to endpoint as a correctly
         encoded string.'''
         # Form a string of hex bytes from the list
-        string = ''.join(chr(n) for n in bytes)
+        string = ''.join(chr(n) for n in data)
 
-        bytes_length = len(bytes)
+        data_length = len(data)
 
-        if bytes_length != 64:
-            logger.warning('bytes length is {0} which is not 64'.format(bytes_length))
+        if data_length != 64:
+            logger.warning('data length is {0} which is not 64'.format(data_length))
 
         # Write to endpoint, returning the number of bytes written
         bytes_written = self.device.write(endpoint, string)
-        if bytes_written != bytes_length:
+        if bytes_written != data_length:
             raise WriteToAmpError(
-                'Failed to write {0} bytes to amplifier.'.format(bytes_length - bytes_written)) 
+                'Failed to write {0} bytes to amplifier.'.format(data_length - bytes_written))
         
-        return bytes_written
+        return data_written
 
         
     def _format_data(self, packet):
@@ -347,16 +347,16 @@ class BlackstarIDAmp(object):
             logger.error(msg)
             raise ValueError(msg)
 
-        bytes = [0x00] * 64
+        data = [0x00] * 64
 
         if control is 'delay_time':
-            bytes[0:4] = [0x03, ctrl_byte, 0x00, 0x02]
-            bytes[4] = value % 256
-            bytes[5] = value / 256
+            data[0:4] = [0x03, ctrl_byte, 0x00, 0x02]
+            data[4] = value % 256
+            data[5] = value / 256
         else:
-            bytes[0:5] = [0x03, ctrl_byte, 0x00, 0x01, value]
+            data[0:5] = [0x03, ctrl_byte, 0x00, 0x01, value]
 
-        ret = self._send_bytes(bytes, 0x01)
+        ret = self._send_data(data, 0x01)
 
         logger.debug('Set control: {0} to value {1}'.format(control, value))
 
@@ -381,11 +381,11 @@ class BlackstarIDAmp(object):
 
         logger.debug('Sending startup packet')
 
-        bytes = [0x00] * 64
-        bytes[0] = 0x81
-        bytes[3:8] = [0x04, 0x03, 0x06, 0x02, 0x7a]
+        data = [0x00] * 64
+        data[0] = 0x81
+        data[3:8] = [0x04, 0x03, 0x06, 0x02, 0x7a]
 
-        self._send_bytes(bytes, 0x01)
+        self._send_data(data, 0x01)
 
         logger.debug('Startup packet sent')
 
@@ -399,11 +399,11 @@ class BlackstarIDAmp(object):
         '''
         names = []
         for i in xrange(1, 128):
-            bytes = [0x00] * 64
+            data = [0x00] * 64
         
-            bytes[0:4] = [0x02, 0x04, i, 0x00]
+            data[0:4] = [0x02, 0x04, i, 0x00]
         
-            self._send_bytes(bytes, 0x01)
+            self._send_data(data, 0x01)
         
             ret = self.device.read(0x81, 64)
 
@@ -577,11 +577,11 @@ class BlackstarIDAmp(object):
 
     def get_preset_settings(self, preset):
         # This is an unfinished test function, will be removed.
-        bytes = [0x00] * 64
+        data = [0x00] * 64
         
-        bytes[0:4] = [0x02, 0x05, preset, 0x00]
+        data[0:4] = [0x02, 0x05, preset, 0x00]
         
-        self._send_bytes(bytes, 0x01)
+        self._send_data(data, 0x01)
 
         ret = self.device.read(0x81, 64)
         logger.debug('Preset settings for preset {0}\n'.format(preset)
