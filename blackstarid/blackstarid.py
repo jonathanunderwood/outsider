@@ -33,26 +33,31 @@ __null_handler = __NullHandler()
 logger.addHandler(__null_handler)
 
 
-
 class NotConnectedError(Exception):
+
     '''Raised when an operation requiring an amp is called when no amp is
     connected.
 
     '''
     pass
 
+
 class WriteToAmpError(Exception):
+
     '''Raised when a write operation to the amplifier fails or is incomplete.
 
     '''
     pass
 
+
 class NoDataAvailable(Exception):
+
     '''Raised when a read operation is called but no data is available
     from the amplifer.
 
     '''
     pass
+
 
 class BlackstarIDAmpPreset(object):
 
@@ -66,22 +71,22 @@ class BlackstarIDAmpPreset(object):
             raise ValueError('Packet is not a preset settings packet')
 
         self.preset_number = packet[2]
-        
-        self.voice = packet[4] # 00-05
-        self.gain = packet[5] # 00-7F
-        self.volume = packet[6] # 00-7F
-        self.bass = packet[7] # 00-7F
-        self.middle = packet[8] # 00-7F
-        self.treble = packet[9] # 00-7F
-        self.isf = packet[10] # 00-7F
-        self.tvp = packet[17] # 00 or 01
-        self.tvp_valve = packet [11] # 00-05
-        self.modulation = packet[18] # 00 or 01
-        self.delay = packet[19] # 00 or 01
 
-        self.reverb = packet[20] # 00 or 01
-        self.reverb_type = packet[32] # 00-03
-        self.reverb_segval = packet[33] # 00-1F
+        self.voice = packet[4]  # 00-05
+        self.gain = packet[5]  # 00-7F
+        self.volume = packet[6]  # 00-7F
+        self.bass = packet[7]  # 00-7F
+        self.middle = packet[8]  # 00-7F
+        self.treble = packet[9]  # 00-7F
+        self.isf = packet[10]  # 00-7F
+        self.tvp = packet[17]  # 00 or 01
+        self.tvp_valve = packet[11]  # 00-05
+        self.modulation = packet[18]  # 00 or 01
+        self.delay = packet[19]  # 00 or 01
+
+        self.reverb = packet[20]  # 00 or 01
+        self.reverb_type = packet[32]  # 00-03
+        self.reverb_segval = packet[33]  # 00-1F
 
         # There is a point of confusion here. Adjusting reverb level
         # alters packet[35], but also packet[12]. However, adjusting
@@ -90,11 +95,11 @@ class BlackstarIDAmpPreset(object):
         # and that a firmware bug is changing packet[12] when reverb
         # level is changed. Will be interesting to see if this changes
         # with a later firmware.
-        self.reverb_level = packet[35] # 00-7F
+        self.reverb_level = packet[35]  # 00-7F
 
-        self.delay_type = packet[26] # 00-03
-        self.delay_segval = packet[27] # 00-1F
-        self.delay_level = packet[29] # 00-7F
+        self.delay_type = packet[26]  # 00-03
+        self.delay_segval = packet[27]  # 00-1F
+        self.delay_level = packet[29]  # 00-7F
 
         # The delay time setting is specifed with two bytes,
         # packet[30] and packet[31]. With the delay set to the minimum
@@ -106,13 +111,13 @@ class BlackstarIDAmpPreset(object):
         # ms, and the maximum delay is 2s. So, [0x64, 0x00] = 100ms
         # makes sense. So, the actual delay in ms is:
         # delay = (packet[31] * 256 + packet[30])
-        self.delay_time_1 = packet[30] # 00-FF
-        self.delay_time_2 = packet[31] # 00-07
+        self.delay_time_1 = packet[30]  # 00-FF
+        self.delay_time_2 = packet[31]  # 00-07
 
-        self.modulation_type = packet[21] # 00-03
-        self.modulation_segval = packet[22] # 00-1F
-        self.modulation_level = packet[12] # 00-7F
-        self.modulation_rate = packet[25] #00-7F
+        self.modulation_type = packet[21]  # 00-03
+        self.modulation_segval = packet[22]  # 00-1F
+        self.modulation_level = packet[12]  # 00-7F
+        self.modulation_rate = packet[25]  # 00-7F
 
         # This next setting is weird, it seems to reflect the absolute
         # position of the segmented selection knowb when selection
@@ -144,7 +149,7 @@ class BlackstarIDAmpPreset(object):
 #    the form [0x03, 0x1c, 0x00, 0x02, B,...] and the delay time is
 #    (256*B)+A.
 
-        
+
 class BlackstarIDAmp(object):
     connected = False
     reattach_kernel = []
@@ -169,19 +174,19 @@ class BlackstarIDAmp(object):
         'mod_level': 0x15,
         'mod_speed': 0x16,
         'delay_type': 0x17,
-        'delay_feedback': 0x18, # Segment value
+        'delay_feedback': 0x18,  # Segment value
         'delay_level': 0x1a,
         'delay_time': 0x1b,
         'delay_time_coarse': 0x1c,
         'reverb_type': 0x1d,
-        'reverb_size': 0x1e, # Segment value
+        'reverb_size': 0x1e,  # Segment value
         'reverb_level': 0x20,
         'fx_focus': 0x24,
     }
 
     # Construct a reversed dictionary so we can look up the control
     # changed from USB packet data
-    control_ids =  dict([(val, key) for key, val in controls.iteritems()])
+    control_ids = dict([(val, key) for key, val in controls.iteritems()])
 
     control_limits = {
         'voice': [0, 5],
@@ -201,19 +206,19 @@ class BlackstarIDAmp(object):
         'mod_level': [0, 127],
         'mod_speed': [0, 127],
         'delay_type': [0, 3],
-        'delay_feedback': [0, 31], # Segment value
+        'delay_feedback': [0, 31],  # Segment value
         'delay_level': [0, 127],
         'delay_time': [100, 2000],
-        'delay_time_coarse': [0, 7], # For documentation only, never used
+        'delay_time_coarse': [0, 7],  # For documentation only, never used
         'reverb_type': [0, 3],
-        'reverb_size': [0, 31], # Segment value
+        'reverb_size': [0, 31],  # Segment value
         'reverb_level': [0, 127],
         'fx_focus': [1, 3],
     }
-                          
+
     def __init__(self):
-        VENDOR=0x27d4
-        PRODUCT=0x0001
+        VENDOR = 0x27d4
+        PRODUCT = 0x0001
 
         dev = usb.core.find(idVendor=VENDOR, idProduct=PRODUCT)
 
@@ -226,10 +231,10 @@ class BlackstarIDAmp(object):
         # We know for this device there's only one configuration, so
         # no need to iterate through configurations below.
         cfg = dev.get_active_configuration()
-        
+
         self.reattach_kernel = [False] * cfg.bNumInterfaces
 
-        #for intf in range(cfg.bNumInterfaces):
+        # for intf in range(cfg.bNumInterfaces):
         for intf in cfg:
             if dev.is_kernel_driver_active(intf.bInterfaceNumber):
                 try:
@@ -246,7 +251,7 @@ class BlackstarIDAmp(object):
                 # would be very easy to overwrite the True below with
                 # False on the second pass!
                 self.reattach_kernel[intf.bInterfaceNumber] = True
-            
+
         # Set the device to use the default (and only) configuration
         dev.set_configuration()
 
@@ -260,7 +265,7 @@ class BlackstarIDAmp(object):
     def disconnect(self):
         if self.connected is False:
             raise NotConnectedError
-        
+
         # http://stackoverflow.com/questions/12542799/communication-with-the-usb-device-in-python
         # This returns all resources to the state they were in after
         # usb.core.find() returned (according to the PyUSB tutorial
@@ -289,7 +294,7 @@ class BlackstarIDAmp(object):
         self.connected = False
         self.device = None
         self.reattach_kernel = []
-        
+
     def _send_data(self, data, endpoint=0x01):
         '''Take a list of bytes and send it to endpoint as a correctly
         encoded string.'''
@@ -299,17 +304,17 @@ class BlackstarIDAmp(object):
         data_length = len(data)
 
         if data_length != 64:
-            logger.warning('data length is {0} which is not 64'.format(data_length))
+            logger.warning(
+                'data length is {0} which is not 64'.format(data_length))
 
         # Write to endpoint, returning the number of bytes written
         bytes_written = self.device.write(endpoint, string)
         if bytes_written != data_length:
             raise WriteToAmpError(
                 'Failed to write {0} bytes to amplifier.'.format(data_length - bytes_written))
-        
+
         return data_written
 
-        
     def _format_data(self, packet):
         '''Format a data packet for printing with 16 columns for easy 
         comparison with tools such as wireshark.'''
@@ -317,20 +322,20 @@ class BlackstarIDAmp(object):
         # Turn the entries into hex strings
         # strings = ['%0.2X' % i for i in packet]
         strings = ['{0:02X}'.format(i) for i in packet]
-        
+
         # Now break up into lines, each with 16 entries
         length = len(strings)
-        
+
         lines = (length / 16) + (length % 16 > 16)
 
-        string =''
+        string = ''
         for line in xrange(lines):
             start = line * 16
             end = start + 16
             string += ' '.join(strings[start:end])
             string += '\n'
 
-        return string[0:-1] # remove last \n
+        return string[0:-1]  # remove last \n
 
     def set_control(self, control, value):
         try:
@@ -343,7 +348,8 @@ class BlackstarIDAmp(object):
         limits = self.control_limits[control]
 
         if value not in range(limits[0], limits[1] + 1):
-            msg = 'Value {0} is not valid for control {1}'.format(value, control)
+            msg = 'Value {0} is not valid for control {1}'.format(
+                value, control)
             logger.error(msg)
             raise ValueError(msg)
 
@@ -375,7 +381,7 @@ class BlackstarIDAmp(object):
         function to ensure no pending packets are present.
 
         '''
-        
+
         if self.connected is False:
             raise NotConnectedError
 
@@ -400,14 +406,14 @@ class BlackstarIDAmp(object):
         names = []
         for i in xrange(1, 128):
             data = [0x00] * 64
-        
+
             data[0:4] = [0x02, 0x04, i, 0x00]
-        
+
             self._send_data(data, 0x01)
-        
+
             ret = self.device.read(0x81, 64)
 
-            namel = filter(lambda n: n>0, ret[4:25])
+            namel = filter(lambda n: n > 0, ret[4:25])
             namec = [str(unichr(i)) for i in namel]
             names += [''.join(namec)]
 
@@ -442,12 +448,14 @@ class BlackstarIDAmp(object):
                 try:
                     control = self.control_ids[id]
                 except KeyError:
-                    errstr = ('Unrecognized control ID: {0:02X}\n'.format(packet[1]) + self._format_data(packet))
+                    errstr = ('Unrecognized control ID: {0:02X}\n'.format(
+                        packet[1]) + self._format_data(packet))
                     logger.error(errstr)
                     raise KeyError(errstr)
             if packet[3] == 0x01:
                 value = packet[4]
-                logger.debug('Data from amp:: control: {0} value: {1}'.format(control, value))
+                logger.debug(
+                    'Data from amp:: control: {0} value: {1}'.format(control, value))
                 if control == 'delay_time':
                     return {'delay_time_fine': value}
                 else:
@@ -455,22 +463,26 @@ class BlackstarIDAmp(object):
             elif packet[3] == 0x02:
                 if control == 'delay_time':
                     value = packet[4] + 256 * packet[5]
-                    logger.debug('Data from amp:: control: {0} value: {1}'.format(control, value))
+                    logger.debug(
+                        'Data from amp:: control: {0} value: {1}'.format(control, value))
                     return {control: value}
                 elif control == 'delay_type':
                     delay_type = packet[4]
                     delay_feedback = packet[5]
-                    logger.debug('Data from amp:: delay_type: {0} delay_feedback: {1}\n'.format(delay_type, delay_feedback))
+                    logger.debug('Data from amp:: delay_type: {0} delay_feedback: {1}\n'.format(
+                        delay_type, delay_feedback))
                     return {'delay_type': packet[4], 'delay_feedback': packet[5]}
                 elif control == 'reverb_type':
                     reverb_type = packet[4]
                     reverb_size = packet[5]
-                    logger.debug('Data from amp:: reverb_type: {0} reverb_size: {1}\n'.format(reverb_type, reverb_size))
+                    logger.debug('Data from amp:: reverb_type: {0} reverb_size: {1}\n'.format(
+                        reverb_type, reverb_size))
                     return {'reverb_type': packet[4], 'reverb_size': packet[5]}
                 elif control == 'mod_type':
                     mod_type = packet[4]
                     mod_segval = packet[5]
-                    logger.debug('Data from amp:: mod_type: {0} mod_segval: {1}\n'.format(mod_type, mod_segval))
+                    logger.debug(
+                        'Data from amp:: mod_type: {0} mod_segval: {1}\n'.format(mod_type, mod_segval))
                     return {'mod_type': packet[4], 'mod_segval': packet[5]}
             elif packet[3] == 0x2a:
                 # Then packet is a packet describing all current control
@@ -485,8 +497,10 @@ class BlackstarIDAmp(object):
                 settings = {'all_settings': True}
                 for control, id in self.controls.iteritems():
                     if control == 'delay_time':
-                        settings[control] = (packet[id + 4] * 256) + packet[id + 3]
-                        logger.debug('All controls data:: control: {0} value: {1}'.format(control, settings[control]))
+                        settings[control] = (
+                            packet[id + 4] * 256) + packet[id + 3]
+                        logger.debug('All controls data:: control: {0} value: {1}'.format(
+                            control, settings[control]))
                     elif control == 'delay_time_coarse':
                         # Skip this one, as we already deal with it
                         # for the delay_time entry
@@ -504,7 +518,8 @@ class BlackstarIDAmp(object):
             # 10 00 01 00 00 00 00 00 00 00 00 02 00 01 01 03
             # 00 15 00 00 00 00 00 00 00 00 00 00 00 00 00 00
             # 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-            logger.debug('Unhandled startup packet 1\n' + self._format_data(packet))
+            logger.debug(
+                'Unhandled startup packet 1\n' + self._format_data(packet))
 
             return {}
 
@@ -516,12 +531,15 @@ class BlackstarIDAmp(object):
             # 10 00 01 00 00 00 00 00 00 00 00 02 00 01 01 03
             # 00 15 00 00 00 00 00 00 00 00 00 00 00 00 00 00
             # 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-            logger.debug('Unhandled startup packet 3\n'+ self._format_data(packet))
+            logger.debug(
+                'Unhandled startup packet 3\n' + self._format_data(packet))
 
             return {}
 
-        # We'll only reach here if we haven't handled the packet and returned earlier
-        logger.debug('Unhandled data packet in read_data\n'+ self._format_data(packet))
+        # We'll only reach here if we haven't handled the packet and returned
+        # earlier
+        logger.debug(
+            'Unhandled data packet in read_data\n' + self._format_data(packet))
         return {}
 
     def read_data(self):
@@ -544,7 +562,8 @@ class BlackstarIDAmp(object):
                 if 'delay_time_coarse' in s:
                     delay_time_coarse = s.pop('delay_time_coarse')
                     settings.update(s)
-                    settings['delay_time'] = (delay_time_coarse * 256) + delay_time_fine
+                    settings['delay_time'] = (
+                        delay_time_coarse * 256) + delay_time_fine
                     return settings
                 else:
                     settings.update(s)
@@ -560,7 +579,7 @@ class BlackstarIDAmp(object):
             try:
                 ret = self.device.read(0x81, 64)
                 logger.debug('Polled packet\n' + self._format_data(ret))
-            except usb.core.USBError: # Ignore timeouts
+            except usb.core.USBError:  # Ignore timeouts
                 pass
 
     def drain(self):
@@ -572,15 +591,15 @@ class BlackstarIDAmp(object):
             try:
                 ret = self.device.read(0x81, 64)
                 #logger.debug('Drained packet\n' + self._format_data(ret))
-            except usb.core.USBError: # No more data available
+            except usb.core.USBError:  # No more data available
                 return
 
     def get_preset_settings(self, preset):
         # This is an unfinished test function, will be removed.
         data = [0x00] * 64
-        
+
         data[0:4] = [0x02, 0x05, preset, 0x00]
-        
+
         self._send_data(data, 0x01)
 
         ret = self.device.read(0x81, 64)
@@ -590,7 +609,7 @@ class BlackstarIDAmp(object):
 if __name__ == '__main__':
     import logging
     import sys
-    
+
     logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger('outsider.blackstarid')
 
