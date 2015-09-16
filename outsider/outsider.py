@@ -37,6 +37,7 @@ class __NullHandler(logging.Handler):
 __null_handler = __NullHandler()
 logger.addHandler(__null_handler)
 
+
 class Ui(QMainWindow):
     shutdown_threads = pyqtSignal(name='shutdown_threads')
 
@@ -73,7 +74,8 @@ class Ui(QMainWindow):
         }
 
         print os.path.join(os.path.split(__file__)[0], 'outsider.ui')
-        uic.loadUi(os.path.join(os.path.split(__file__)[0], 'outsider.ui'), self)
+        uic.loadUi(
+            os.path.join(os.path.split(__file__)[0], 'outsider.ui'), self)
 
         self.amp = BlackstarIDAmp()
         self.amp.drain()
@@ -110,12 +112,12 @@ class Ui(QMainWindow):
     @pyqtSlot(dict)
     def new_data_from_amp(self, settings):
         for control, value in settings.iteritems():
-            logger.debug('Data received:: control: {0} value: {1}'.format(control, value))
+            logger.debug(
+                'Data received:: control: {0} value: {1}'.format(control, value))
             try:
                 self.response_funcs[control](value)
             except KeyError:
                 logger.error('Unrecognized control {0}'.format(control))
-
 
     ######################################################################
     # The following methods are called when data is received from the amp
@@ -172,7 +174,7 @@ class Ui(QMainWindow):
         self.TVPComboBox.blockSignals(True)
         self.TVPComboBox.setCurrentIndex(value)
         self.TVPComboBox.blockSignals(False)
-        
+
     def mod_switch_changed_on_amp(self, value):
         value = bool(value)
         self.modRadioButton.blockSignals(True)
@@ -270,7 +272,7 @@ class Ui(QMainWindow):
         self.delayTimeSlider.blockSignals(True)
         self.delayTimeSlider.setValue(value)
         self.delayTimeSlider.blockSignals(False)
-        
+
     def reverb_type_changed_on_amp(self, value):
         self.reverbComboBox.blockSignals(True)
         self.reverbComboBox.setCurrentIndex(value)
@@ -461,13 +463,12 @@ class Ui(QMainWindow):
             self.mod_segval_label_update.emit('Mix')
         elif value == 3:
             self.mod_segval_label_update.emit('FreqMod')
-            
 
 
 class AmpControlWatcher(QObject):
     have_data = pyqtSignal(dict, name='have_data')
     shutdown = False
-    
+
     @pyqtSlot()
     def stop_watching(self):
         logger.debug('signal received in stop_watching slot')
@@ -479,7 +480,7 @@ class AmpControlWatcher(QObject):
         logger.debug('AmpControlWatcher initialized')
 
     def work(self):
-        
+
         logger.debug("AmpWatcher work function started")
 
         # Poll persistently until some data appears. If there's no
@@ -492,7 +493,8 @@ class AmpControlWatcher(QObject):
             try:
                 settings = self.amp.read_data()
                 for control, value in settings.iteritems():
-                    logger.debug('Amp adjustment detected:: control: {0} value: {1}'.format(control, value))
+                    logger.debug(
+                        'Amp adjustment detected:: control: {0} value: {1}'.format(control, value))
                 self.have_data.emit(settings)
             except NoDataAvailable:
                 logger.debug('No changes of amp controls reported')
@@ -500,4 +502,3 @@ class AmpControlWatcher(QObject):
                 continue
 
         logger.debug('AmpWatcher watching loop exited')
-
