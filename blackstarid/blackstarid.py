@@ -276,6 +276,21 @@ class BlackstarIDAmp(object):
         # Set the device to use the default (and only) configuration
         dev.set_configuration()
 
+        # Interface 0 seems always to be the interrupt endpoint
+        # interface
+        interrupt_intf = cfg[0, 0] # same as cfg.interfaces()[0]
+        intf_out = usb.util.find_descriptor \
+                   (interrupt_intf,
+                    custom_match=lambda e: \
+                    usb.util.endpoint_direction(e.bEndpointAddress) == usb.util.ENDPOINT_OUT)
+        intf_in = usb.util.find_descriptor \
+                  (interrupt_intf,
+                   custom_match=lambda e: \
+                   usb.util.endpoint_direction(e.bEndpointAddress) == usb.util.ENDPOINT_IN)
+        # Now get their addresses
+        self.interrupt_in = intf_in.bEndpointAddress
+        self.interrupt_out = intf_out.bEndpointAddress
+
         self.connected = True
         self.device = dev
         self.model = self.amp_models[dev.idProduct]
@@ -318,7 +333,7 @@ class BlackstarIDAmp(object):
         self.reattach_kernel = []
         self.model = None
 
-    def _send_data(self, data, endpoint=0x01):
+    def _send_data(self, data):
         '''Take a list of bytes and send it to endpoint as a correctly
         encoded string.'''
         # Form a string of hex bytes from the list
@@ -331,7 +346,7 @@ class BlackstarIDAmp(object):
                 'data length is {0} which is not 64'.format(data_length))
 
         # Write to endpoint, returning the number of bytes written
-        bytes_written = self.device.write(endpoint, string)
+        bytes_written = self.device.write(self.interrupt_out, string)
         if bytes_written != data_length:
             raise WriteToAmpError(
                 'Failed to write {0} bytes to amplifier.'.format(data_length - bytes_written))
@@ -385,7 +400,7 @@ class BlackstarIDAmp(object):
         else:
             data[0:5] = [0x03, ctrl_byte, 0x00, 0x01, value]
 
-        ret = self._send_data(data, 0x01)
+        ret = self._send_data(data)
 
         logger.debug('Set control: {0} to value {1}'.format(control, value))
 
@@ -414,7 +429,7 @@ class BlackstarIDAmp(object):
         data[0] = 0x81
         data[3:8] = [0x04, 0x03, 0x06, 0x02, 0x7a]
 
-        self._send_data(data, 0x01)
+        self._send_data(data)
 
         logger.debug('Startup packet sent')
 
@@ -432,9 +447,9 @@ class BlackstarIDAmp(object):
 
             data[0:4] = [0x02, 0x04, i, 0x00]
 
-            self._send_data(data, 0x01)
+            self._send_data(data)
 
-            ret = self.device.read(0x81, 64)
+            ret = self.device.read(self.interrupt_in, 64)
 
             namel = filter(lambda n: n > 0, ret[4:25])
             namec = [str(unichr(i)) for i in namel]
@@ -458,7 +473,7 @@ class BlackstarIDAmp(object):
 
         '''
         try:
-            packet = self.device.read(0x81, 64)
+            packet = self.device.read(self.interrupt_in, 64)
         except usb.core.USBError:
             raise NoDataAvailable
 
@@ -600,7 +615,7 @@ class BlackstarIDAmp(object):
         '''
         while True:
             try:
-                ret = self.device.read(0x81, 64)
+                ret = self.device.read(self.interrupt_in, 64)
                 logger.debug('Polled packet\n' + self._format_data(ret))
             except usb.core.USBError:  # Ignore timeouts
                 pass
@@ -612,7 +627,7 @@ class BlackstarIDAmp(object):
         '''
         while True:
             try:
-                ret = self.device.read(0x81, 64)
+                ret = self.device.read(self.interrupt_in, 64)
                 #logger.debug('Drained packet\n' + self._format_data(ret))
             except usb.core.USBError:  # No more data available
                 return
@@ -623,7 +638,7 @@ class BlackstarIDAmp(object):
 
         data[0:4] = [0x02, 0x05, preset, 0x00]
 
-        self._send_data(data, 0x01)
+        self._send_data(data)
 
         ret = self.device.read(0x81, 64)
         logger.debug('Preset settings for preset {0}\n'.format(preset)
