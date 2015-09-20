@@ -302,6 +302,10 @@ class BlackstarIDAmp(object):
             self.disconnect()
 
     def disconnect(self):
+        '''Disconnect from the amplifer and release all resources. If we're
+        already disconnected, this method is a no-op
+
+        '''
         if self.connected is False:
             return
 
