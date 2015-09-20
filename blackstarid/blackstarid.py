@@ -303,7 +303,7 @@ class BlackstarIDAmp(object):
 
     def disconnect(self):
         if self.connected is False:
-            raise NotConnectedError
+            return
 
         # http://stackoverflow.com/questions/12542799/communication-with-the-usb-device-in-python
         # This returns all resources to the state they were in after
