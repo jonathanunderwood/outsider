@@ -313,7 +313,7 @@ class BlackstarIDAmp(object):
             raise WriteToAmpError(
                 'Failed to write {0} bytes to amplifier.'.format(data_length - bytes_written))
 
-        return data_written
+        return bytes_written
 
     def _format_data(self, packet):
         '''Format a data packet for printing with 16 columns for easy 
