@@ -151,10 +151,13 @@ class BlackstarIDAmpPreset(object):
 
 
 class BlackstarIDAmp(object):
-    connected = False
-    reattach_kernel = []
-    device = None
-    config = None
+
+    vendor = 0x27d4
+
+    amp_models = {
+        0x0001: 'id-tvp',
+        0x0010: 'id-core',
+    }
 
     controls = {
         'voice': 0x01,
@@ -217,14 +220,32 @@ class BlackstarIDAmp(object):
     }
 
     def __init__(self):
-        VENDOR = 0x27d4
-        PRODUCT = 0x0001
+        self.connected = False
+        self.reattach_kernel = []
+        self.device = None
+        self.model = None
 
-        dev = usb.core.find(idVendor=VENDOR, idProduct=PRODUCT)
+    def connect(self):
 
-        if dev is None:
+        # Find device. Note usb.core.find returns an iterator if
+        # find_all is True
+        devices = list(usb.core.find(idVendor=self.vendor, find_all=True))
+
+        ndev = len(devices)
+        if ndev < 1:
             logger.error('Amplifier device not found')
             raise NotConnectedError('Amplifier device not found')
+        elif ndev > 1:
+            # In future we shouldn't bail here but change the API to
+            # deal with the possibility of multiple amps and provide
+            # mechanism for an application to allow the user to select
+            # which amp they want to connect to. For now, we'll just
+            # bail.
+            logger.error('More than one amplifier found')
+            raise NotConnectedError('More than one amplifier found')
+        print devices
+        dev = devices[0]
+        logger.debug('Device:\n' + str(dev))
 
         dev.reset()
 
@@ -257,6 +278,7 @@ class BlackstarIDAmp(object):
 
         self.connected = True
         self.device = dev
+        self.model = self.amp_models[dev.idProduct]
 
     def __del__(self):
         if self.connected:
@@ -294,6 +316,7 @@ class BlackstarIDAmp(object):
         self.connected = False
         self.device = None
         self.reattach_kernel = []
+        self.model = None
 
     def _send_data(self, data, endpoint=0x01):
         '''Take a list of bytes and send it to endpoint as a correctly
