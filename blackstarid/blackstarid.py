@@ -224,6 +224,8 @@ class BlackstarIDAmp(object):
         self.reattach_kernel = []
         self.device = None
         self.model = None
+        self.interrupt_in = None
+        self.interrupt_out = None
 
     def connect(self):
 
@@ -332,6 +334,8 @@ class BlackstarIDAmp(object):
         self.device = None
         self.reattach_kernel = []
         self.model = None
+        self.interrupt_in = None
+        self.interrupt_out = None
 
     def _send_data(self, data):
         '''Take a list of bytes and send it to endpoint as a correctly
