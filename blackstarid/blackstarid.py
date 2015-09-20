@@ -243,7 +243,7 @@ class BlackstarIDAmp(object):
             # bail.
             logger.error('More than one amplifier found')
             raise NotConnectedError('More than one amplifier found')
-        print devices
+
         dev = devices[0]
         logger.debug('Device:\n' + str(dev))
 
