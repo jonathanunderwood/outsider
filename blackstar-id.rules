@@ -14,6 +14,10 @@
 # along with Outsider.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Copyright 2015, Jonathan Underwood. All rights reserved.
+# SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", \
+#    ATTRS{idVendor}=="27d4", ATTRS{idProduct}=="0001", \
+#    TAG+="uaccess"
+
 SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", \
-   ATTRS{idVendor}=="27d4", ATTRS{idProduct}=="0001", \
+   ATTRS{idVendor}=="27d4", \
    TAG+="uaccess"
