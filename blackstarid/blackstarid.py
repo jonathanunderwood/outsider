@@ -235,7 +235,7 @@ class BlackstarIDAmp(object):
 
         ndev = len(devices)
         if ndev < 1:
-            logger.error('Amplifier device not found')
+            logger.info('Amplifier device not found')
             raise NotConnectedError('Amplifier device not found')
         elif ndev > 1:
             # In future we shouldn't bail here but change the API to
@@ -243,7 +243,7 @@ class BlackstarIDAmp(object):
             # mechanism for an application to allow the user to select
             # which amp they want to connect to. For now, we'll just
             # bail.
-            logger.error('More than one amplifier found')
+            logger.info('More than one amplifier found')
             raise NotConnectedError('More than one amplifier found')
 
         dev = devices[0]
