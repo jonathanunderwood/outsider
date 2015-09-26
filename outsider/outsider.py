@@ -20,7 +20,7 @@ from PyQt5.QtCore import QObject, QThread
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QApplication
-from blackstarid import BlackstarIDAmp, NoDataAvailable
+from blackstarid import BlackstarIDAmp, NoDataAvailable, NotConnectedError
 import logging
 import os
 
@@ -78,12 +78,17 @@ class Ui(QMainWindow):
             os.path.join(os.path.split(__file__)[0], 'outsider.ui'), self)
 
         self.amp = BlackstarIDAmp()
-        self.amp.connect()
-        self.amp.drain()
-
+        self.watcher_thread = None
         self.show()
-        self.start_amp_watcher_thread()
-        self.amp.startup()
+
+    def connect(self):
+        try:
+            self.amp.connect()
+            self.amp.drain()
+            self.start_amp_watcher_thread()
+            self.amp.startup()
+        except NotConnectedError:
+            pass
 
     def start_amp_watcher_thread(self):
         # Set up thread to watch for manual changes of the amp
@@ -92,21 +97,22 @@ class Ui(QMainWindow):
         # by:
         # http://stackoverflow.com/questions/29243692/pyqt5-how-to-make-qthread-return-data-to-main-thread
         # https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
-        self.thread = QThread()
+        self.watcher_thread = QThread()
         self.watcher = AmpControlWatcher(self.amp)
         self.watcher.have_data.connect(self.new_data_from_amp)
         self.shutdown_threads.connect(self.watcher.stop_watching)
-        self.watcher.moveToThread(self.thread)
-        self.thread.started.connect(self.watcher.work)
+        self.watcher.moveToThread(self.watcher_thread)
+        self.watcher_thread.started.connect(self.watcher.work)
 
-        self.thread.start()
+        self.watcher_thread.start()
 
     def closeEvent(self, event):
         logger.debug('Closing down amplifier watching thread')
-        self.shutdown_threads.emit()
-        self.thread.quit()
-        self.thread.wait()
-        logger.debug('Amplifier watching thread finished')
+        if self.watcher_thread is not None:
+            self.shutdown_threads.emit()
+            self.watcher_thread.quit()
+            self.watcher_thread.wait()
+            logger.debug('Amplifier watching thread finished')
         super(Ui, self).close()
         logger.debug('Exiting')
 
