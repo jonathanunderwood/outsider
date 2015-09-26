@@ -18,7 +18,7 @@
 from PyQt5 import uic
 from PyQt5.QtCore import QObject, QThread
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QMessageBox
 from PyQt5.QtWidgets import QApplication
 from blackstarid import BlackstarIDAmp, NoDataAvailable, NotConnectedError
 import logging
@@ -73,7 +73,8 @@ class Ui(QMainWindow):
             'fx_focus': self.fx_focus_changed_on_amp,
         }
 
-        print os.path.join(os.path.split(__file__)[0], 'outsider.ui')
+        uif = os.path.join(os.path.split(__file__)[0], 'outsider.ui')
+        logger.debug('loading GUI file: {0}'.format(uif))
         uic.loadUi(
             os.path.join(os.path.split(__file__)[0], 'outsider.ui'), self)
 
@@ -88,7 +89,18 @@ class Ui(QMainWindow):
             self.start_amp_watcher_thread()
             self.amp.startup()
         except NotConnectedError:
-            pass
+            raise
+
+    def disconnect(self):
+        if self.watcher_thread is not None:
+            logger.debug('Closing down amplifier watching thread')
+            self.shutdown_threads.emit()
+            self.watcher_thread.quit()
+            self.watcher_thread.wait()
+            logger.debug('Amplifier watching thread finished')
+
+        if self.amp.connected is True:
+            self.amp.disconnect()
 
     def start_amp_watcher_thread(self):
         # Set up thread to watch for manual changes of the amp
@@ -107,12 +119,8 @@ class Ui(QMainWindow):
         self.watcher_thread.start()
 
     def closeEvent(self, event):
-        logger.debug('Closing down amplifier watching thread')
-        if self.watcher_thread is not None:
-            self.shutdown_threads.emit()
-            self.watcher_thread.quit()
-            self.watcher_thread.wait()
-            logger.debug('Amplifier watching thread finished')
+        # Ran when the application is closed.
+        self.disconnect()
         super(Ui, self).close()
         logger.debug('Exiting')
 
@@ -305,6 +313,18 @@ class Ui(QMainWindow):
     ##################################################################
     # The following methods are the slots for changes made on the gui
     ##################################################################
+    @pyqtSlot()
+    def on_connectToAmpButton_clicked(self):
+        if self.amp.connected is False:
+            try:
+                self.connect()
+                self.connectToAmpButton.setText('Disconnect Amp')
+            except NotConnectedError:
+                QMessageBox.information(self,'Outsider', 'No amplifier found')
+        else:
+            self.disconnect()
+            self.connectToAmpButton.setText('Connect to Amp')
+
     @pyqtSlot(int)
     def on_volumeSlider_valueChanged(self, value):
         logger.debug('Volume slider: {0}'.format(value))
