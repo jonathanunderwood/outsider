@@ -15,4 +15,4 @@
 #
 # Copyright 2015, Jonathan Underwood. All rights reserved.
 
-from blackstarid import BlackstarIDAmp, NoDataAvailable
+from blackstarid import BlackstarIDAmp, NoDataAvailable, NotConnectedError
