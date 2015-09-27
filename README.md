@@ -6,6 +6,25 @@ Outsider software is not available for that platform, but since it is
 written in Python it should work on any platform. Patches to support
 other platforms would be gratefully received.
 
+## Current status
+
+This software is usable, but still under heavy development.
+
+Currently implemented:
+- Control of amplifier front panel controls
+- Control of amplifier effects
+
+To be implemented:
+- Selection of amplifier presets/patches
+- Saving of amplifer presets/patches
+- Uploading of presets/patches to amplifier
+- Control for effects loop on/off
+- Control for super-wide stereo on/off
+- Control for noise gate setting
+
+Out of scope:
+- Firmware updating
+
 ## Pre-requisites
 
 This software is written using Python 2.7, and should also work with
