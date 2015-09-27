@@ -75,8 +75,7 @@ class Ui(QMainWindow):
 
         uif = os.path.join(os.path.split(__file__)[0], 'outsider.ui')
         logger.debug('loading GUI file: {0}'.format(uif))
-        uic.loadUi(
-            os.path.join(os.path.split(__file__)[0], 'outsider.ui'), self)
+        uic.loadUi(uif, self)
 
         self.amp = BlackstarIDAmp()
         self.watcher_thread = None
