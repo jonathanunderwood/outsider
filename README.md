@@ -1,8 +1,44 @@
 # outsider
-This is not yet ready for public consumption, but if you can work out what it does (or will do), you're welcome to try it and tell me where it breaks.
 
+This software provides a GUI for controlling the Blackstar ID range of
+amplifiers. It is primarily written for Linux, as the Blackstar
+Outsider software is not available for that platform, but since it is
+written in Python it should work on any platform. Patches to support
+other platforms would be gratefully received.
 
-## Install udev rules
+## Pre-requisites
+
+This software is written using Python 2.7, and should also work with
+Python 3, though that is currently untested. It requires PyQt5 and
+PyUSB.
+
+### Fedora 22
+The following command should install all necessary pre-requisites:
+
+    dnf install python-qt5 pyusb
+
+### Other distributions
+
+Please help me to add instructions for other distributions here -
+please send patches against this file.
+
+## Installation
+
+The following command, ran from the root directory of the sources,
+will install the software:
+
+    python setup.py install
+
+If you prefer to install the software only for your current user,
+rather than system wide, the following command will do that:
+
+    python setup.py install --user
+
+The following command will display more options:
+
+    python setup.py --help
+
+### Installation of udev rules
 
 The file blackstar-id.rules contains udev rules to allow the user at
 the active seat to access the blackstar hardware. This file needs to
