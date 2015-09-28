@@ -220,12 +220,6 @@ class Ui(QMainWindow):
         self.delayLevelLabel.setEnabled(value)
         self.delayLevelLcdNumber.setEnabled(value)
         self.delayRadioButton.blockSignals(False)
-        if value == True:
-            self.amp.set_control('fx_focus', 2)
-        elif self.reverbRadioButton.isChecked():
-            self.amp.set_control('fx_focus', 1)
-        elif self.modRadioButton.isChecked():
-            self.amp.set_control('fx_focus', 2)
 
     def reverb_switch_changed_on_amp(self, value):
         value = bool(value)
@@ -239,12 +233,6 @@ class Ui(QMainWindow):
         self.reverbLevelLabel.setEnabled(value)
         self.reverbLevelLcdNumber.setEnabled(value)
         self.reverbRadioButton.blockSignals(False)
-        if value == True:
-            self.fx_focus_changed_on_amp(3)
-        elif self.modRadioButton.isChecked():
-            self.fx_focus_changed_on_amp(1)
-        elif self.delayRadioButton.isChecked():
-            self.fx_focus_changed_on_amp(2)
 
     def mod_type_changed_on_amp(self, value):
         self.modComboBox.blockSignals(True)
@@ -303,11 +291,33 @@ class Ui(QMainWindow):
         self.reverbLevelSlider.blockSignals(False)
 
     def fx_focus_changed_on_amp(self, value):
-        # print '>>>>>>>>>>>><<<<<<<<<<<', value
-        # self.effectsTabWidget.blockSignals(True)
-        # self.effectsTabWidget.setCurrentIndex(value - 1)
-        # self.effectsTabWidget.blockSignals(False)
-        pass
+        # This is a bit of a misnomer, as the amp doesn't emit data if
+        # the user changes the effect focus on the amp. However, when
+        # the user disables an effect in the GUI, if that effect had
+        # focus, we want to move the focus to another effect, if one
+        # is enabled. The way we do that, is in the slots associated
+        # with toggling an effect (see below), if the effect is
+        # disabled we issue a packet to query the state of all
+        # controls, which gives us an opportunity to react in this
+        # function here.
+        if value == 1 and not self.modRadioButton.isChecked():
+            if self.delayRadioButton.isChecked():
+                self.amp.set_control('fx_focus', 2)
+            elif self.reverbRadioButton.isChecked():
+                self.amp.set_control('fx_focus', 3)
+
+        elif value == 2 and not self.delayRadioButton.isChecked():
+            if self.reverbRadioButton.isChecked():
+                self.amp.set_control('fx_focus', 3)
+            elif self.modRadioButton.isChecked():
+                self.amp.set_control('fx_focus', 1)
+
+        if value == 3 and not self.reverbRadioButton.isChecked():
+            if self.modRadioButton.isChecked():
+                self.amp.set_control('fx_focus', 1)
+            elif self.delayRadioButton.isChecked():
+                self.amp.set_control('fx_focus', 2)
+
 
     ##################################################################
     # The following methods are the slots for changes made on the gui
@@ -378,10 +388,12 @@ class Ui(QMainWindow):
         self.amp.set_control('mod_switch', state)
         if state == 1:
             self.amp.set_control('fx_focus', 1)
-        elif self.delayRadioButton.isChecked():
-            self.amp.set_control('fx_focus', 2)
-        elif self.reverbRadioButton.isChecked():
-            self.amp.set_control('fx_focus', 3)
+        else:
+            # Find out if the mod effect had focus before being
+            # deactivated and shift focus to another effect if
+            # possible. The only mechanism we have available to do
+            # this is to get the status of all controls, sadly.
+            self.amp.startup()
 
     @pyqtSlot(int)
     def on_modComboBox_currentIndexChanged(self, value):
@@ -413,10 +425,12 @@ class Ui(QMainWindow):
         self.amp.set_control('delay_switch', state)
         if state == 1:
             self.amp.set_control('fx_focus', 2)
-        elif self.reverbRadioButton.isChecked():
-            self.amp.set_control('fx_focus', 3)
-        elif self.modRadioButton.isChecked():
-            self.amp.set_control('fx_focus', 1)
+        else:
+            # Find out if the mod effect had focus before being
+            # deactivated and shift focus to another effect if
+            # possible. The only mechanism we have available to do
+            # this is to get the status of all controls, sadly.
+            self.amp.startup()
 
     @pyqtSlot(int)
     def on_delayComboBox_currentIndexChanged(self, value):
@@ -448,10 +462,12 @@ class Ui(QMainWindow):
         self.amp.set_control('reverb_switch', state)
         if state == 1:
             self.amp.set_control('fx_focus', 3)
-        elif self.modRadioButton.isChecked():
-            self.amp.set_control('fx_focus', 1)
-        elif self.delayRadioButton.isChecked():
-            self.amp.set_control('fx_focus', 2)
+        else:
+            # Find out if the mod effect had focus before being
+            # deactivated and shift focus to another effect if
+            # possible. The only mechanism we have available to do
+            # this is to get the status of all controls, sadly.
+            self.amp.startup()
 
     @pyqtSlot(int)
     def on_reverbComboBox_currentIndexChanged(self, value):
