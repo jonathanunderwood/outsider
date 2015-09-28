@@ -17,12 +17,12 @@ Currently implemented:
 - Control of amplifier effects
 
 To be implemented:
-- Selection of amplifier presets/patches
-- Saving of amplifer presets/patches
-- Uploading of presets/patches to amplifier
-- Control for effects loop on/off
-- Control for super-wide stereo on/off
-- Control for noise gate setting
+- Selection of amplifier presets/patches [Work in progress]
+- Saving of amplifer presets/patches [Work in progress]
+- Uploading of presets/patches to amplifier [Work in progress]
+- Control for effects loop on/off [Not started yet]
+- Control for super-wide stereo on/off [Not started yet]
+- Control for noise gate setting [Not started yet]
 
 Out of scope:
 - Firmware updating
