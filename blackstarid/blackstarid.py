@@ -661,7 +661,9 @@ if __name__ == '__main__':
 
     try:
         amp = BlackstarIDAmp()
+        amp.connect()
     except:
+        logger.error('Failed to connect')
         sys.exit(1)
 
     try:
