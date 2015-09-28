@@ -6,6 +6,8 @@ Outsider software is not available for that platform, but since it is
 written in Python it should work on any platform. Patches to support
 other platforms would be gratefully received.
 
+![A screenshot to whet your apetite:](./outsider-screenshot.png?raw=true "Screenshot")
+
 ## Current status
 
 This software is usable, but still under heavy development.
