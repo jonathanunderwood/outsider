@@ -1,10 +1,24 @@
 # outsider
 
 This software provides a GUI for controlling the Blackstar ID range of
-amplifiers. It is primarily written for Linux, as the Blackstar
-Outsider software is not available for that platform, but since it is
-written in Python it should work on any platform. Patches to support
-other platforms would be gratefully received.
+amplifiers, and is an alternative to Blackstar's own Insider
+software. It is primarily written for Linux, as the Blackstar Insider
+software is not available for that platform, but since it is written
+in Python it should work on any platform. Patches to support other
+platforms would be gratefully received.
+
+The software is made available under the GPLv3 licence , which
+includes this Disclaimer of Warranty:
+
+THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY
+APPLICABLE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
+HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT
+WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND
+PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE PROGRAM PROVE
+DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR
+CORRECTION.
 
 ![A screenshot to whet your apetite:](./outsider-screenshot.png?raw=true "Screenshot")
 
