@@ -540,7 +540,7 @@ class BlackstarIDAmp(object):
                 # corresponds to the ID number of the control plus
                 # 3. Weird, but handy.
                 logger.debug('All controls info packet received\n')
-                settings = {'all_settings': True}
+                settings = {}
                 for control, id in self.controls.iteritems():
                     if control == 'delay_time':
                         settings[control] = (
