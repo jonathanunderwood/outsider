@@ -18,7 +18,7 @@
 from PyQt5 import uic
 from PyQt5.QtCore import QObject, QThread
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QGroupBox, QSlider, QLCDNumber, QRadioButton
 from PyQt5.QtWidgets import QApplication
 from blackstarid import BlackstarIDAmp, NoDataAvailable, NotConnectedError
 import logging
@@ -79,7 +79,44 @@ class Ui(QMainWindow):
 
         self.amp = BlackstarIDAmp()
         self.watcher_thread = None
+        self.controls_enabled(False)
         self.show()
+
+    def controls_enabled(self, bool):
+        # Disable/Enable all widgets except the connect button
+        if bool is True:
+            widgets = self.findChildren(QGroupBox)#(QObject)
+            for w in widgets:
+                if w.objectName() == 'TVPGroupBox' and self.amp.model == 'id-core':
+                    # self.TVPComboBox.setCurrentText('6L6')
+                    # self.TVPRadioButton.setChecked(False)
+                    # Don't enable as Core has  fixed TVP, probably with type 6L6
+                    pass
+                else:
+                    w.setEnabled(bool)
+
+        elif bool is False:
+            widgets = self.findChildren(QGroupBox)#(QObject)
+            for w in widgets:
+                w.setEnabled(bool)
+
+            widgets = self.findChildren(QSlider)
+            for w in widgets:
+                w.blockSignals(True)
+                w.setValue(0)
+                w.blockSignals(False)
+
+            widgets = self.findChildren(QLCDNumber)
+            for w in widgets:
+                w.blockSignals(True) # Not nescessary
+                w.display(0)
+                w.blockSignals(False) # Not nescessary
+
+            widgets = self.findChildren(QRadioButton)
+            for w in widgets:
+                w.blockSignals(True)
+                w.setChecked(False)
+                w.blockSignals(False)
 
     def connect(self):
         try:
@@ -328,10 +365,14 @@ class Ui(QMainWindow):
             try:
                 self.connect()
                 self.connectToAmpButton.setText('Disconnect Amp')
+                # Enable widgets
+                self.controls_enabled(True)
+
             except NotConnectedError:
                 QMessageBox.information(self,'Outsider', 'No amplifier found')
         else:
             self.disconnect()
+            self.controls_enabled(False)
             self.connectToAmpButton.setText('Connect to Amp')
 
     @pyqtSlot(int)
