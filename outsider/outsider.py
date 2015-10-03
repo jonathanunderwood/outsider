@@ -280,16 +280,19 @@ class Ui(QMainWindow):
     def mod_segval_changed_on_amp(self, value):
         self.modSegValSlider.blockSignals(True)
         self.modSegValSlider.setValue(value)
+        self.modSegValLcdNumber.display(value)
         self.modSegValSlider.blockSignals(False)
 
     def mod_level_changed_on_amp(self, value):
         self.modLevelSlider.blockSignals(True)
         self.modLevelSlider.setValue(value)
+        self.modLevelLcdNumber.display(value)
         self.modLevelSlider.blockSignals(False)
 
     def mod_speed_changed_on_amp(self, value):
         self.modSpeedSlider.blockSignals(True)
         self.modSpeedSlider.setValue(value)
+        self.modSpeedLcdNumber.display(value)
         self.modSpeedSlider.blockSignals(False)
 
     def delay_type_changed_on_amp(self, value):
@@ -300,16 +303,19 @@ class Ui(QMainWindow):
     def delay_feedback_changed_on_amp(self, value):
         self.delayFeedbackSlider.blockSignals(True)
         self.delayFeedbackSlider.setValue(value)
+        self.delayFeedbackLcdNumber.display(value)
         self.delayFeedbackSlider.blockSignals(False)
 
     def delay_level_changed_on_amp(self, value):
         self.delayLevelSlider.blockSignals(True)
         self.delayLevelSlider.setValue(value)
+        self.delayLevelLcdNumber.display(value)
         self.delayLevelSlider.blockSignals(False)
 
     def delay_time_changed_on_amp(self, value):
         self.delayTimeSlider.blockSignals(True)
         self.delayTimeSlider.setValue(value)
+        self.delayTimeLcdNumber.display(value)
         self.delayTimeSlider.blockSignals(False)
 
     def reverb_type_changed_on_amp(self, value):
@@ -320,11 +326,13 @@ class Ui(QMainWindow):
     def reverb_size_changed_on_amp(self, value):
         self.reverbSizeSlider.blockSignals(True)
         self.reverbSizeSlider.setValue(value)
+        self.reverbSizeLcdNumber.display(value)
         self.reverbSizeSlider.blockSignals(False)
 
     def reverb_level_changed_on_amp(self, value):
         self.reverbLevelSlider.blockSignals(True)
         self.reverbLevelSlider.setValue(value)
+        self.reverbLevelLcdNumber.display(value)
         self.reverbLevelSlider.blockSignals(False)
 
     def fx_focus_changed_on_amp(self, value):
@@ -364,9 +372,9 @@ class Ui(QMainWindow):
         if self.amp.connected is False:
             try:
                 self.connect()
-                self.connectToAmpButton.setText('Disconnect Amp')
                 # Enable widgets
                 self.controls_enabled(True)
+                self.connectToAmpButton.setText('Disconnect Amp')
 
             except NotConnectedError:
                 QMessageBox.information(self,'Outsider', 'No amplifier found')
