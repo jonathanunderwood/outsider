@@ -26,6 +26,7 @@ To be implemented:
 - Control for effects loop on/off [Not started yet]
 - Control for super-wide stereo on/off [Not started yet]
 - Control for noise gate setting [Not started yet]
+- Tuner [Not started yet]
 
 Out of scope:
 - Firmware updating
