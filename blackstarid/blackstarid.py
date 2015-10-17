@@ -203,6 +203,9 @@ class BlackstarIDAmp(object):
         'treble': [0, 127],
         'isf': [0, 127],
         'tvp_valve': [0, 5],
+        'resonance': [0, 127], # documentation only, never used
+        'presence': [0, 127], # documentation only, never used
+        'master_volume': [0, 127], # documentation only, never used
         'tvp_switch': [0, 1],
         'mod_switch': [0, 1],
         'delay_switch': [0, 1],
