@@ -222,6 +222,8 @@ class BlackstarIDAmp(object):
         'fx_focus': [1, 3],
     }
 
+    tuner_note = ['E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B', 'C', 'C#', 'D', 'D#']
+
     def __init__(self):
         self.connected = False
         self.reattach_kernel = []
@@ -600,6 +602,24 @@ class BlackstarIDAmp(object):
                     'Unhandled packet 3\n' + self._format_data(packet))
 
             return {}
+        elif packet[0] == 0x09:
+            # In this case, the amp is in tuner mode and this data is
+            # tuning data. It has the form 09 NN PP ...  If there is
+            # no note, nn and pp are 00.  Otherwise nn indicates the
+            # note w/in the scale from E == 01 to Eb == 0C, and pp
+            # indicates the variance in pitch (based on A440 tuning),
+            # from 0 (very flat) to 63 (very sharp), i.e, 0-99
+            # decimal.  So, standard tuning is:
+            # E  01 32 (same for low and high E strings)
+            # A  06 32
+            # D  0B 32
+            # G  04 32
+            # B  08 32
+            note = self.tuner_note[packet[1]]
+            delta = 50 - packet[2]
+            logger.debug(
+                'Data from amp:: tuner_note: {0} tuner_delta: {1}\n'.format(note, delta))
+            return {'tuner_note': note, 'tuner_delta': delta}
         elif packet[0] == 0x02:
             # Preset channel changed
             logger.debug('Data from amp:: preset: {0}\n'.format(packet[2]))

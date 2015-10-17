@@ -74,6 +74,8 @@ class Ui(QMainWindow):
             'preset': self.preset_changed_on_amp,
             'manual_mode': self.manual_mode_changed_on_amp,
             'tuner_mode': self.tuner_mode_changed_on_amp,
+            'tuner_note': self.tuner_note_changed_on_amp,
+            'tuner_delta': self.tuner_delta_changed_on_amp,
             'resonance': self.resonance_changed_on_amp,
             'presence': self.presence_changed_on_amp,
             'master_volume': self.master_volume_changed_on_amp,
@@ -391,6 +393,14 @@ class Ui(QMainWindow):
     def tuner_mode_changed_on_amp(self, value):
         # TODO: Stub for now - needs hooking into a suitable tuner widget
         logger.debug('tuner_mode changed on amp: {0}'.format(value))
+
+    def tuner_note_changed_on_amp(self, value):
+        # TODO: Stub for now - needs hooking into a suitable tuner widget
+        logger.debug('tuner_note changed on amp: {0}'.format(value))
+
+    def tuner_delta_changed_on_amp(self, value):
+        # TODO: Stub for now - needs hooking into a suitable tuner widget
+        logger.debug('tuner_delta changed on amp: {0}'.format(value))
 
     def resonance_changed_on_amp(self, value):
         # We don't have a control for this setting, so do nothing
