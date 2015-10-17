@@ -375,7 +375,7 @@ class BlackstarIDAmp(object):
         lines = (length / 16) + (length % 16 > 16)
 
         string = ''
-        for line in xrange(lines):
+        for line in range(lines):
             start = line * 16
             end = start + 16
             string += ' '.join(strings[start:end])
@@ -450,7 +450,7 @@ class BlackstarIDAmp(object):
 
         '''
         names = []
-        for i in xrange(1, 128):
+        for i in range(1, 128):
             data = [0x00] * 64
 
             data[0:4] = [0x02, 0x04, i, 0x00]
