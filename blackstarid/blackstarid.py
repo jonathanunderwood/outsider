@@ -225,7 +225,8 @@ class BlackstarIDAmp(object):
         'fx_focus': [1, 3],
     }
 
-    tuner_note = ['E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B', 'C', 'C#', 'D', 'D#']
+    tuner_note = ['E', 'F', 'F#', 'G', 'G#', 'A',
+                  'A#', 'B', 'C', 'C#', 'D', 'D#']
 
     def __init__(self):
         self.connected = False
