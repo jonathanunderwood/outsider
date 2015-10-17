@@ -342,10 +342,7 @@ class BlackstarIDAmp(object):
         self.interrupt_out = None
 
     def _send_data(self, data):
-        '''Take a list of bytes and send it to endpoint as a correctly
-        encoded string.'''
-        # Form a string of hex bytes from the list
-        string = ''.join(chr(n) for n in data)
+        '''Take a list of bytes and send it to endpoint'''
 
         data_length = len(data)
 
@@ -354,7 +351,10 @@ class BlackstarIDAmp(object):
                 'data length is {0} which is not 64'.format(data_length))
 
         # Write to endpoint, returning the number of bytes written
-        bytes_written = self.device.write(self.interrupt_out, string)
+        bytes_written = self.device.write(self.interrupt_out, data)
+
+        logger.debug("Data length {0}, bytes written {1}".format(data_length, bytes_written))
+
         if bytes_written != data_length:
             raise WriteToAmpError(
                 'Failed to write {0} bytes to amplifier.'.format(data_length - bytes_written))
