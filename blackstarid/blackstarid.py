@@ -189,7 +189,7 @@ class BlackstarIDAmp(object):
 
     # Construct a reversed dictionary so we can look up the control
     # changed from USB packet data
-    control_ids = dict([(val, key) for key, val in controls.iteritems()])
+    control_ids = dict([(val, key) for key, val in controls.items()])
 
     control_limits = {
         'voice': [0, 5],
@@ -541,7 +541,7 @@ class BlackstarIDAmp(object):
                 # 3. Weird, but handy.
                 logger.debug('All controls info packet received\n')
                 settings = {}
-                for control, id in self.controls.iteritems():
+                for control, id in self.controls.items():
                     if control == 'delay_time':
                         settings[control] = (
                             packet[id + 4] * 256) + packet[id + 3]
