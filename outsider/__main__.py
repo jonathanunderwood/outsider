@@ -15,7 +15,7 @@
 #
 # Copyright 2015, Jonathan Underwood. All rights reserved.
 
-import outsider
+from outsider.outsider import Ui
 import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPalette, QColor
@@ -31,7 +31,7 @@ def main(args=None):
     logger = logging.getLogger('outsider')
 
     app = QtWidgets.QApplication(sys.argv)
-    window = outsider.Ui()
+    window = Ui()
 
     # Tweak colors as per:
     # https://gist.github.com/QuantumCD/6245215
