@@ -32,14 +32,18 @@ Out of scope:
 
 ## Pre-requisites
 
-This software is written using Python 2.7, and should also work with
-Python 3, though that is currently untested. It requires PyQt5 and
-PyUSB.
+This software is written using Python 3.4. It requires PyQt5 and
+PyUSB. Python 2 isn't supported at present, but if you have a real
+need for Python 2 support, email me and I'll consider adding it.
 
 ### Fedora 22
 The following command should install all necessary pre-requisites:
 
-    dnf install python-qt5 pyusb
+    dnf install python3-setuptools python3-qt5 python3-pyusb
+
+### Ubuntu 14.04
+
+    apt-get install  python3-setuptools python3-qt5 python-usb
 
 ### Other distributions
 
@@ -51,16 +55,16 @@ please send patches against this file.
 The following command, ran from the root directory of the sources,
 will install the software:
 
-    python setup.py install
+    python3 setup.py install
 
 If you prefer to install the software only for your current user,
 rather than system wide, the following command will do that:
 
-    python setup.py install --user
+    python3 setup.py install --user
 
 The following command will display more options:
 
-    python setup.py --help
+    python3 setup.py --help
 
 ### Installation of udev rules
 
@@ -73,6 +77,29 @@ be copied to the directory /etc/udev/rules.d/ eg.
 and then the rules need to be reloaded:
 
     udevadm control --reload-rules
+
+## Running the program
+
+If you installed the package system wide, simply typing the following
+should launch the GUI:
+
+    outsider
+
+On the other hand, if you installed the package using the --user
+option (see above), then the program will be located under your user
+directory in the directory .local/bin which may or may not be on the
+PATH, depending on what distribution you're using. If it's not on the
+PATH, you can type:
+
+    ~/.local/bin/outsider
+
+# Contributors
+
+The program was written by Jonathan Underwood
+(jonathan.underwood@gmail.com), and the following people have made
+valuable contributions:
+
+- Rhys Yarranton 
 
 # License
 
