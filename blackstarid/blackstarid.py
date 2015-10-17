@@ -581,6 +581,13 @@ class BlackstarIDAmp(object):
                 # a preset.
                 logger.debug('Data from amp:: manual mode: {0}'.format(packet[4]))
                 return {'manual_mode': packet[4]}
+            if packet[1] == 0x11:
+                # Packet indicates entering or leaving tuner
+                # mode. Packet has the form 08 11 00 01 XX, where XX
+                # is 01 if amp is in tuner mode, and 00 if amp has
+                # left tuner mode.
+                logger.debug('Data from amp:: tuner mode: {0}'.format(packet[4]))
+                return {'tuner_mode': packet[4]}
             else:
                 # This is the third of the three response packets to the
                 # startup packet. This packet seems to indicate what

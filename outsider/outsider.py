@@ -73,6 +73,7 @@ class Ui(QMainWindow):
             'fx_focus': self.fx_focus_changed_on_amp,
             'preset': self.preset_changed_on_amp,
             'manual_mode': self.manual_mode_changed_on_amp,
+            'tuner_mode': self.tuner_mode_changed_on_amp,
             'resonance': self.resonance_changed_on_amp,
             'presence': self.presence_changed_on_amp,
             'master_volume': self.master_volume_changed_on_amp,
@@ -386,6 +387,10 @@ class Ui(QMainWindow):
             # there's no need to do anything here.
             pass
         logger.debug('manual_mode changed on amp: {0}'.format(value))
+
+    def tuner_mode_changed_on_amp(self, value):
+        # TODO: Stub for now - needs hooking into a suitable tuner widget
+        logger.debug('tuner_mode changed on amp: {0}'.format(value))
 
     def resonance_changed_on_amp(self, value):
         # We don't have a control for this setting, so do nothing
