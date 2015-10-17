@@ -409,7 +409,7 @@ class BlackstarIDAmp(object):
         if control is 'delay_time':
             data[0:4] = [0x03, ctrl_byte, 0x00, 0x02]
             data[4] = value % 256
-            data[5] = value / 256
+            data[5] = value // 256
         else:
             data[0:5] = [0x03, ctrl_byte, 0x00, 0x01, value]
 
