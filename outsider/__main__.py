@@ -19,7 +19,6 @@ from outsider.outsider import Ui
 import sys
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPalette, QColor
-import blackstarid
 import logging
 
 def main(args=None):
