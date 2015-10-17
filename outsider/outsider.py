@@ -71,6 +71,9 @@ class Ui(QMainWindow):
             'reverb_size': self.reverb_size_changed_on_amp,
             'reverb_level': self.reverb_level_changed_on_amp,
             'fx_focus': self.fx_focus_changed_on_amp,
+            'resonance': self.resonance_changed_on_amp,
+            'presence': self.presence_changed_on_amp,
+            'master_volume': self.master_volume_changed_on_amp,
         }
 
         uif = os.path.join(os.path.split(__file__)[0], 'outsider.ui')
@@ -363,6 +366,17 @@ class Ui(QMainWindow):
             elif self.delayRadioButton.isChecked():
                 self.amp.set_control('fx_focus', 2)
 
+    def resonance_changed_on_amp(self, value):
+        # We don't have a control for this setting, so do nothing
+        logger.debug('resonance changed on amp: {0}'.format(value))
+
+    def presence_changed_on_amp(self, value):
+        # We don't have a control for this setting, so do nothing
+        logger.debug('presence changed on amp: {0}'.format(value))
+
+    def master_volume_changed_on_amp(self, value):
+        # We don't have a control for this setting, so do nothing
+        logger.debug('master_volume changed on amp: {0}'.format(value))
 
     ##################################################################
     # The following methods are the slots for changes made on the gui
