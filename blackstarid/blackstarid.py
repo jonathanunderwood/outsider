@@ -644,9 +644,9 @@ class BlackstarIDAmp(object):
             # before we can emit a signal to update the
             # delay_time. This is stupidly stateful, but it's a quirk
             # of the amp design. So, we need to read more packets
-            # until we find delay_time_course, being careful not to
+            # until we find delay_time_coarse, being careful not to
             # lose any other data we may receive in the meantime. In
-            # practive the two packets are probably guaranteed by the
+            # practice the two packets are probably guaranteed by the
             # amp firmware to be sequential, but we don't know that
             # for sure.
             delay_time_fine = settings.pop('delay_time_fine')
