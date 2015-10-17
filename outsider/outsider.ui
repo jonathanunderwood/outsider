@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>676</width>
-    <height>575</height>
+    <height>724</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,6 +15,13 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_10">
+    <item row="0" column="0">
+     <widget class="QPushButton" name="connectToAmpButton">
+      <property name="text">
+       <string>Connect to Amp</string>
+      </property>
+     </widget>
+    </item>
     <item row="1" column="0" rowspan="2" colspan="2">
      <widget class="QGroupBox" name="groupBox">
       <property name="title">
@@ -286,49 +293,6 @@
          <item>
           <property name="text">
            <string>KT88</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <widget class="QGroupBox" name="groupBox_5">
-      <property name="title">
-       <string>Voice</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_8">
-       <item row="0" column="0">
-        <widget class="QComboBox" name="voiceComboBox">
-         <item>
-          <property name="text">
-           <string>Clean Warm</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Clean Bright</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Crunch</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Super Crunch</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>OD1</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>OD2</string>
           </property>
          </item>
         </widget>
@@ -740,11 +704,80 @@
       <zorder>reverbRadioButton</zorder>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QPushButton" name="connectToAmpButton">
-      <property name="text">
-       <string>Connect to Amp</string>
+    <item row="2" column="2">
+     <widget class="QGroupBox" name="groupBox_5">
+      <property name="title">
+       <string>Voice</string>
       </property>
+      <layout class="QGridLayout" name="gridLayout_8">
+       <item row="0" column="0">
+        <widget class="QComboBox" name="voiceComboBox">
+         <item>
+          <property name="text">
+           <string>Clean Warm</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Clean Bright</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Crunch</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Super Crunch</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>OD1</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>OD2</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="4" column="0" colspan="3">
+     <widget class="QGroupBox" name="presetGroupBox">
+      <property name="title">
+       <string>Presets</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QComboBox" name="comboBox"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="loadPresetPushButton">
+         <property name="text">
+          <string>Load</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="savePresetPushButton">
+         <property name="text">
+          <string>Save</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="renamePresetPushButton">
+         <property name="text">
+          <string>Rename</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>
@@ -755,6 +788,7 @@
    <zorder>groupBox_5</zorder>
    <zorder>groupBox_6</zorder>
    <zorder>connectToAmpButton</zorder>
+   <zorder>presetGroupBox</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
