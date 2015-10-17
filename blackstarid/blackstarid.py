@@ -542,7 +542,7 @@ class BlackstarIDAmp(object):
                 # Conveniently the byte address for each control setting
                 # corresponds to the ID number of the control plus
                 # 3. Weird, but handy.
-                logger.debug('All controls info packet received\n')
+                logger.debug('All controls info packet received\n' + self._format_data(packet))
                 settings = {}
                 for control, id in self.controls.items():
                     if control == 'delay_time':
