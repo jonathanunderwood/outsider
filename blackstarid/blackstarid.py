@@ -573,17 +573,30 @@ class BlackstarIDAmp(object):
             return {}
 
         elif packet[0] == 0x08:
-            # This is the third of the three response packets to the
-            # startup packet. This packet seems to indicate what
-            # preset is selected (or manual).
-            # 08 01 00 1B F0 00 01 01 40 00 00 00 00 3D 00 00
-            # 10 00 01 00 00 00 00 00 00 00 00 02 00 01 01 03
-            # 00 15 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-            # 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-            logger.debug(
-                'Unhandled startup packet 3\n' + self._format_data(packet))
+            if packet[1] == 0x03:
+                # This packet indicates if the amp is in manual mode
+                # or not and has the form 08 03 00 01 XX ... if XX is
+                # 01, then the amp has been switched to manual mode,
+                # and if it's 00, then the amp has been switched into
+                # a preset.
+                logger.debug('Data from amp:: manual mode: {0}'.format(packet[4]))
+                return {'manual_mode': packet[4]}
+            else:
+                # This is the third of the three response packets to the
+                # startup packet. This packet seems to indicate what
+                # preset is selected (or manual).
+                # 08 01 00 1B F0 00 01 01 40 00 00 00 00 3D 00 00
+                # 10 00 01 00 00 00 00 00 00 00 00 02 00 01 01 03
+                # 00 15 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                # 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                logger.debug(
+                    'Unhandled packet 3\n' + self._format_data(packet))
 
             return {}
+        elif packet[0] == 0x02:
+            # Preset channel changed
+            logger.debug('Data from amp:: preset: {0}\n'.format(packet[2]))
+            return {'preset': packet[2]}
 
         # We'll only reach here if we haven't handled the packet and returned
         # earlier

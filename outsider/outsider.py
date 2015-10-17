@@ -71,6 +71,8 @@ class Ui(QMainWindow):
             'reverb_size': self.reverb_size_changed_on_amp,
             'reverb_level': self.reverb_level_changed_on_amp,
             'fx_focus': self.fx_focus_changed_on_amp,
+            'preset': self.preset_changed_on_amp,
+            'manual_mode': self.manual_mode_changed_on_amp,
             'resonance': self.resonance_changed_on_amp,
             'presence': self.presence_changed_on_amp,
             'master_volume': self.master_volume_changed_on_amp,
@@ -365,6 +367,25 @@ class Ui(QMainWindow):
                 self.amp.set_control('fx_focus', 1)
             elif self.delayRadioButton.isChecked():
                 self.amp.set_control('fx_focus', 2)
+
+    def preset_changed_on_amp(self, value):
+        # TODO: This function is a stub for now, but will need hooking
+        # up to a combo box widget in the gui for selecting/indicating
+        # preset
+        logger.debug('preset changed on amp: {0}'.format(value))
+
+    def manual_mode_changed_on_amp(self, value):
+        # TODO: This also needs hooking up to the preset combo box in
+        # the GUI
+        if value == 1:
+            # Here we'd need to set the combo box to "Manual"
+            pass
+        else:
+            # We're no longer in manual mode, but since in this case
+            # another packet will indicate the preset selected,
+            # there's no need to do anything here.
+            pass
+        logger.debug('manual_mode changed on amp: {0}'.format(value))
 
     def resonance_changed_on_amp(self, value):
         # We don't have a control for this setting, so do nothing
