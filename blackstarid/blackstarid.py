@@ -375,7 +375,7 @@ class BlackstarIDAmp(object):
         # Now break up into lines, each with 16 entries
         length = len(strings)
 
-        lines = (length / 16) + (length % 16 > 16)
+        lines = (length // 16) + (length % 16 > 16)
 
         string = ''
         for line in range(lines):
