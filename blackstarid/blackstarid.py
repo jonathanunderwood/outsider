@@ -516,9 +516,29 @@ class BlackstarIDAmp(object):
         except usb.core.USBError:
             raise NoDataAvailable
 
-        # The 4th byte (packet[3]) specifies the subsequent number of
-        # bytes specifying a value.
-        if packet[0] == 0x03:
+        if packet[0] == 0x02:
+            if packet[1] == 0x04:
+                # Then packet specifies a preset name
+                preset = packet[2]
+                namel = filter(lambda n: n > 0, packet[4:25])
+                namec = [chr(i) for i in namel]
+                name = ''.join(namec)
+                logger.debug('Data from amp:: preset {0} has name: {1}\n'.format(preset, name))
+                return {'preset_name': [preset, name]}
+            elif packet[1] == 0x06:
+                # Then packet is indicating that the preset has been
+                # changed on the amp. This can happen if the user
+                # selects a preset with an amp button. But, this
+                # packet is also sent after the amp changes channel in
+                # response to sending a packet to change channel.
+                logger.debug('Data from amp:: preset: {0}\n'.format(packet[2]))
+                return {'preset': packet[2]}
+            else:
+                pass
+
+        elif packet[0] == 0x03:
+            # The 4th byte (packet[3]) specifies the subsequent number of
+            # bytes specifying a value.
             if packet[3] == 0x01 or packet[3] == 0x02:
                 # Identify which control was changed
                 id = packet[1]
@@ -646,10 +666,6 @@ class BlackstarIDAmp(object):
             logger.debug(
                 'Data from amp:: tuner_note: {0} tuner_delta: {1}\n'.format(note, delta))
             return {'tuner_note': note, 'tuner_delta': delta}
-        elif packet[0] == 0x02:
-            # Preset channel changed
-            logger.debug('Data from amp:: preset: {0}\n'.format(packet[2]))
-            return {'preset': packet[2]}
 
         # We'll only reach here if we haven't handled the packet and returned
         # earlier
