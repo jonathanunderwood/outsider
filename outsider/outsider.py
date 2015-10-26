@@ -79,6 +79,7 @@ class Ui(QMainWindow):
             'resonance': self.resonance_changed_on_amp,
             'presence': self.presence_changed_on_amp,
             'master_volume': self.master_volume_changed_on_amp,
+            'preset_name': self.preset_name_from_amp,
         }
 
         uif = os.path.join(os.path.split(__file__)[0], 'outsider.ui')
@@ -132,6 +133,7 @@ class Ui(QMainWindow):
             self.amp.drain()
             self.start_amp_watcher_thread()
             self.amp.startup()
+            self.amp.get_all_preset_names()
         except NotConnectedError:
             raise
 
@@ -371,11 +373,17 @@ class Ui(QMainWindow):
             elif self.delayRadioButton.isChecked():
                 self.amp.set_control('fx_focus', 2)
 
+    def preset_name_from_amp(self, namelist):
+        idx = namelist[0] - 1 # Presets are numbered from 1
+        name = str(namelist[0]) + '. ' + namelist[1]
+        self.presetNamesListWidget.insertItem(idx, name)
+
     def preset_changed_on_amp(self, value):
         # TODO: This function is a stub for now, but will need hooking
         # up to a combo box widget in the gui for selecting/indicating
         # preset
         logger.debug('preset changed on amp: {0}'.format(value))
+        self.presetNamesListWidget.setCurrentRow(value - 1)
 
     def manual_mode_changed_on_amp(self, value):
         # TODO: This also needs hooking up to the preset combo box in
@@ -586,6 +594,12 @@ class Ui(QMainWindow):
         self.amp.set_control('reverb_level', value)
         self.amp.set_control('fx_focus', 3)
 
+    @pyqtSlot()
+    def on_loadPresetPushButton_clicked(self):
+        idx = self.presetNamesListWidget.currentRow()
+        preset = idx + 1 # Presets are numbered from 1
+        self.amp.select_preset(preset)
+
     # When the modulation type is changed, we want to change the label
     # associated with the segment value control. So, we need to define
     # a slot to trigger when the modulation type is changed, and a
@@ -604,7 +618,6 @@ class Ui(QMainWindow):
             self.mod_segval_label_update.emit('Mix')
         elif value == 3:
             self.mod_segval_label_update.emit('FreqMod')
-
 
 class AmpControlWatcher(QObject):
     have_data = pyqtSignal(dict, name='have_data')
