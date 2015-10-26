@@ -450,29 +450,51 @@ class BlackstarIDAmp(object):
 
         logger.debug('Startup packet sent')
 
-    def get_preset_names(self):
-        '''Returns a list of strings, each of which is a preset name.  Note
-        that this method interprets response packets itself, and does
-        not rely on read_data_packet. This may change in the future,
-        and this function may simply send the request packet. The
-        design is in process.
+    def get_preset_name(self, preset):
+        '''Send a request packet to get the name of the specified preset. No
+        processing of the returned packet is done.
+
+        ``preset`` must be an integer in the range 1..128
 
         '''
-        names = []
-        for i in range(1, 128):
-            data = [0x00] * 64
+        if self.connected is False:
+            raise NotConnectedError
 
-            data[0:4] = [0x02, 0x04, i, 0x00]
+        if preset not in range(1, 129):
+            msg = 'Preset number {0} out of range'.format(preset)
+            logger.debug(msg)
+            raise ValueError(msg)
 
-            self._send_data(data)
+        data = [0x00] * 64
+        data[0:4] = [0x02, 0x04, preset, 0x00]
 
-            ret = self.device.read(self.interrupt_in, 64)
+        self._send_data(data)
 
-            namel = filter(lambda n: n > 0, ret[4:25])
-            namec = [str(unichr(i)) for i in namel]
-            names += [''.join(namec)]
+    def get_all_preset_names(self):
+        '''Sends request packets requesting all preset names. No processing of
+        the returned packets is done.
 
-        return names
+        '''
+        for i in range(1, 129):
+            self.get_preset_name(i)
+
+    def select_preset(self, preset):
+        '''Selects a preset.
+
+        ``preset`` must be an integer between 1..128
+        '''
+        if self.connected is False:
+            raise NotConnectedError
+
+        if preset not in range(1, 129):
+            msg = 'Preset number {0} out of range'.format(preset)
+            logger.debug(msg)
+            raise ValueError(msg)
+
+        data = [0x00] * 64
+        data[0:4] = [0x02, 0x01, preset, 0x00]
+
+        self._send_data(data)
 
     def read_data_packet(self):
         '''Attempts to read a data packet from the amplifier. If no data is
