@@ -757,13 +757,6 @@
         <widget class="QListWidget" name="presetNamesListWidget"/>
        </item>
        <item>
-        <widget class="QPushButton" name="loadPresetPushButton">
-         <property name="text">
-          <string>Load</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="savePresetPushButton">
          <property name="text">
           <string>Save</string>
