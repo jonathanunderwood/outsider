@@ -18,7 +18,7 @@
 from PyQt5 import uic
 from PyQt5.QtCore import QObject, QThread
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QGroupBox, QSlider, QLCDNumber, QRadioButton
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QGroupBox, QSlider, QLCDNumber, QRadioButton, QListWidgetItem
 from PyQt5.QtWidgets import QApplication
 from blackstarid import BlackstarIDAmp, NoDataAvailable, NotConnectedError
 import logging
@@ -594,8 +594,8 @@ class Ui(QMainWindow):
         self.amp.set_control('reverb_level', value)
         self.amp.set_control('fx_focus', 3)
 
-    @pyqtSlot()
-    def on_loadPresetPushButton_clicked(self):
+    @pyqtSlot(QListWidgetItem)
+    def on_presetNamesListWidget_itemDoubleClicked(self, item):
         idx = self.presetNamesListWidget.currentRow()
         preset = idx + 1 # Presets are numbered from 1
         self.amp.select_preset(preset)
