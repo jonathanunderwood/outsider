@@ -478,6 +478,85 @@ class BlackstarIDAmp(object):
         for i in range(1, 129):
             self.get_preset_name(i)
 
+    def set_preset_name(self, preset, name):
+        '''Set the name of the specified preset.
+
+        ``preset`` must be an integer in the range 1..128
+
+        ``name`` is a string, and must be less than 21 characters long
+
+        '''
+        # It's not possible to simply send the name data to the amp to
+        # rename a preset, unfortunately. The amp firmware expects to
+        # receive the name data in one packet, and then the preset
+        # settings data in the subsequent packet. Sending only the
+        # first one doesn't result in the name being changed. So out
+        # approach here to just change the name is to query the preset
+        # settings, and then send them back.
+        if self.connected is False:
+            raise NotConnectedError
+
+        if len(name) > 21:
+            msg = 'Name {0} is longer than 21 characters'
+            logger.error(msg)
+            raise ValueError(msg)
+
+        if preset not in range(1, 129):
+            msg = 'Preset number {0} out of range'.format(preset)
+            logger.error(msg)
+            raise ValueError(msg)
+
+        # Get relevant preset settings
+        data = [0x00] * 64
+        data[0:4] = [0x02, 0x05, preset, 0x00]
+        self._send_data(data)
+        settings = self.device.read(self.interrupt_in, 64)
+
+        # Now form a packet used to set the (unchanged) settings
+        settings[1] = 0x03 # instead of 0x02
+        settings[3] = 0x29 # instead of 0x2a - weirdly inconsistent
+
+        # Form packet for preset name
+        namepkt = [0x00] * 64
+        namepkt[0:4] = [0x02, 0x02, preset, 0x15]
+
+        # Form a list of ascii values of each character
+        namel = [ord(c) for c in name]
+        namepkt[4:4 + len(namel)] = namel
+
+        self._send_data(namepkt)
+        self._send_data(settings)
+
+        # The amp responds with a packet confirming the new name and a
+        # packet confirming the preset settings. We don't needthose so
+        # we'll simply drop them, after checking they're sensible.
+        try:
+            packet1 = self.device.read(self.interrupt_in, 64)
+            packet2 = self.device.read(self.interrupt_in, 64)
+        except usb.core.USBError:
+            msg = 'Failed to get response from amp when changing preset name'
+            logger.error(msg)
+            raise NoDataAvailable(msg)
+
+        # Check the first packet contains the same name
+        if packet1[0:4].tolist() != [0x02, 0x04, preset, 0x15] or packet1[4:25].tolist() != namepkt[4:25]:
+            msg = 'Incorrect response packet 1 when setting preset name'
+            logger.error(msg + '\n' + self._format_data(packet1))
+            raise RuntimeError(msg)
+
+        # Check the second packet contains the same settings data as
+        # earlier. Note that the range here could either be [4:46] or
+        # [4:47] depending on whether there are 0x2a or 0x29 bytes of
+        # data to read - the packet containing the settings, and the
+        # form of the packet sent to set the preset are inconsistent
+        # here. It seems that 4[47] works, though, so the longer
+        # number is probably correct.
+        if packet2[0:4].tolist() != [0x02, 0x05, preset, 0x2a] or packet2[4:47] != settings[4:47]:
+            msg = 'Incorrect response packet 2 when setting preset name'
+            logger.error(msg + '\n' + self._format_data(packet2))
+            raise RuntimeError(msg)
+
+
     def select_preset(self, preset):
         '''Selects a preset.
 
