@@ -462,7 +462,7 @@ class BlackstarIDAmp(object):
 
         if preset not in range(1, 129):
             msg = 'Preset number {0} out of range'.format(preset)
-            logger.debug(msg)
+            logger.error(msg)
             raise ValueError(msg)
 
         data = [0x00] * 64
