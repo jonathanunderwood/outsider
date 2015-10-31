@@ -16,7 +16,7 @@
 # Copyright 2015, Jonathan Underwood. All rights reserved.
 
 from PyQt5 import uic
-from PyQt5.QtCore import QObject, QThread
+from PyQt5.QtCore import QObject, QThread, QMutex
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
 from PyQt5.QtWidgets import QMainWindow, QMessageBox, QGroupBox, QSlider, QLCDNumber, QRadioButton, QListWidgetItem
 from PyQt5.QtWidgets import QApplication
@@ -86,6 +86,7 @@ class Ui(QMainWindow):
         logger.debug('loading GUI file: {0}'.format(uif))
         uic.loadUi(uif, self)
 
+        self.amp_mutex = None
         self.amp = BlackstarIDAmp()
         self.watcher_thread = None
         self.controls_enabled(False)
@@ -156,7 +157,8 @@ class Ui(QMainWindow):
         # http://stackoverflow.com/questions/29243692/pyqt5-how-to-make-qthread-return-data-to-main-thread
         # https://mayaposch.wordpress.com/2011/11/01/how-to-really-truly-use-qthreads-the-full-explanation/
         self.watcher_thread = QThread()
-        self.watcher = AmpControlWatcher(self.amp)
+        self.amp_mutex = QMutex()
+        self.watcher = AmpControlWatcher(self.amp, self.amp_mutex)
         self.watcher.have_data.connect(self.new_data_from_amp)
         self.shutdown_threads.connect(self.watcher.stop_watching)
         self.watcher.moveToThread(self.watcher_thread)
@@ -628,9 +630,10 @@ class AmpControlWatcher(QObject):
         logger.debug('signal received in stop_watching slot')
         self.shutdown = True
 
-    def __init__(self, amp):
+    def __init__(self, amp, mutex):
         super(AmpControlWatcher, self).__init__()
         self.amp = amp
+        self.amp_mutex = mutex
         logger.debug('AmpControlWatcher initialized')
 
     def work(self):
@@ -644,15 +647,17 @@ class AmpControlWatcher(QObject):
             # We need to call this, otherwise in the thread the
             # shutdown signal is never processed
             QApplication.processEvents()
-            try:
-                settings = self.amp.read_data()
-                for control, value in settings.items():
-                    logger.debug(
-                        'Amp adjustment detected:: control: {0} value: {1}'.format(control, value))
-                self.have_data.emit(settings)
-            except NoDataAvailable:
-                logger.debug('No changes of amp controls reported')
-                # self.amp.startup()
-                continue
+            if self.amp_mutex.tryLock():
+                try:
+                    settings = self.amp.read_data()
+                except NoDataAvailable:
+                    self.amp_mutex.unlock()
+                    logger.debug('No changes of amp controls reported')
+                else:
+                    self.amp_mutex.unlock()
+                    for control, value in settings.items():
+                        logger.debug(
+                            'Amp adjustment detected:: control: {0} value: {1}'.format(control, value))
+                    self.have_data.emit(settings)
 
         logger.debug('AmpWatcher watching loop exited')
