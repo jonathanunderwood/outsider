@@ -500,7 +500,7 @@ class BlackstarIDAmp(object):
             raise NotConnectedError
 
         if len(name) > 21:
-            msg = 'Name {0} is longer than 21 characters'
+            msg = 'Name {0} is longer than 21 characters'.format(name)
             logger.error(msg)
             raise ValueError(msg)
 
