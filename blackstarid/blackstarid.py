@@ -478,12 +478,15 @@ class BlackstarIDAmp(object):
         for i in range(1, 129):
             self.get_preset_name(i)
 
-    def set_preset_name(self, preset, name):
+    def set_preset_name(self, preset, name, handle_response=False):
         '''Set the name of the specified preset.
 
         ``preset`` must be an integer in the range 1..128
 
         ``name`` is a string, and must be less than 21 characters long
+
+        ``handle_response`` specifies whether to receive and check the
+        amplifier response packets. Default is False.
 
         '''
         # It's not possible to simply send the name data to the amp to
@@ -527,34 +530,35 @@ class BlackstarIDAmp(object):
         self._send_data(namepkt)
         self._send_data(settings)
 
-        # The amp responds with a packet confirming the new name and a
-        # packet confirming the preset settings. We don't needthose so
-        # we'll simply drop them, after checking they're sensible.
-        try:
-            packet1 = self.device.read(self.interrupt_in, 64)
-            packet2 = self.device.read(self.interrupt_in, 64)
-        except usb.core.USBError:
-            msg = 'Failed to get response from amp when changing preset name'
-            logger.error(msg)
-            raise NoDataAvailable(msg)
+        if handle_response == True:
+            # The amp responds with a packet confirming the new name and a
+            # packet confirming the preset settings. We don't needthose so
+            # we'll simply drop them, after checking they're sensible.
+            try:
+                packet1 = self.device.read(self.interrupt_in, 64)
+                packet2 = self.device.read(self.interrupt_in, 64)
+            except usb.core.USBError:
+                msg = 'Failed to get response from amp when changing preset name'
+                logger.error(msg)
+                raise NoDataAvailable(msg)
 
-        # Check the first packet contains the same name
-        if packet1[0:4].tolist() != [0x02, 0x04, preset, 0x15] or packet1[4:25].tolist() != namepkt[4:25]:
-            msg = 'Incorrect response packet 1 when setting preset name'
-            logger.error(msg + '\n' + self._format_data(packet1))
-            raise RuntimeError(msg)
+            # Check the first packet contains the same name
+            if packet1[0:4].tolist() != [0x02, 0x04, preset, 0x15] or packet1[4:25].tolist() != namepkt[4:25]:
+                msg = 'Incorrect response packet 1 when setting preset name'
+                logger.error(msg + '\n' + self._format_data(packet1))
+                raise RuntimeError(msg)
 
-        # Check the second packet contains the same settings data as
-        # earlier. Note that the range here could either be [4:46] or
-        # [4:47] depending on whether there are 0x2a or 0x29 bytes of
-        # data to read - the packet containing the settings, and the
-        # form of the packet sent to set the preset are inconsistent
-        # here. It seems that 4[47] works, though, so the longer
-        # number is probably correct.
-        if packet2[0:4].tolist() != [0x02, 0x05, preset, 0x2a] or packet2[4:47] != settings[4:47]:
-            msg = 'Incorrect response packet 2 when setting preset name'
-            logger.error(msg + '\n' + self._format_data(packet2))
-            raise RuntimeError(msg)
+            # Check the second packet contains the same settings data as
+            # earlier. Note that the range here could either be [4:46] or
+            # [4:47] depending on whether there are 0x2a or 0x29 bytes of
+            # data to read - the packet containing the settings, and the
+            # form of the packet sent to set the preset are inconsistent
+            # here. It seems that 4[47] works, though, so the longer
+            # number is probably correct.
+            if packet2[0:4].tolist() != [0x02, 0x05, preset, 0x2a] or packet2[4:47] != settings[4:47]:
+                msg = 'Incorrect response packet 2 when setting preset name'
+                logger.error(msg + '\n' + self._format_data(packet2))
+                raise RuntimeError(msg)
 
 
     def select_preset(self, preset):
