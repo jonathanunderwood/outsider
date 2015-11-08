@@ -616,6 +616,9 @@ class Ui(QMainWindow):
             'Enter new name for preset {0}:'.format(preset)
         )
         if ok == True:
+            # We need to grab the amp mutex to stop the amp watcher
+            # thread from consuming the packets emitted by the amp in
+            # the preset rename process
             self.amp_mutex.lock()
             self.amp.set_preset_name(preset, name)
             self.amp_mutex.unlock()
