@@ -385,7 +385,7 @@ class Ui(QMainWindow):
         # up to a combo box widget in the gui for selecting/indicating
         # preset
         logger.debug('preset changed on amp: {0}'.format(value))
-        self.presetNamesListWidget.setCurrentRow(value - 1)
+        self.presetNamesList.setCurrentRow(value - 1)
 
     def manual_mode_changed_on_amp(self, value):
         # TODO: This also needs hooking up to the preset combo box in
