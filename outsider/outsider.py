@@ -18,7 +18,7 @@
 from PyQt5 import uic
 from PyQt5.QtCore import QObject, QThread, QMutex
 from PyQt5.QtCore import pyqtSlot, pyqtSignal
-from PyQt5.QtWidgets import QMainWindow, QMessageBox, QGroupBox, QSlider, QLCDNumber, QRadioButton, QListWidgetItem
+from PyQt5.QtWidgets import QMainWindow, QMessageBox, QGroupBox, QSlider, QLCDNumber, QRadioButton, QListWidgetItem, QInputDialog
 from PyQt5.QtWidgets import QApplication
 from blackstarid import BlackstarIDAmp, NoDataAvailable, NotConnectedError
 import logging
@@ -601,10 +601,27 @@ class Ui(QMainWindow):
         self.amp.set_control('fx_focus', 3)
 
     @pyqtSlot(QListWidgetItem)
-    def on_presetNamesListWidget_itemDoubleClicked(self, item):
-        idx = self.presetNamesListWidget.currentRow()
+    def on_presetNamesList_itemDoubleClicked(self, item):
+        idx = self.presetNamesList.currentRow()
         preset = idx + 1 # Presets are numbered from 1
         self.amp.select_preset(preset)
+
+    @pyqtSlot()
+    def on_renamePresetPushButton_clicked(self):
+        idx = self.presetNamesList.currentRow()
+        preset = idx + 1 # Presets are numbered from 1
+
+        name, ok = QInputDialog.getText(
+            self, 'Input Dialog',
+            'Enter new name for preset {0}:'.format(preset)
+        )
+        if ok == True:
+            self.amp_mutex.lock()
+            self.amp.set_preset_name(preset, name)
+            self.amp_mutex.unlock()
+            # Query amp for name of channel to trigger a call to
+            # self.preset_name_from_amp
+            self.amp.get_preset_name(preset)
 
     # When the modulation type is changed, we want to change the label
     # associated with the segment value control. So, we need to define
