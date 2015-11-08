@@ -378,7 +378,11 @@ class Ui(QMainWindow):
     def preset_name_from_amp(self, namelist):
         idx = namelist[0] - 1 # Presets are numbered from 1
         name = str(namelist[0]) + '. ' + namelist[1]
-        self.presetNamesListWidget.insertItem(idx, name)
+        item = self.presetNamesList.item(idx)
+        if item is None:
+            self.presetNamesList.insertItem(idx, name)
+        else:
+            item.setText(name)
 
     def preset_changed_on_amp(self, value):
         # TODO: This function is a stub for now, but will need hooking
