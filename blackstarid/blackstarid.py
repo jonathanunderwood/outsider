@@ -141,7 +141,7 @@ class BlackstarIDAmpPreset(object):
 # Implementation note regarding reading delay time info from the amp
 # when controls are changed on the amp:
 #
-# 1. Ff the tap button is used, then a single packet is returned with
+# 1. If the tap button is used, then a single packet is returned with
 #    two bytes specifying the delay time. This packet will have the
 #    form [0x03, 0x1b, 0x00, 0x02, A, B,...] and the delay time is
 #    (256*B)+A.
