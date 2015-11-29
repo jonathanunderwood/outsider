@@ -64,29 +64,32 @@ class BlackstarIDAmpPreset(object):
     def __init__(self):
         pass
 
-    def from_packet(self, packet):
+    @classmethod
+    def from_packet(cls, packet):
         # Check that the packet passed is actually a packet containing
         # preset settings.
         if packet[0] != 0x02 or packet[1] != 0x05 or packet[3] != 0x2A:
             raise ValueError('Packet is not a preset settings packet')
 
-        self.preset_number = packet[2]
+        ps = cls()
 
-        self.voice = packet[4]  # 00-05
-        self.gain = packet[5]  # 00-7F
-        self.volume = packet[6]  # 00-7F
-        self.bass = packet[7]  # 00-7F
-        self.middle = packet[8]  # 00-7F
-        self.treble = packet[9]  # 00-7F
-        self.isf = packet[10]  # 00-7F
-        self.tvp = packet[17]  # 00 or 01
-        self.tvp_valve = packet[11]  # 00-05
-        self.modulation = packet[18]  # 00 or 01
-        self.delay = packet[19]  # 00 or 01
+        ps.preset_number = packet[2]
 
-        self.reverb = packet[20]  # 00 or 01
-        self.reverb_type = packet[32]  # 00-03
-        self.reverb_segval = packet[33]  # 00-1F
+        ps.voice = packet[4]  # 00-05
+        ps.gain = packet[5]  # 00-7F
+        ps.volume = packet[6]  # 00-7F
+        ps.bass = packet[7]  # 00-7F
+        ps.middle = packet[8]  # 00-7F
+        ps.treble = packet[9]  # 00-7F
+        ps.isf = packet[10]  # 00-7F
+        ps.tvp = packet[17]  # 00 or 01
+        ps.tvp_valve = packet[11]  # 00-05
+        ps.modulation = packet[18]  # 00 or 01
+        ps.delay = packet[19]  # 00 or 01
+
+        ps.reverb = packet[20]  # 00 or 01
+        ps.reverb_type = packet[32]  # 00-03
+        ps.reverb_segval = packet[33]  # 00-1F
 
         # There is a point of confusion here. Adjusting reverb level
         # alters packet[35], but also packet[12]. However, adjusting
@@ -95,11 +98,11 @@ class BlackstarIDAmpPreset(object):
         # and that a firmware bug is changing packet[12] when reverb
         # level is changed. Will be interesting to see if this changes
         # with a later firmware.
-        self.reverb_level = packet[35]  # 00-7F
+        ps.reverb_level = packet[35]  # 00-7F
 
-        self.delay_type = packet[26]  # 00-03
-        self.delay_segval = packet[27]  # 00-1F
-        self.delay_level = packet[29]  # 00-7F
+        ps.delay_type = packet[26]  # 00-03
+        ps.delay_segval = packet[27]  # 00-1F
+        ps.delay_level = packet[29]  # 00-7F
 
         # The delay time setting is specifed with two bytes,
         # packet[30] and packet[31]. With the delay set to the minimum
@@ -111,27 +114,29 @@ class BlackstarIDAmpPreset(object):
         # ms, and the maximum delay is 2s. So, [0x64, 0x00] = 100ms
         # makes sense. So, the actual delay in ms is:
         # delay = (packet[31] * 256 + packet[30])
-        self.delay_time_1 = packet[30]  # 00-FF
-        self.delay_time_2 = packet[31]  # 00-07
+        ps.delay_time_1 = packet[30]  # 00-FF
+        ps.delay_time_2 = packet[31]  # 00-07
 
-        self.modulation_type = packet[21]  # 00-03
-        self.modulation_segval = packet[22]  # 00-1F
-        self.modulation_level = packet[12]  # 00-7F
-        self.modulation_rate = packet[25]  # 00-7F
+        ps.modulation_type = packet[21]  # 00-03
+        ps.modulation_segval = packet[22]  # 00-1F
+        ps.modulation_level = packet[12]  # 00-7F
+        ps.modulation_rate = packet[25]  # 00-7F
 
         # This next setting is weird, it seems to reflect the absolute
         # position of the segmented selection knowb when selection
         # modulation type and segment value. It takes values between
         # 00-1F in the "1" segment, 20-3F in the "2" segment, 30-4F
         # when in the "3" segment and 40-5F when in the "4" segment.
-        self.modulation_abspos = packet[13]
+        ps.modulation_abspos = packet[13]
 
         # This denotes which efect has "focus" (to use the term in the
         # blackstar manual) i.e. is being controlled by the level,
         # type and tap controls. This is the effect which has the
         # green LED lit on the front panel. 01 is Mod, 02 is delay, 03
         # is reverb.
-        self.effect_focus = packet[39]
+        ps.effect_focus = packet[39]
+
+        return ps
 
 # Implementation note regarding reading delay time info from the amp
 # when controls are changed on the amp:
