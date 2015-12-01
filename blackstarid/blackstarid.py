@@ -623,6 +623,12 @@ class BlackstarIDAmp(object):
                 return {'preset': packet[2]}
             else:
                 pass
+            if packet[1] == 0x05:# and packet[3] == 0x2A:
+                # Then packet contains settings for the preset
+                settings = BlackstarIDAmpPreset.from_packet(packet)
+                logger.debug('Data from amp:: preset {0} settings'.format(packet[2]))
+                print(settings.preset_number)
+                return {'preset_settings': settings}
 
         elif packet[0] == 0x03:
             # The 4th byte (packet[3]) specifies the subsequent number of
