@@ -65,6 +65,11 @@ class BlackstarIDAmpPreset(object):
         pass
 
     @classmethod
+    def from_file(cls, file):
+        ps = cls()
+        raise NotImplementedError
+    
+    @classmethod
     def from_packet(cls, packet):
         # Check that the packet passed is actually a packet containing
         # preset settings.
