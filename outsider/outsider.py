@@ -80,6 +80,7 @@ class Ui(QMainWindow):
             'presence': self.presence_changed_on_amp,
             'master_volume': self.master_volume_changed_on_amp,
             'preset_name': self.preset_name_from_amp,
+            'preset_settings': self.preset_settings_from_amp,
         }
 
         uif = os.path.join(os.path.split(__file__)[0], 'outsider.ui')
@@ -89,6 +90,11 @@ class Ui(QMainWindow):
         self.amp_mutex = None
         self.amp = BlackstarIDAmp()
         self.watcher_thread = None
+
+        # For now we don't do anything with preset settings
+        # information other than store them in this list
+        self.preset_settings = [None] * 128
+
         self.controls_enabled(False)
         self.show()
 
@@ -383,6 +389,9 @@ class Ui(QMainWindow):
             self.presetNamesList.insertItem(idx, name)
         else:
             item.setText(name)
+
+    def preset_settings_from_amp(self, settings):
+        self.preset_settings[settings.preset_number] = settings
 
     def preset_changed_on_amp(self, value):
         # TODO: This function is a stub for now, but will need hooking
