@@ -64,6 +64,14 @@ class BlackstarIDAmpPreset(object):
     def __init__(self):
         pass
 
+    def __str__(self):
+        attribs = vars(self)
+        # s = ''
+        # for key, val in attribs.items():
+        #     s += '{0}: {1}\n'.format(key, val)
+        # return s[0:-1]
+        return attribs.__str__()
+
     @classmethod
     def from_file(cls, file):
         ps = cls()
