@@ -87,15 +87,12 @@ class BlackstarIDAmpPreset(object):
         ps.middle = packet[8]  # 00-7F
         ps.treble = packet[9]  # 00-7F
         ps.isf = packet[10]  # 00-7F
-        ps.tvp = packet[17]  # 00 or 01
+        ps.tvp_switch = packet[17]  # 00 or 01
         ps.tvp_valve = packet[11]  # 00-05
-        ps.modulation = packet[18]  # 00 or 01
-        ps.delay = packet[19]  # 00 or 01
 
-        ps.reverb = packet[20]  # 00 or 01
+        ps.reverb_switch = packet[20]  # 00 or 01
         ps.reverb_type = packet[32]  # 00-03
-        ps.reverb_segval = packet[33]  # 00-1F
-
+        ps.reverb_size = packet[33]  # 00-1F, segval
         # There is a point of confusion here. Adjusting reverb level
         # alters packet[35], but also packet[12]. However, adjusting
         # modulation level changes only packet[12]. So we assume that
@@ -105,34 +102,36 @@ class BlackstarIDAmpPreset(object):
         # with a later firmware.
         ps.reverb_level = packet[35]  # 00-7F
 
+        ps.delay_switch = packet[19]  # 00 or 01
         ps.delay_type = packet[26]  # 00-03
-        ps.delay_segval = packet[27]  # 00-1F
+        ps.delay_feedback = packet[27]  # 00-1F, segval
         ps.delay_level = packet[29]  # 00-7F
-
         # The delay time setting is specifed with two bytes,
         # packet[30] and packet[31]. With the delay set to the minimum
         # value, packet[30,31]=[0x64, 0x00], and with the delay time
         # set to maximum packet[30,31]=[0xD0, 0x07]. Somewhere in the
         # middle, packet[30,31]=[0xF4, 0x03]. So, it seems packet[31]
-        # is some course multiplier, and packet[31] is a finer
+        # is some coarse multiplier, and packet[31] is a finer
         # delineation. According to blackstar the minimum delay is 100
         # ms, and the maximum delay is 2s. So, [0x64, 0x00] = 100ms
         # makes sense. So, the actual delay in ms is:
         # delay = (packet[31] * 256 + packet[30])
-        ps.delay_time_1 = packet[30]  # 00-FF
-        ps.delay_time_2 = packet[31]  # 00-07
+        # delay_time_1 = packet[30]  # 00-FF
+        # ps.delay_time_2 = packet[31]  # 00-07
+        ps.delay_time = 256 * packet[31] + packet[30]
 
-        ps.modulation_type = packet[21]  # 00-03
-        ps.modulation_segval = packet[22]  # 00-1F
-        ps.modulation_level = packet[12]  # 00-7F
-        ps.modulation_rate = packet[25]  # 00-7F
+        ps.mod_switch = packet[18]  # 00 or 01
+        ps.mod_type = packet[21]  # 00-03
+        ps.mod_segval = packet[22]  # 00-1F
+        ps.mod_level = packet[12]  # 00-7F
+        ps.mod_speed = packet[25]  # 00-7F
 
         # This next setting is weird, it seems to reflect the absolute
         # position of the segmented selection knowb when selection
         # modulation type and segment value. It takes values between
         # 00-1F in the "1" segment, 20-3F in the "2" segment, 30-4F
         # when in the "3" segment and 40-5F when in the "4" segment.
-        ps.modulation_abspos = packet[13]
+        ps.mod_abspos = packet[13]
 
         # This denotes which efect has "focus" (to use the term in the
         # blackstar manual) i.e. is being controlled by the level,
