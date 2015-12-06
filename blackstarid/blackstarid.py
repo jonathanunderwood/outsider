@@ -639,7 +639,6 @@ class BlackstarIDAmp(object):
                 # Then packet contains settings for the preset
                 settings = BlackstarIDAmpPreset.from_packet(packet)
                 logger.debug('Data from amp:: preset {0} settings'.format(packet[2]))
-                print(settings.preset_number)
                 return {'preset_settings': settings}
 
         elif packet[0] == 0x03:
