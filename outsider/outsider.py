@@ -629,9 +629,6 @@ class Ui(QMainWindow):
             self.amp_mutex.lock()
             self.amp.set_preset_name(preset, name)
             self.amp_mutex.unlock()
-            # Query amp for name of channel to trigger a call to
-            # self.preset_name_from_amp
-            self.amp.get_preset_name(preset)
 
     # When the modulation type is changed, we want to change the label
     # associated with the segment value control. So, we need to define
