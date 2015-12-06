@@ -181,8 +181,6 @@ class Ui(QMainWindow):
     @pyqtSlot(dict)
     def new_data_from_amp(self, settings):
         for control, value in settings.items():
-            logger.debug(
-                'Data received:: control: {0} value: {1}'.format(control, value))
             try:
                 self.response_funcs[control](value)
             except KeyError:
