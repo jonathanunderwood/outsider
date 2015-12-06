@@ -689,8 +689,22 @@ class AmpControlWatcher(QObject):
                 else:
                     self.amp_mutex.unlock()
                     for control, value in settings.items():
-                        logger.debug(
-                            'Amp adjustment detected:: control: {0} value: {1}'.format(control, value))
-                    self.have_data.emit(settings)
+                        if control == 'preset_settings':
+                            logger.debug(
+                                'Amp preset settings:: preset: {0} settings: {1}'.format(
+                                    value.preset_number, value)
+                            )
+                        elif control == 'preset_name':
+                            logger.debug(
+                                'Amp preset name:: preset: {0} name: {1}'.format(
+                                    value[0], value[1])
+                            )
+                        else:
+                            logger.debug(
+                                'Amp adjustment detected:: control: {0} value: {1}'.format(
+                                    control, value)
+                            )
+
+                        self.have_data.emit(settings)
 
         logger.debug('AmpWatcher watching loop exited')
