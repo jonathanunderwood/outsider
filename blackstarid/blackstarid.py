@@ -909,7 +909,7 @@ class BlackstarIDAmp(object):
         while True:
             try:
                 ret = self.device.read(self.interrupt_in, 64)
-                #logger.debug('Drained packet\n' + self._format_data(ret))
+                logger.debug('Drained packet\n' + self._format_data(ret))
             except usb.core.USBError:  # No more data available
                 return
 
