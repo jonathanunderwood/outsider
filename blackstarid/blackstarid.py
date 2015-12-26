@@ -134,6 +134,11 @@ class BlackstarIDAmpPreset(object):
         ps.mod_level = packet[12]  # 00-7F
         ps.mod_speed = packet[25]  # 00-7F
 
+        # The 'manual' control is exposed via Insider, but doesn't
+        # seem to be available from an amp front panel setting, and
+        # applies only to the Flanger modulation type.
+        ps.mod_manual = packet[23]  # 00-7F - used only for Flanger
+
         # This next setting is weird, it seems to reflect the absolute
         # position of the segmented selection knowb when selection
         # modulation type and segment value. It takes values between
@@ -194,6 +199,7 @@ class BlackstarIDAmp(object):
         'reverb_switch': 0x11,
         'mod_type': 0x12,
         'mod_segval': 0x13,
+        'mod_manual': 0x14, # Flanger only
         'mod_level': 0x15,
         'mod_speed': 0x16,
         'delay_type': 0x17,
@@ -231,6 +237,7 @@ class BlackstarIDAmp(object):
         'mod_segval': [0, 31],
         'mod_level': [0, 127],
         'mod_speed': [0, 127],
+        'mod_manual': [0, 127], # Flanger only
         'delay_type': [0, 3],
         'delay_feedback': [0, 31],  # Segment value
         'delay_level': [0, 127],
