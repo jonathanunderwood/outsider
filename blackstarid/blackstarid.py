@@ -18,6 +18,7 @@
 import usb.core
 import usb.util
 import logging
+import xml.etree.ElementTree as et
 
 # Set up logging and create a null handler in case the application doesn't
 # provide a log handler
@@ -73,9 +74,84 @@ class BlackstarIDAmpPreset(object):
         return attribs.__str__()
 
     @classmethod
-    def from_file(cls, file):
+    def from_file(cls, filename):
         ps = cls()
-        raise NotImplementedError
+
+        tree = et.parse(filename)
+
+        root = tree.getroot()
+
+        amp = root.find('Amplifier')
+        ps.voice = int(amp.find('Voice').text)
+        ps.gain = int(amp.find('Gain').text)
+        ps.volume = int(amp.find('Volume').text)
+        ps.bass = int(amp.find('Bass').text)
+        ps.middle = int(amp.find('Middle').text)
+        ps.treble = int(amp.find('Treble').text)
+        ps.isf = int(amp.find('ISF').text)
+        ps.tvp_switch = int(amp.find('TVP').attrib['Status'])
+        ps.tvp_valve = int(amp.find('TVP').text)
+
+        fx = root.find('EffectsChain')
+        ps.effect_focus = int(fx.attrib['Focused'])
+
+        # Modulation. There is a child here "Types" which we won't use
+        # - the significance of this child is unclear.
+        mod = fx.find('Modulation')
+        ps.mod_switch = int(mod.attrib['Status'])
+        ps.mod_type = int(mod.attrib['Position'])
+        ps.mod_level = int(mod.find('Level').text)
+        ps.mod_speed = int(mod.find('Rate').text)
+        ps.mod_segval = int(mod.find('Adjust1').text)
+        ps.mod_manual = int(mod.find('Adjust2').text) # Only used by Flanger
+
+        # Delay. There is a child here "Types" which we won't use -
+        # the significance of this child is unclear.  Note that in the
+        # file Adjust2 is set to 127 and is not used for anything.
+        delay = fx.find('Delay')
+        ps.delay_switch = int(delay.attrib['Status'])
+        ps.delay_type = int(delay.attrib['Position'])
+        ps.delay_level = int(delay.find('Level').text)
+        ps.delay_time = int(delay.find('Tempo').text)
+        ps.delay_feedback = int(delay.find('Adjust1').text)
+
+        # Reverb. There is a child here "Types" which we won't use -
+        # the significance of this child is unclear. Note that in the
+        # file Adjust2 is set to 0 and is not used for anything.
+        reverb = fx.find('Reverb')
+        ps.reverb_switch = int(reverb.attrib['Status'])
+        ps.reverb_type = int(reverb.attrib['Position'])
+        ps.reverb_level = int(reverb.find('Level').text)
+        ps.reverb_size = int(reverb.find('Adjust1').text)
+
+        # Metadata
+        info = root.find('Info')
+        ps.name = info.find('Name').text
+        ps.creator = info.find('Creator').text
+        ps.genre = int(info.find('Genre').text)
+        ps.subgenre = int(info.find('SubGenre').text)
+        ps.search_tags = info.find('SearchTags').text
+        ps.about = info.find('About').text
+
+        # Tuner - not sure what this section is for, as you can't save
+        # a preset with the tuner on in Insider. But perhaps if this
+        # was set to 1, then switching to this preset would engage the
+        # tuner. Anyway, we'll parse it for compatibility sake.
+        ps.tuner_switch = int(root.find('Tuner').text)
+
+        # Bench - not sure what this is.
+        ps.bench_switch = int(root.find('Bench').text)
+
+        # Audio player stuff
+        audio = root.find('Audio')
+
+        metronome = audio.find('Metronome')
+        ps.metronome_switch = int(metronome.attrib['Type'])
+        ps.metronome_bpm = int(metronome.text)
+
+        track = audio.find('Track')
+        ps.track_repeat = int(track.attrib['Repeat'])
+        ps.track = track.text
     
     @classmethod
     def from_packet(cls, packet):
