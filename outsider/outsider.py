@@ -63,6 +63,7 @@ class Ui(QMainWindow):
             'mod_segval': self.mod_segval_changed_on_amp,
             'mod_level': self.mod_level_changed_on_amp,
             'mod_speed': self.mod_speed_changed_on_amp,
+            'mod_manual': self.mod_manual_changed_on_amp,
             'delay_type': self.delay_type_changed_on_amp,
             'delay_feedback': self.delay_feedback_changed_on_amp,
             'delay_level': self.delay_level_changed_on_amp,
@@ -99,11 +100,13 @@ class Ui(QMainWindow):
         self.show()
 
     def controls_enabled(self, bool):
-        # Disable/Enable all widgets except the connect button
+        # Disable/Enable all widgets except the connect button (always enabled) and the master controls (always disabled)
         if bool is True:
             widgets = self.findChildren(QGroupBox)#(QObject)
             for w in widgets:
-                if w.objectName() == 'TVPGroupBox' and self.amp.model == 'id-core':
+                if w == self.masterGroupBox:
+                   pass
+                elif w.objectName() == 'TVPGroupBox' and self.amp.model == 'id-core':
                     # self.TVPComboBox.setCurrentText('6L6')
                     # self.TVPRadioButton.setChecked(False)
                     # Don't enable as Core has  fixed TVP, probably with type 6L6
@@ -257,6 +260,7 @@ class Ui(QMainWindow):
         self.modLevelLabel.setEnabled(value)
         self.modLevelLcdNumber.setEnabled(value)
         self.modRadioButton.blockSignals(False)
+        self.assess_manual_enabled()
 
     def delay_switch_changed_on_amp(self, value):
         value = bool(value)
@@ -311,6 +315,12 @@ class Ui(QMainWindow):
         self.modSpeedLcdNumber.display(value)
         self.modSpeedSlider.blockSignals(False)
 
+    def mod_manual_changed_on_amp(self, value):
+        self.modManualSlider.blockSignals(True)
+        self.modManualSlider.setValue(value)
+        self.modManualLcdNumber.display(value)
+        self.modManualSlider.blockSignals(False)
+        
     def delay_type_changed_on_amp(self, value):
         self.delayComboBox.blockSignals(True)
         self.delayComboBox.setCurrentIndex(value)
@@ -424,15 +434,24 @@ class Ui(QMainWindow):
         logger.debug('tuner_delta changed on amp: {0}'.format(value))
 
     def resonance_changed_on_amp(self, value):
-        # We don't have a control for this setting, so do nothing
+        self.resonanceSlider.blockSignals(True)
+        self.resonanceSlider.setValue(value)
+        self.resonanceLcdNumber.display(value)
+        self.resonanceSlider.blockSignals(False)
         logger.debug('resonance changed on amp: {0}'.format(value))
 
     def presence_changed_on_amp(self, value):
-        # We don't have a control for this setting, so do nothing
+        self.presenceSlider.blockSignals(True)
+        self.presenceSlider.setValue(value)
+        self.presenceLcdNumber.display(value)
+        self.presenceSlider.blockSignals(False)
         logger.debug('presence changed on amp: {0}'.format(value))
 
     def master_volume_changed_on_amp(self, value):
-        # We don't have a control for this setting, so do nothing
+        self.masterVolumeSlider.blockSignals(True)
+        self.masterVolumeSlider.setValue(value)
+        self.masterVolumeLcdNumber.display(value)
+        self.masterVolumeSlider.blockSignals(False)
         logger.debug('master_volume changed on amp: {0}'.format(value))
 
     ##################################################################
@@ -514,6 +533,7 @@ class Ui(QMainWindow):
             # possible. The only mechanism we have available to do
             # this is to get the status of all controls, sadly.
             self.amp.startup()
+        self.assess_manual_enabled()
 
     @pyqtSlot(int)
     def on_modComboBox_currentIndexChanged(self, value):
@@ -537,6 +557,12 @@ class Ui(QMainWindow):
     def on_modSpeedSlider_valueChanged(self, value):
         logger.debug('Mod Speed slider: {0}'.format(value))
         self.amp.set_control('mod_speed', value)
+        self.amp.set_control('fx_focus', 1)
+
+    @pyqtSlot(int)
+    def on_modManualSlider_valueChanged(self, value):
+        logger.debug('Mod Manual slider: {0}'.format(value))
+        self.amp.set_control('mod_manual', value)
         self.amp.set_control('fx_focus', 1)
 
     @pyqtSlot(bool)
@@ -648,6 +674,32 @@ class Ui(QMainWindow):
             self.mod_segval_label_update.emit('Mix')
         elif value == 3:
             self.mod_segval_label_update.emit('FreqMod')
+        self.assess_manual_enabled()
+
+    @pyqtSlot(int)
+    def on_resonanceSlider_valueChanged(self, value):
+        logger.debug('Resonance slider: {0}'.format(value))
+        self.amp.set_control('resonance', value)
+
+    @pyqtSlot(int)
+    def on_presenceSlider_valueChanged(self, value):
+        logger.debug('Presence slider: {0}'.format(value))
+        self.amp.set_control('presence', value)
+
+    @pyqtSlot(int)
+    def on_masterVolumeSlider_valueChanged(self, value):
+        logger.debug('Master volume slider: {0}'.format(value))
+        self.amp.set_control('master_volume', value)
+
+
+    # When the modulation is enabled and the modution type is flanger, enable
+    # the manual control.
+    def assess_manual_enabled(self):
+        value = self.modRadioButton.isChecked() and self.modComboBox.currentIndex() == 1
+        self.modManualSlider.blockSignals(True)
+        self.modManualSlider.setEnabled(value)
+        self.modManualSlider.blockSignals(False)
+
 
 class AmpControlWatcher(QObject):
     have_data = pyqtSignal(dict, name='have_data')

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>676</width>
-    <height>686</height>
+    <width>961</width>
+    <height>668</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,6 +15,93 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_10">
+    <item row="1" column="3" rowspan="2">
+     <widget class="QGroupBox" name="masterGroupBox">
+      <property name="title">
+       <string>Master</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_11">
+       <item row="0" column="0">
+        <widget class="QLCDNumber" name="resonanceLcdNumber"/>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>Presence</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Resonance</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" alignment="Qt::AlignHCenter">
+        <widget class="QSlider" name="presenceSlider">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>120</height>
+          </size>
+         </property>
+         <property name="maximum">
+          <number>127</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" alignment="Qt::AlignHCenter">
+        <widget class="QSlider" name="resonanceSlider">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>120</height>
+          </size>
+         </property>
+         <property name="maximum">
+          <number>127</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLCDNumber" name="masterVolumeLcdNumber"/>
+       </item>
+       <item row="2" column="2">
+        <widget class="QLabel" name="label_9">
+         <property name="text">
+          <string>Volume</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2" alignment="Qt::AlignHCenter">
+        <widget class="QSlider" name="masterVolumeSlider">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>120</height>
+          </size>
+         </property>
+         <property name="maximum">
+          <number>127</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLCDNumber" name="presenceLcdNumber"/>
+       </item>
+      </layout>
+     </widget>
+    </item>
     <item row="0" column="0">
      <widget class="QPushButton" name="connectToAmpButton">
       <property name="text">
@@ -28,15 +115,18 @@
        <string>Amp controls</string>
       </property>
       <layout class="QGridLayout" name="gridLayout_7">
-       <item row="0" column="0">
-        <widget class="QLCDNumber" name="gainLcdNumber">
-         <property name="maximumSize">
+       <item row="1" column="2">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
           <size>
-           <width>16777215</width>
-           <height>16777215</height>
+           <width>40</width>
+           <height>20</height>
           </size>
          </property>
-        </widget>
+        </spacer>
        </item>
        <item row="0" column="1">
         <widget class="QLCDNumber" name="volumeLcdNumber">
@@ -48,27 +138,14 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="2">
-        <widget class="QLCDNumber" name="bassLcdNumber">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
+       <item row="2" column="6" alignment="Qt::AlignHCenter">
+        <widget class="QLabel" name="label_7">
+         <property name="text">
+          <string>ISF</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="3">
-        <widget class="QLCDNumber" name="middleLcdNumber">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="4">
+       <item row="0" column="5">
         <widget class="QLCDNumber" name="trebleLcdNumber">
          <property name="maximumSize">
           <size>
@@ -78,8 +155,8 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="5">
-        <widget class="QLCDNumber" name="isfLcdNumber">
+       <item row="0" column="3">
+        <widget class="QLCDNumber" name="bassLcdNumber">
          <property name="maximumSize">
           <size>
            <width>16777215</width>
@@ -88,7 +165,31 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="2" column="1" alignment="Qt::AlignHCenter">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Volume</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QLCDNumber" name="middleLcdNumber">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" alignment="Qt::AlignHCenter">
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Gain</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" alignment="Qt::AlignHCenter">
         <widget class="QSlider" name="gainSlider">
          <property name="minimumSize">
           <size>
@@ -104,7 +205,27 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="1">
+       <item row="0" column="0">
+        <widget class="QLCDNumber" name="gainLcdNumber">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="6">
+        <widget class="QLCDNumber" name="isfLcdNumber">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" alignment="Qt::AlignHCenter">
         <widget class="QSlider" name="volumeSlider">
          <property name="minimumSize">
           <size>
@@ -120,7 +241,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="2">
+       <item row="1" column="3" alignment="Qt::AlignHCenter">
         <widget class="QSlider" name="bassSlider">
          <property name="minimumSize">
           <size>
@@ -136,39 +257,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="3">
-        <widget class="QSlider" name="middleSlider">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>120</height>
-          </size>
-         </property>
-         <property name="maximum">
-          <number>127</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="4">
-        <widget class="QSlider" name="trebleSlider">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>120</height>
-          </size>
-         </property>
-         <property name="maximum">
-          <number>127</number>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="5">
+       <item row="1" column="6" alignment="Qt::AlignHCenter">
         <widget class="QSlider" name="isfSlider">
          <property name="minimumSize">
           <size>
@@ -184,67 +273,60 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Gain</string>
+       <item row="1" column="4" alignment="Qt::AlignHCenter">
+        <widget class="QSlider" name="middleSlider">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>120</height>
+          </size>
+         </property>
+         <property name="maximum">
+          <number>127</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QLabel" name="label">
-         <property name="text">
-          <string>Volume</string>
+       <item row="1" column="5" alignment="Qt::AlignHCenter">
+        <widget class="QSlider" name="trebleSlider">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>120</height>
+          </size>
+         </property>
+         <property name="maximum">
+          <number>127</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
-       <item row="2" column="2">
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Bass</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="3">
+       <item row="2" column="4" alignment="Qt::AlignHCenter">
         <widget class="QLabel" name="label_4">
          <property name="text">
           <string>Middle</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="4">
+       <item row="2" column="3" alignment="Qt::AlignHCenter">
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>Bass</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="5" alignment="Qt::AlignHCenter">
         <widget class="QLabel" name="label_6">
          <property name="text">
           <string>Treble</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="5">
-        <widget class="QLabel" name="label_7">
-         <property name="text">
-          <string>ISF</string>
-         </property>
-        </widget>
-       </item>
       </layout>
-      <zorder>gainLcdNumber</zorder>
-      <zorder>label_6</zorder>
-      <zorder>volumeSlider</zorder>
-      <zorder>label_7</zorder>
-      <zorder>volumeLcdNumber</zorder>
-      <zorder>bassSlider</zorder>
-      <zorder>trebleLcdNumber</zorder>
-      <zorder>label_3</zorder>
-      <zorder>gainSlider</zorder>
-      <zorder>isfLcdNumber</zorder>
-      <zorder>middleSlider</zorder>
-      <zorder>trebleSlider</zorder>
-      <zorder>bassLcdNumber</zorder>
-      <zorder>isfSlider</zorder>
-      <zorder>middleLcdNumber</zorder>
-      <zorder>label_4</zorder>
-      <zorder>label</zorder>
-      <zorder>label_2</zorder>
      </widget>
     </item>
     <item row="1" column="2">
@@ -296,158 +378,6 @@
           </property>
          </item>
         </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QGroupBox" name="groupBox_2">
-      <property name="title">
-       <string>Modulation</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="0" column="0">
-        <widget class="QRadioButton" name="modRadioButton">
-         <property name="text">
-          <string>Enable</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QComboBox" name="modComboBox">
-         <item>
-          <property name="text">
-           <string>Phaser</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Flanger</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Chorus</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Tremolo</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="1" column="0" colspan="2">
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="1" column="0" alignment="Qt::AlignHCenter">
-          <widget class="QSlider" name="modSegValSlider">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>120</height>
-            </size>
-           </property>
-           <property name="maximum">
-            <number>31</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLCDNumber" name="modSegValLcdNumber">
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLCDNumber" name="modLevelLcdNumber">
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="2" alignment="Qt::AlignHCenter">
-          <widget class="QSlider" name="modSpeedSlider">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>120</height>
-            </size>
-           </property>
-           <property name="maximum">
-            <number>127</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1" alignment="Qt::AlignHCenter">
-          <widget class="QSlider" name="modLevelSlider">
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>120</height>
-            </size>
-           </property>
-           <property name="maximum">
-            <number>127</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1" alignment="Qt::AlignHCenter">
-          <widget class="QLabel" name="modLevelLabel">
-           <property name="text">
-            <string>Depth</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" alignment="Qt::AlignHCenter">
-          <widget class="QLabel" name="modSegValLabel">
-           <property name="text">
-            <string>SegVal</string>
-           </property>
-           <property name="wordWrap">
-            <bool>false</bool>
-           </property>
-           <property name="textInteractionFlags">
-            <set>Qt::LinksAccessibleByMouse</set>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="2" alignment="Qt::AlignHCenter">
-          <widget class="QLabel" name="modSpeedLabel">
-           <property name="text">
-            <string>Speed</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLCDNumber" name="modSpeedLcdNumber">
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-        </layout>
        </item>
       </layout>
      </widget>
@@ -773,6 +703,178 @@
       </layout>
      </widget>
     </item>
+    <item row="3" column="0">
+     <widget class="QGroupBox" name="groupBox_2">
+      <property name="title">
+       <string>Modulation</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QRadioButton" name="modRadioButton">
+         <property name="text">
+          <string>Enable</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="modComboBox">
+         <item>
+          <property name="text">
+           <string>Phaser</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Flanger</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Chorus</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Tremolo</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="1">
+          <widget class="QLCDNumber" name="modLevelLcdNumber">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" alignment="Qt::AlignHCenter">
+          <widget class="QSlider" name="modSegValSlider">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>120</height>
+            </size>
+           </property>
+           <property name="maximum">
+            <number>31</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLCDNumber" name="modSegValLcdNumber">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2" alignment="Qt::AlignHCenter">
+          <widget class="QSlider" name="modSpeedSlider">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>120</height>
+            </size>
+           </property>
+           <property name="maximum">
+            <number>127</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" alignment="Qt::AlignHCenter">
+          <widget class="QSlider" name="modLevelSlider">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>120</height>
+            </size>
+           </property>
+           <property name="maximum">
+            <number>127</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2" alignment="Qt::AlignHCenter">
+          <widget class="QLabel" name="modSpeedLabel">
+           <property name="text">
+            <string>Speed</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1" alignment="Qt::AlignHCenter">
+          <widget class="QLabel" name="modLevelLabel">
+           <property name="text">
+            <string>Depth</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" alignment="Qt::AlignHCenter">
+          <widget class="QLabel" name="modSegValLabel">
+           <property name="text">
+            <string>SegVal</string>
+           </property>
+           <property name="wordWrap">
+            <bool>false</bool>
+           </property>
+           <property name="textInteractionFlags">
+            <set>Qt::LinksAccessibleByMouse</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QLCDNumber" name="modSpeedLcdNumber">
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3">
+          <widget class="QLCDNumber" name="modManualLcdNumber"/>
+         </item>
+         <item row="1" column="3" alignment="Qt::AlignHCenter">
+          <widget class="QSlider" name="modManualSlider">
+           <property name="maximum">
+            <number>127</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="3" alignment="Qt::AlignHCenter">
+          <widget class="QLabel" name="modManualLabel">
+           <property name="text">
+            <string>Manual</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
    </layout>
    <zorder>groupBox_2</zorder>
    <zorder>groupBox_3</zorder>
@@ -782,14 +884,15 @@
    <zorder>groupBox_6</zorder>
    <zorder>connectToAmpButton</zorder>
    <zorder>presetGroupBox</zorder>
+   <zorder>masterGroupBox</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>676</width>
-     <height>26</height>
+     <width>961</width>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOutsider">
@@ -1504,6 +1607,70 @@
     <hint type="destinationlabel">
      <x>246</x>
      <y>429</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>modManualSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>modManualLcdNumber</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>263</x>
+     <y>424</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>263</x>
+     <y>347</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>resonanceSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>resonanceLcdNumber</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>766</x>
+     <y>176</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>766</x>
+     <y>99</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>presenceSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>presenceLcdNumber</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>837</x>
+     <y>176</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>837</x>
+     <y>99</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>masterVolumeSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>masterVolumeLcdNumber</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>907</x>
+     <y>176</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>907</x>
+     <y>99</y>
     </hint>
    </hints>
   </connection>
