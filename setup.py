@@ -13,22 +13,19 @@
 # You should have received a copy of the GNU General Public License
 # along with Outsider.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Copyright 2015, Jonathan Underwood. All rights reserved.
+# Copyright 2015, 2016, 2017 Jonathan Underwood. All rights reserved.
 
 """Libraries and utilities for interfacing with the Blackstar ID range
 of amplifiers.
 
 """
 
-# Always prefer setuptools over distutils
 from setuptools import setup, find_packages
-# To use a consistent encoding
 from codecs import open
 from os import path
 
 here = path.abspath(path.dirname(__file__))
 
-# Get the long description from the relevant file
 with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
     long_description = f.read()
 
