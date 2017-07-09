@@ -19,6 +19,7 @@ import usb.core
 import usb.util
 import logging
 import xml.etree.ElementTree as et
+from xml.dom import minidom
 
 # Set up logging and create a null handler in case the application doesn't
 # provide a log handler
@@ -60,6 +61,21 @@ class NoDataAvailable(Exception):
     pass
 
 
+class InvalidSettingsFile(Exception):
+
+    '''Raised when there's a problem with a settings xml file such as a
+    missing section or attribute
+
+    '''
+
+from lxml import etree
+
+with open('blackstarid_preset.xsd', 'r') as file:
+    _schema = file.read()
+
+preset_schema = etree.XMLSchema(etree.parse(_schema))
+del(_schema)
+
 class BlackstarIDAmpPreset(object):
 
     def __init__(self):
@@ -77,82 +93,115 @@ class BlackstarIDAmpPreset(object):
     def from_file(cls, filename):
         ps = cls()
 
-        tree = et.parse(filename)
+        try:
+            tree = et.parse(filename)
+        except FileNotFoundError as e:
+            logger.error('file not found: {0}'.format(e.filename))
+            raise
+        except et.ParseError as e:
+            logger.error('could not parse file: {0}'.format(filename))
+            raise
 
         root = tree.getroot()
 
-        amp = root.find('Amplifier')
-        ps.voice = int(amp.find('Voice').text)
-        ps.gain = int(amp.find('Gain').text)
-        ps.volume = int(amp.find('Volume').text)
-        ps.bass = int(amp.find('Bass').text)
-        ps.middle = int(amp.find('Middle').text)
-        ps.treble = int(amp.find('Treble').text)
-        ps.isf = int(amp.find('ISF').text)
-        ps.tvp_switch = int(amp.find('TVP').attrib['Status'])
-        ps.tvp_valve = int(amp.find('TVP').text)
+        for i in ['Amplifier', 'EffectsChain', 'Audio', 'Tuner',
+                  'Bench', 'Info']:
+            if root.find(i) is None:
+                logger.error(
+                    'missing section {0} in file {1}'.format(i, filename))
+                raise InvalidSettingsFile # Need to add arguments (section, attribute)
 
-        fx = root.find('EffectsChain')
-        ps.effect_focus = int(fx.attrib['Focused'])
+        try:
+            amp = root.find('Amplifier')
+            ps.voice = int(amp.find('Voice').text)
+            ps.gain = int(amp.find('Gain').text)
+            ps.volume = int(amp.find('Volume').text)
+            ps.bass = int(amp.find('Bass').text)
+            ps.middle = int(amp.find('Middle').text)
+            ps.treble = int(amp.find('Treble').text)
+            ps.isf = int(amp.find('ISF').text)
+            ps.tvp_switch = int(amp.find('TVP').attrib['Status'])
+            ps.tvp_valve = int(amp.find('TVP').text)
 
-        # Modulation. There is a child here "Types" which we won't use
-        # - the significance of this child is unclear.
-        mod = fx.find('Modulation')
-        ps.mod_switch = int(mod.attrib['Status'])
-        ps.mod_type = int(mod.attrib['Position'])
-        ps.mod_level = int(mod.find('Level').text)
-        ps.mod_speed = int(mod.find('Rate').text)
-        ps.mod_segval = int(mod.find('Adjust1').text)
-        ps.mod_manual = int(mod.find('Adjust2').text) # Only used by Flanger
+            fx = root.find('EffectsChain')
+            ps.effect_focus = int(fx.attrib['Focused'])
 
-        # Delay. There is a child here "Types" which we won't use -
-        # the significance of this child is unclear.  Note that in the
-        # file Adjust2 is set to 127 and is not used for anything.
-        delay = fx.find('Delay')
-        ps.delay_switch = int(delay.attrib['Status'])
-        ps.delay_type = int(delay.attrib['Position'])
-        ps.delay_level = int(delay.find('Level').text)
-        ps.delay_time = int(delay.find('Tempo').text)
-        ps.delay_feedback = int(delay.find('Adjust1').text)
+            # Modulation. There is a child here "Types" which we won't
+            # use - the significance of this child is unclear.
+            mod = fx.find('Modulation')
+            ps.mod_switch = int(mod.attrib['Status'])
+            ps.mod_type = int(mod.attrib['Position'])
+            ps.mod_level = int(mod.find('Level').text)
+            ps.mod_speed = int(mod.find('Rate').text)
+            ps.mod_segval = int(mod.find('Adjust1').text)
+            ps.mod_manual = int(mod.find('Adjust2').text) # Only used by Flanger
 
-        # Reverb. There is a child here "Types" which we won't use -
-        # the significance of this child is unclear. Note that in the
-        # file Adjust2 is set to 0 and is not used for anything.
-        reverb = fx.find('Reverb')
-        ps.reverb_switch = int(reverb.attrib['Status'])
-        ps.reverb_type = int(reverb.attrib['Position'])
-        ps.reverb_level = int(reverb.find('Level').text)
-        ps.reverb_size = int(reverb.find('Adjust1').text)
+            # Delay. There is a child here "Types" which we won't use
+            # - the significance of this child is unclear.  Note that
+            # in the file Adjust2 is set to 127 and is not used for
+            # anything.
+            delay = fx.find('Delay')
+            ps.delay_switch = int(delay.attrib['Status'])
+            ps.delay_type = int(delay.attrib['Position'])
+            ps.delay_level = int(delay.find('Level').text)
+            ps.delay_time = int(delay.find('Tempo').text)
+            ps.delay_feedback = int(delay.find('Adjust1').text)
 
-        # Metadata
-        info = root.find('Info')
-        ps.name = info.find('Name').text
-        ps.creator = info.find('Creator').text
-        ps.genre = int(info.find('Genre').text)
-        ps.subgenre = int(info.find('SubGenre').text)
-        ps.search_tags = info.find('SearchTags').text
-        ps.about = info.find('About').text
+            # Reverb. There is a child here "Types" which we won't use
+            # - the significance of this child is unclear. Note that
+            # in the file Adjust2 is set to 0 and is not used for
+            # anything.
+            reverb = fx.find('Reverb')
+            ps.reverb_switch = int(reverb.attrib['Status'])
+            ps.reverb_type = int(reverb.attrib['Position'])
+            ps.reverb_level = int(reverb.find('Level').text)
+            ps.reverb_size = int(reverb.find('Adjust1').text)
 
-        # Tuner - not sure what this section is for, as you can't save
-        # a preset with the tuner on in Insider. But perhaps if this
-        # was set to 1, then switching to this preset would engage the
-        # tuner. Anyway, we'll parse it for compatibility sake.
-        ps.tuner_switch = int(root.find('Tuner').text)
+            # Metadata
+            info = root.find('Info')
+            ps.name = info.find('Name').text
+            ps.creator = info.find('Creator').text
+            ps.genre = int(info.find('Genre').text)
+            ps.subgenre = int(info.find('SubGenre').text)
+            ps.search_tags = info.find('SearchTags').text
+            ps.about = info.find('About').text
 
-        # Bench - not sure what this is.
-        ps.bench_switch = int(root.find('Bench').text)
+            # Tuner - not sure what this section is for, as you can't
+            # save a preset with the tuner on in Insider. But perhaps
+            # if this was set to 1, then switching to this preset
+            # would engage the tuner. Anyway, we'll parse it for
+            # compatibility sake.
+            ps.tuner_switch = int(root.find('Tuner').text)
 
-        # Audio player stuff
-        audio = root.find('Audio')
+            # Bench - not sure what this is.
+            ps.bench_switch = int(root.find('Bench').text)
 
-        metronome = audio.find('Metronome')
-        ps.metronome_switch = int(metronome.attrib['Type'])
-        ps.metronome_bpm = int(metronome.text)
+            # Audio player stuff
+            audio = root.find('Audio')
 
-        track = audio.find('Track')
-        ps.track_repeat = int(track.attrib['Repeat'])
-        ps.track = track.text
-    
+            metronome = audio.find('Metronome')
+            ps.metronome_switch = int(metronome.attrib['Type'])
+            ps.metronome_bpm = int(metronome.text)
+
+            track = audio.find('Trackk')
+            ps.track_repeat = int(track.attrib['Repeat'])
+            ps.track = track.text
+            print('yo')
+            # http://www.gossamer-threads.com/lists/python/python/1056840
+            # Need to check result of .find is not None.
+        except AttributeError as e:
+            logger.error(
+                'could not find attribute {0} in file {1}'.format(e.args, filename))
+            raise
+
+    def to_file(self, filename):
+        '''Write the preset settings to an xml file compatible with the
+        Insider XML format.
+
+        '''
+        top = et.Element('Sound')
+        #https://pymotw.com/2/xml/etree/ElementTree/create.html
+
     @classmethod
     def from_packet(cls, packet):
         # Check that the packet passed is actually a packet containing
@@ -932,14 +981,16 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
     logger = logging.getLogger('outsider.blackstarid')
 
-    try:
-        amp = BlackstarIDAmp()
-        amp.connect()
-    except:
-        logger.error('Failed to connect')
-        sys.exit(1)
+    # try:
+    #     amp = BlackstarIDAmp()
+    #     amp.connect()
+    # except:
+    #     logger.error('Failed to connect')
+    #     sys.exit(1)
 
-    try:
-        amp.poll_and_log()
-    except KeyboardInterrupt:
-        sys.exit(0)
+    # try:
+    #     amp.poll_and_log()
+    # except KeyboardInterrupt:
+    #     sys.exit(0)
+
+    p = BlackstarIDAmpPreset.from_file('test.bstar')
