@@ -70,16 +70,15 @@ class InvalidSettingsFile(Exception):
 
 from lxml import etree
 
-with open('blackstarid_preset.xsd', 'r') as file:
-    _schema = file.read()
+with open('blackstarid_preset.xsd', 'r') as f:
+    _schema = f.read()
 
-preset_schema = etree.XMLSchema(etree.parse(_schema))
-del(_schema)
 
 class BlackstarIDAmpPreset(object):
 
     def __init__(self):
-        pass
+        schema = etree.XMLSchema(_schema)
+        self.parser = etree.XMLParser(schema = schema)
 
     def __str__(self):
         attribs = vars(self)
@@ -94,10 +93,16 @@ class BlackstarIDAmpPreset(object):
         ps = cls()
 
         try:
-            tree = et.parse(filename)
+            with open(filename, 'r') as f:
+                preset = f.read()
         except FileNotFoundError as e:
             logger.error('file not found: {0}'.format(e.filename))
             raise
+
+        if 
+
+        try:
+            tree = et.parse(filename)
         except et.ParseError as e:
             logger.error('could not parse file: {0}'.format(filename))
             raise
