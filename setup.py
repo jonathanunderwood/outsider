@@ -53,9 +53,10 @@ setup(
     ],
     keywords='Blackstar Amplifiers',
     packages=find_packages(exclude=['data', 'docs', 'tests*']),
-    # Unfortunately we can't have 'PyQt5' here because unfortunately
-    # it's not available on PyPi, so pip can't install it
-    install_requires=['PyUSB'],
+    install_requires=[
+        'PyUSB',
+        'PyQt5',
+    ],
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
