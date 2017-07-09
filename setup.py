@@ -31,7 +31,10 @@ with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
 
 setup(
     name='outsider',
-    version='0.0.2',
+    use_scm_version={
+        'write_to': "outsider/version.py",
+    },
+    setup_requires=['setuptools_scm'],
     description='Utilities for interfacing with Blackstar ID amplifiers',
     long_description=long_description,
     url='https://github.com/jonathanunderwood/outsider',
