@@ -1,0 +1,150 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Sound">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Amplifier">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:byte" name="Voice"/>
+              <xs:element type="xs:byte" name="Gain"/>
+              <xs:element type="xs:byte" name="Volume"/>
+              <xs:element type="xs:byte" name="Bass"/>
+              <xs:element type="xs:byte" name="Middle"/>
+              <xs:element type="xs:byte" name="Treble"/>
+              <xs:element type="xs:byte" name="ISF"/>
+              <xs:element name="TVP">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:byte">
+                      <xs:attribute type="xs:byte" name="Status"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="EffectsChain">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Modulation">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Types">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:byte">
+                            <xs:attribute type="xs:byte" name="Phaser"/>
+                            <xs:attribute type="xs:byte" name="Flanger"/>
+                            <xs:attribute type="xs:byte" name="Chorus"/>
+                            <xs:attribute type="xs:byte" name="Tremolo"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element type="xs:byte" name="Adjust1"/>
+                    <xs:element type="xs:byte" name="Adjust2"/>
+                    <xs:element type="xs:byte" name="Level"/>
+                    <xs:element type="xs:byte" name="Rate"/>
+                  </xs:sequence>
+                  <xs:attribute type="xs:byte" name="Position"/>
+                  <xs:attribute type="xs:byte" name="Status"/>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Delay">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Types">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:byte">
+                            <xs:attribute type="xs:byte" name="Linear"/>
+                            <xs:attribute type="xs:byte" name="Analogue"/>
+                            <xs:attribute type="xs:byte" name="Tape"/>
+                            <xs:attribute type="xs:byte" name="Multi"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element type="xs:byte" name="Adjust1"/>
+                    <xs:element type="xs:byte" name="Adjust2"/>
+                    <xs:element type="xs:byte" name="Level"/>
+                    <xs:element type="xs:short" name="Tempo"/>
+                  </xs:sequence>
+                  <xs:attribute type="xs:byte" name="Position"/>
+                  <xs:attribute type="xs:byte" name="Status"/>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Reverb">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Types">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:byte">
+                            <xs:attribute type="xs:byte" name="Room"/>
+                            <xs:attribute type="xs:byte" name="Hall"/>
+                            <xs:attribute type="xs:byte" name="Spring"/>
+                            <xs:attribute type="xs:byte" name="Plate"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element type="xs:byte" name="Adjust1"/>
+                    <xs:element type="xs:byte" name="Adjust2"/>
+                    <xs:element type="xs:byte" name="Level"/>
+                  </xs:sequence>
+                  <xs:attribute type="xs:byte" name="Position"/>
+                  <xs:attribute type="xs:byte" name="Status"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute type="xs:byte" name="Focused"/>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Audio">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Metronome">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:byte">
+                      <xs:attribute type="xs:byte" name="Type"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Track">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute type="xs:byte" name="Repeat"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element type="xs:byte" name="Tuner"/>
+        <xs:element type="xs:byte" name="Bench"/>
+        <xs:element name="Info">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="Name"/>
+              <xs:element type="xs:string" name="Creator"/>
+              <xs:element type="xs:byte" name="Genre"/>
+              <xs:element type="xs:byte" name="SubGenre"/>
+              <xs:element type="xs:string" name="SearchTags"/>
+              <xs:element type="xs:string" name="About"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute type="xs:byte" name="FirmwareVersion"/>
+      <xs:attribute type="xs:byte" name="CE"/>
+      <xs:attribute type="xs:byte" name="CS"/>
+      <xs:attribute type="xs:string" name="LastModified"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
