@@ -51,7 +51,7 @@ The following command should install all necessary pre-requisites:
 
 ### Ubuntu 14.04
 
-    apt-get install  python3-setuptools python3-qt5 python-usb
+    sudo apt-get install python3-setuptools python3-pyqt5 python-usb
 
 ### Other distributions
 
