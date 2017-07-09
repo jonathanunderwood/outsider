@@ -70,15 +70,20 @@ class InvalidSettingsFile(Exception):
 
 from lxml import etree
 
-with open('blackstarid_preset.xsd', 'r') as f:
-    _schema = f.read()
-
-
 class BlackstarIDAmpPreset(object):
 
     def __init__(self):
-        schema = etree.XMLSchema(_schema)
-        self.parser = etree.XMLParser(schema = schema)
+        try:
+            self.schema = etree.XMLSchema(file='blackstarid_preset.xsd')
+        except etree.XMLSchemaParseError as e:
+            logger.error('Failed to parse schema: {}'.format(e.error_log))
+            raise
+
+        try:
+            self.parser = etree.XMLParser(schema=schema)
+        except:
+            logger.error('Failed to create parser from schema')
+            raise
 
     def __str__(self):
         attribs = vars(self)
@@ -88,18 +93,30 @@ class BlackstarIDAmpPreset(object):
         # return s[0:-1]
         return attribs.__str__()
 
+    def _recursive_dict(self, element):
+        '''Returns a dict of dicts for the element. See:
+        http://lxml.de/FAQ.html#how-can-i-map-an-xml-tree-into-a-dict-of-dicts
+        '''
+        return element.tag, \
+            dict(map(recursive_dict, element)) or element.text
+
+    def parse_file(filename):
+        tree = etree.parse(filename)
+
+        try:
+            self.schema.assertValid(tree)
+        except etree.DocumentInvalid as e:
+            logger.error('{} did not validate against schema'.format(filename))
+            logger.error(e.error_log)
+            raise
+
+        root = tree.getroot()
+
+        self.preset = self._recursive_dict(root)
+
     @classmethod
     def from_file(cls, filename):
         ps = cls()
-
-        try:
-            with open(filename, 'r') as f:
-                preset = f.read()
-        except FileNotFoundError as e:
-            logger.error('file not found: {0}'.format(e.filename))
-            raise
-
-        if 
 
         try:
             tree = et.parse(filename)
@@ -107,7 +124,7 @@ class BlackstarIDAmpPreset(object):
             logger.error('could not parse file: {0}'.format(filename))
             raise
 
-        root = tree.getroot()
+
 
         for i in ['Amplifier', 'EffectsChain', 'Audio', 'Tuner',
                   'Bench', 'Info']:
