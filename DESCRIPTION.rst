@@ -1,8 +1,8 @@
 Outsider
 ========
 
-This project contains utilities for interfacing with the Blackstar ID
-range of amplifiers.
+This project is a GUI interface for controlling the Blackstar ID series of
+amplifiers. The software is still in development, but should be usable as a
+replacement for most of the functionality of the Insider software that Blackstar
+ship.
 
-At present this is a fledgling project. It won't work for you. It
-might even destroy your amplifier. Don't use it, really.
