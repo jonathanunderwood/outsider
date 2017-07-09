@@ -41,6 +41,13 @@ need for Python 2 support, email me and I'll consider adding it.
 The following command should install all necessary pre-requisites:
 
     dnf install python3-setuptools python3-qt5 python3-pyusb
+    git clone https://github.com/jonathanunderwood/outsider.git
+    
+### Debian 9
+The following command should install all necessary pre-requisites:
+
+    sudo apt-get install git python3-pyqt5 python3-usb python3-setuptools
+    git clone https://github.com/jonathanunderwood/outsider.git
 
 ### Ubuntu 14.04
 
